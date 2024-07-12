@@ -27,7 +27,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG', False)
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['python-project-52-41ik.onrender.com', '127.0.0.1', 'localhost']
 
 
 # Application definition
