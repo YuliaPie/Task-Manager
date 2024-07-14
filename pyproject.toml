@@ -11,6 +11,7 @@ python = "^3.12"
 django = "^5.0.7"
 python-dotenv = "^1.0.1"
 gunicorn = "^22.0.0"
+django-bootstrap5 = "^24.2"
 
 
 [build-system]

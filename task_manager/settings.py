@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 from dotenv import load_dotenv
 from pathlib import Path
+from django.conf import settings
+from django.utils.translation import gettext_lazy as _
 import os
 
 
@@ -106,7 +108,11 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGES = [
+    ('ru', _(settings.LANGUAGE_CODE)),
+]
+
+LANGUAGE_CODE = 'ru'
 
 TIME_ZONE = 'UTC'
 
