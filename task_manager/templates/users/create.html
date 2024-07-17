@@ -1,0 +1,52 @@
+{% extends "main.html" %}
+{% load i18n %}
+{% block content %}
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% if form.non_field_errors %}
+<div class="alert alert-danger">
+    {{ form.non_field_errors }}
+</div>
+{% endif %}
+<div class="container wrapper flex-grow-1">
+    <h1 class="my-4">Регистрация</h1>
+    <form action="{% url 'users:users_create' %}" method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+    <label class="form-label" for="id_name">Имя</label>
+    <input type="text" name="name" maxlength="150" class="form-control" placeholder="Имя" required id="id_first_name">
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="id_surname">Фамилия</label>
+    <input type="text" name="surname" maxlength="150" class="form-control" placeholder="Фамилия" required id="id_last_name">
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="id_username">Имя пользователя</label>
+    <input type="text" name="username" maxlength="150" autofocus class="form-control" placeholder="Имя пользователя" required aria-describedby="id_username_helptext" id="id_username">
+    <div class="form-text">
+      Обязательное поле. Не более 150 символов. Только буквы, цифры и символы @/./+/-/_.
+    </div>
+  </div>
+  <div class="mb-3">
+    <label class="form-label" for="id_password">Пароль</label>
+    <input type="password" name="password" autocomplete="new-password" class="form-control" placeholder="Пароль" required aria-describedby="id_password_helptext" id="id_password">
+    <div class="form-text">
+      Ваш пароль должен содержать как минимум 3 символа.
+    </div>
+</div>
+<div class="mb-3">
+    <label class="form-label" for="id_password2">Подтверждение пароля</label>
+    <input type="password" name="password2" autocomplete="new-password" class="form-control" placeholder="Подтверждение пароля" required aria-describedby="id_password2_helptext" id="id_password2">
+    <div class="form-text">
+      Для подтверждения введите, пожалуйста, пароль ещё раз.
+    </div>
+</div>
+        <input class="btn btn-primary" type="submit" value="Зарегистрировать">
+    </form>
+</div>
+{% endblock %}

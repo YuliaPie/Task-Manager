@@ -16,28 +16,32 @@
       <div class="collapse navbar-collapse" id="navbarToggleExternalContent">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item">
-            <a class="nav-link" href="/users/">{% trans "Пользователи" %}</a>
+            <a class="nav-link" href="{% url 'users:users' %}">{% trans "Пользователи" %}</a>
           </li>
-
         </ul>
         <ul class="navbar-nav">
-
+            {% if not request.user.is_authenticated %}
             <li class="nav-item">
-              <a class="nav-link" href="/login/">{% trans "Вход" %}</a>
+              <a class="nav-link" href="{% url 'login' %}">{% trans "Вход" %}</a>
             </li>
+            {% endif %}
             <li class="nav-item">
-              <a class="nav-link" href="/users/create/">{% trans "Регистрация" %}</a>
+              <a class="nav-link" href="{% url 'users:users_create' %}">{% trans "Регистрация" %}</a>
             </li>
-
+            {% if request.user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'logout' %}">{% trans "Выход" %}</a>
+            </li>
+            {% endif %}
         </ul>
       </div>
     </nav>
   {% block content %}
   {% endblock %}
-     <footer>
+     <footer class="mt-auto">
       <div class="container my-5 pt-4 border-top">
         <a target="_blank" href="https://ru.hexlet.io">{% trans "Hexlet" %}</a>
       </div>
     </footer>
-  </body>>
+  </body>
 </html>

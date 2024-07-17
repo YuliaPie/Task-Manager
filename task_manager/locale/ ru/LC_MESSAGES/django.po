@@ -31,3 +31,21 @@ msgstr "Practical programming courses"
 
 msgid "Узнать больше"
 msgstr "Learn more"
+
+msgid "Имя пользователя"
+msgstr "User name"
+
+msgid "Полное имя"
+msgstr "Full name"
+
+msgid "Дата создания"
+msgstr "Created at"
+
+msgid "Изменить"
+msgstr "Edit"
+
+msgid "Удалить"
+msgstr "Delete"
+
+msgid "Выход"
+msgstr "Exit"

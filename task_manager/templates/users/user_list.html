@@ -1,0 +1,42 @@
+{% extends "main.html" %}
+{% load i18n %}
+{% block content %}
+<div class="container wrapper flex-grow-1">
+
+
+
+      <h1 class="my-4">
+
+{% trans "Пользователи" %}
+
+      </h1>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>{% trans "Имя пользователя" %}</th>
+      <th>{% trans "Полное имя" %}</th>
+      <th>{% trans "Дата создания" %}</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in users %}
+      <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.name }} {{ user.surname}}</td>
+        <td>{{ user.created_at}}</td>
+        <td>
+          <a href="{% url 'users:users_update' user.id %}">{% trans "Изменить" %}</a>
+          <br>
+           <a href="{% url 'users:users_confirm_delete' user.id %}">{% trans "Удалить" %}</a>
+        </td>
+      </tr>
+   {% endfor %}
+        </tbody>
+</table>
+
+    </div>
+{% endblock %}

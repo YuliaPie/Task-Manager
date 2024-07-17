@@ -1,0 +1,41 @@
+ {% extends "main.html" %}
+{% load i18n %}
+{% block content %}
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+ {% if form.non_field_errors %}
+<div class="alert alert-danger">
+    {{ form.non_field_errors }}
+</div>
+{% endif %}
+{% for field in form %}
+{% for error in field.errors %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endfor %}
+{% endfor %}
+ <div class="container wrapper flex-grow-1">
+ <h1 class="my-4">
+        
+Вход
+
+      </h1>
+      
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label class="form-label" for="id_username">Логин</label>
+            <input type="text" name="username" autofocus autocapitalize="none" autocomplete="username" maxlength="150" class="form-control" placeholder="Логин" required id="id_username">
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="id_password">Пароль</label>
+            <input type="password" name="password" autocomplete="current-password" class="form-control" placeholder="Пароль" required id="id_password">
+        </div>
+        <input class="btn btn-primary" type="submit" value="Войти">
+    </form>
+ </div>
+{% endblock %}

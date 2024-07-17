@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% if form.errors %}
+    <div>
+        <ul>
+        {% for error in form.errors %}
+            <li><strong>{{ error|escape }}</strong></li>
+        {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
+<form action="{% url 'users:users_update' id=user_id %}" method="post">
+    {% csrf_token %}
+    <table border="1">
+    {{ form }}
+    </table>
+    <input type="submit" value="Изменить">
+</form>
+{% endblock %}
