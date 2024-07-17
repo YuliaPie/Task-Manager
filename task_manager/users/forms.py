@@ -42,7 +42,7 @@ class UserForm(forms.ModelForm):
     def clean_username(self):
         username = self.cleaned_data.get('username')
         if len(username) > 150:
-            raise ValidationError('Имя пользователя не должно превышать 150 символов.')
+            raise ValidationError('Введите правильное имя пользователя. Оно не должно превышать 150 символов.')
         if not username.replace('@', '').replace('.', '').replace('+', '').replace('-', '').replace('_', '').isalnum():
-            raise ValidationError('Имя пользователя может содержать только буквы, цифры и символы @/./+/-/_.')
+            raise ValidationError('Введите правильное имя пользователя. Оно может содержать только буквы, цифры и знаки @/./+/-/_.')
         return username
