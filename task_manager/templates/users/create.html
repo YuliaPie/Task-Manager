@@ -1,132 +1,46 @@
 {% extends "main.html" %}
 {% load i18n %}
 {% block content %}
-<div class="container wrapper flex-grow-1">
-    <h1 class="my-4">Регистрация</h1>
+<div class="container mt-5">
+    <h2>Регистрация</h2>
     <form action="{% url 'users:users_create' %}" method="post">
         {% csrf_token %}
-        <!-- Имя -->
-        <div class="mb-3">
-            <label class="form-label" for="id_name">Имя</label>
-            <input type="text" name="name" maxlength="150"
-                   class="form-control
-                    {% if form.name.errors %}
-                    is-invalid
-                    {% elif form.name.errors|length == 0 %}
-                    is-valid{% endif %}"
-                   placeholder="Имя"
-                   required
-                   id="id_name"
-                   aria-describedby="nameError">
+ <div class="form-group">
+            {{ form.name.label_tag }}
+            {{ form.name }}
             {% if form.name.errors %}
-                <div id="nameError" class="invalid-feedback">
-                    {{ form.name.errors }}
-                </div>
+                <small class="text-danger">{{ form.name.errors.as_text }}</small>
             {% endif %}
         </div>
-        <!-- Фамилия -->
-        <div class="mb-3">
-            <label class="form-label" for="id_surname">Фамилия</label>
-            <input type="text" name="surname" maxlength="150"
-                   class="form-control
-                    {% if form.surname.errors %}
-                    is-invalid
-                    {% elif form.surname.errors|length == 0 %}
-                    is-valid{% endif %}"
-                   placeholder="Фамилия"
-                   required
-                   id="id_surname"
-                   aria-describedby="surnameError">
+         <div class="form-group">
+            {{ form.surname.label_tag }}
+            {{ form.surname }}
             {% if form.surname.errors %}
-                <div id="surnameError" class="invalid-feedback">
-                    {{ form.surname.errors }}
-                </div>
+                <small class="text-danger">{{ form.surname.errors.as_text }}</small>
             {% endif %}
         </div>
-        <!-- Имя пользователя -->
-        <div class="mb-3">
-            <label class="form-label" for="id_username">Имя пользователя</label>
-            <input type="text"
-                   name="username"
-                   maxlength="150"
-                   class="form-control
-                    {% if form.username.errors %}
-                    is-invalid
-                    {% elif form.username.errors|length == 0 %}
-                    is-valid
-                    {% endif %}"
-                   placeholder="Имя пользователя"
-                   required
-                   id="id_username"
-                   aria-describedby="usernameError">
+         <div class="form-group">
+            {{ form.username.label_tag }}
+            {{ form.username }}
             {% if form.username.errors %}
-                <div id="usernameError" class="invalid-feedback">
-                    {{ form.username.errors }}
-                </div>
+                <small class="text-danger">{{ form.username.errors.as_text }}</small>
             {% endif %}
-            <div class="form-text">
-                Обязательное поле. Не более 150 символов.
-                Только буквы, цифры и символы @/./+/-/_.
-            </div>
         </div>
-        <!-- Пароль -->
-        <div class="mb-3">
-            <label class="form-label" for="id_password">Пароль</label>
-            <input type="password"
-                   name="password"
-                   minlength="3"
-                   maxlength="150"
-                   class="form-control
-                    {% if form.password.errors %}
-                    is-invalid
-                    {% elif form.password.errors|length == 0 %}
-                    is-valid
-                    {% endif %}"
-                   placeholder="Пароль"
-                   required
-                   id="id_password"
-                   aria-describedby="passwordError">
+        <div class="form-group">
+            {{ form.password.label_tag }}
+            {{ form.password }}
             {% if form.password.errors %}
-                <div id="passwordError" class="invalid-feedback">
-                    {{ form.password.errors }}
-                </div>
+                <small class="text-danger">{{ form.password.errors.as_text }}</small>
             {% endif %}
-            <div class="form-text">
-                <ul>
-                    <li>
-                        Ваш пароль должен содержать как минимум 3 символа.
-                    </li>
-                </ul>
-            </div>
         </div>
-        <!-- Подтверждение пароля -->
-        <div class="mb-3">
-            <label class="form-label" for="id_password2">Подтверждение пароля</label>
-            <input type="password"
-                   name="password2"
-                   minlength="3"
-                   maxlength="150"
-                   class="form-control
-                    {% if form.password2.errors %}
-                    is-invalid
-                    {% elif form.password2.errors|length == 0 %}
-                    is-valid
-                    {% endif %}"
-                   placeholder="Подтверждение пароля"
-                   required
-                   id="id_password2"
-                   aria-describedby="password2Error">
+        <div class="form-group">
+            {{ form.password2.label_tag }}
+            {{ form.password2 }}
             {% if form.password2.errors %}
-                <div id="password2Error" class="invalid-feedback">
-                    {{ form.password2.errors }}
-                </div>
+                <small class="text-danger">{{ form.password2.errors.as_text }}</small>
             {% endif %}
-        <div class="form-text">
-            Для подтверждения введите, пожалуйста, пароль ещё раз.
         </div>
-        </div>
-        <!-- Кнопка отправки -->
-        <input class="btn btn-primary" type="submit" value="Зарегистрировать">
+        <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
     </form>
 </div>
 {% endblock %}

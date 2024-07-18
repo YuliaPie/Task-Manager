@@ -3,7 +3,7 @@ from django.contrib.auth.hashers import make_password
 
 
 class User(models.Model):
-    username = models.CharField(max_length=150, unique=True, default='anonymous')
+    username = models.CharField(max_length=150, unique=True)
     name = models.CharField(max_length=200)
     surname = models.CharField(max_length=200)
     password = models.CharField(max_length=150)

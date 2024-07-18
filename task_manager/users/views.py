@@ -13,6 +13,7 @@ class IndexView(View):
             'users': users,
         })
 
+
 class UserFormCreateView(View):
 
     def get(self, request, *args, **kwargs):
@@ -20,13 +21,19 @@ class UserFormCreateView(View):
         return render(request, 'users/create.html', {'form': form})
 
     def post(self, request, *args, **kwargs):
+        print(request.POST)
         form = UserForm(request.POST)
+        print(form)
+        print(form.is_valid())  # Добавьте эту строку для отладки
         if form.is_valid():  # Если данные корректные, то сохраняем данные формы
             form.save()
             messages.success(request, "Пользователь успешно зарегистрирован", extra_tags='success')
             return redirect('users:users')
-        messages.error(request, "Ошибка в форме", extra_tags='danger')
-        return render(request, 'users/create.html', {'form': form})
+        else:  # Если данные некорректны, передаем форму с ошибками обратно
+            print(form.errors)
+            print(form.non_field_errors())
+            messages.error(request, "Проверьте введенные данные", extra_tags='danger')
+            return render(request, 'users/create.html', {'form': form})
 
 
 class UserFormEditView(View):
