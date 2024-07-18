@@ -7,53 +7,56 @@
         {% csrf_token %}
         <div class="mb-3">
             {{ form.name.label_tag }}
-            <input type="{{ form.name.type }}" name="{{ form.name.name }}"
-                   value="{{ form.name.value|default_if_none:'' }}"
-                   class="form-control {% if form.name.errors %}is-invalid{% endif %}
-                   {% if form.errors and not form.name.errors %}is-valid{% endif %}" />
+            <input type="text" name="{{ form.name.name }}"
+                   class="form-control {% if form.name.errors %}is-invalid{% endif %}{% if form.errors and not form.name.errors %}is-valid{% endif %}"
+                   placeholder="Имя" />
             {% if form.name.errors %}
                 <small class="text-danger">{{ form.name.errors.as_text }}</small>
             {% endif %}
+            <small class="form-text text-muted">{{ form.name.help_text }}</small>
         </div>
         <div class="mb-3">
             {{ form.surname.label_tag }}
-            <input type="{{ form.surname.type }}" name="{{ form.surname.name }}"
-                   value="{{ form.surname.value|default_if_none:'' }}"
-                   class="form-control {% if form.surname.errors %}is-invalid{% endif %}
-                   {% if form.errors and not form.surname.errors %}is-valid{% endif %}" />
+            <input type="text" name="{{ form.surname.name }}"
+                   class="form-control {% if form.surname.errors %}is-invalid{% endif %}{% if form.errors and not form.surname.errors %}is-valid{% endif %}"
+                   placeholder="Фамилия" />
             {% if form.surname.errors %}
                 <small class="text-danger">{{ form.surname.errors.as_text }}</small>
             {% endif %}
+            <small class="form-text text-muted">{{ form.surname.help_text }}</small>
         </div>
         <div class="mb-3">
             {{ form.username.label_tag }}
-            <input type="{{ form.username.type }}" name="{{ form.username.name }}"
-                   value="{{ form.username.value|default_if_none:'' }}"
-                   class="form-control {% if form.username.errors %}is-invalid{% endif %}
-                    {% if form.errors and not form.username.errors %}is-valid{% endif %}"/>
+            <input type="text" name="{{ form.username.name }}"
+                   class="form-control {% if form.username.errors %}is-invalid{% endif %}{% if form.errors and not form.username.errors %}is-valid{% endif %}"
+                   placeholder="Имя пользователя" />
             {% if form.username.errors %}
                 <small class="text-danger">{{ form.username.errors.as_text }}</small>
             {% endif %}
+            <small class="form-text text-muted">{{ form.username.help_text }}</small>
         </div>
         <div class="mb-3">
             {{ form.password.label_tag }}
             <input type="password" name="{{ form.password.name }}"
-                   value=""
-                   class="form-control {% if form.password.errors %}is-invalid{% endif %}
-                    {% if form.errors and not form.password.errors %}is-valid{% endif %}"/>
+                   class="form-control {% if form.password.errors %}is-invalid{% endif %}{% if form.errors and not form.password.errors %}is-valid{% endif %}"
+                   placeholder="Пароль" />
             {% if form.password.errors %}
                 <small class="text-danger">{{ form.password.errors.as_text }}</small>
             {% endif %}
+            <div class="form-text text-muted">
+                <ul>
+                    <li>{{ form.password.help_text }}</li>
+                </ul></div>
         </div>
         <div class="mb-3">
             {{ form.password2.label_tag }}
             <input type="password" name="{{ form.password2.name }}"
-                   value=""
-                   class="form-control {% if form.password2.errors %}is-invalid{% endif %}
-                    {% if form.errors and not form.password2.errors %}is-valid{% endif %}"/>
+                   class="form-control {% if form.password2.errors %}is-invalid{% endif %}{% if form.errors and not form.password2.errors %}is-valid{% endif %}"
+                   placeholder="Проверка пароля" />
             {% if form.password2.errors %}
                 <small class="text-danger">{{ form.password2.errors.as_text }}</small>
             {% endif %}
+            <small class="form-text text-muted">{{ form.password2.help_text }}</small>
         </div>
         <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
     </form>
