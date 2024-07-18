@@ -7,35 +7,35 @@
         {% csrf_token %}
         <div class="mb-3">
             {{ form.name.label_tag }}
-            <input type="{{ form.name.type }}" name="{{ form.name.name }}" value="{{ form.name.value|default_if_none:'' }}" class="form-control" />
+            <input type="{{ form.name.type }}" name="{{ form.name.name }}" value="{{ form.name.value|default_if_none:'' }}" class="form-control {% if form.name.errors %}is-invalid{% endif %}" />
             {% if form.name.errors %}
                 <small class="text-danger">{{ form.name.errors.as_text }}</small>
             {% endif %}
         </div>
         <div class="mb-3">
             {{ form.surname.label_tag }}
-            <input type="{{ form.surname.type }}" name="{{ form.surname.name }}" value="{{ form.surname.value|default_if_none:'' }}" class="form-control" />
+            <input type="{{ form.surname.type }}" name="{{ form.surname.name }}" value="{{ form.surname.value|default_if_none:'' }}" class="form-control {% if form.surname.errors %}is-invalid{% endif %}" />
             {% if form.surname.errors %}
                 <small class="text-danger">{{ form.surname.errors.as_text }}</small>
             {% endif %}
         </div>
         <div class="mb-3">
             {{ form.username.label_tag }}
-            <input type="{{ form.username.type }}" name="{{ form.username.name }}" value="{{ form.username.value|default_if_none:'' }}" class="form-control" />
+            <input type="{{ form.username.type }}" name="{{ form.username.name }}" value="{{ form.username.value|default_if_none:'' }}" class="form-control {% if form.username.errors %}is-invalid{% endif %}" />
             {% if form.username.errors %}
                 <small class="text-danger">{{ form.username.errors.as_text }}</small>
             {% endif %}
         </div>
         <div class="mb-3">
             {{ form.password.label_tag }}
-            <input type="password" name="{{ form.password.name }}" value="" class="form-control" />
+            <input type="password" name="{{ form.password.name }}" value="" class="form-control {% if form.password.errors %}is-invalid{% endif %}" />
             {% if form.password.errors %}
                 <small class="text-danger">{{ form.password.errors.as_text }}</small>
             {% endif %}
         </div>
         <div class="mb-3">
             {{ form.password2.label_tag }}
-            <input type="password" name="{{ form.password2.name }}" value="" class="form-control" />
+            <input type="password" name="{{ form.password2.name }}" value="" class="form-control {% if form.password2.errors %}is-invalid{% endif %}" />
             {% if form.password2.errors %}
                 <small class="text-danger">{{ form.password2.errors.as_text }}</small>
             {% endif %}
