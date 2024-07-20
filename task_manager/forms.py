@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth.hashers import check_password
-from task_manager.users.models import User
+from task_manager.users.models import CustomUser
 
 
 class LoginForm(forms.Form):
@@ -13,9 +13,9 @@ class LoginForm(forms.Form):
         username = cleaned_data.get('username')
         password = cleaned_data.get('password')
         try:
-            user = User.objects.get(username=username)
+            user = CustomUser.objects.get(username=username)
             if not check_password(password, user.password):  # Используйте check_password вместо user.check_password
                 raise ValidationError('Неверный логин или пароль.')
-        except User.DoesNotExist:
+        except CustomUser.DoesNotExist:
             raise ValidationError('Пользователь не найден.')
         return cleaned_data

@@ -1,9 +1,9 @@
 from django.contrib import admin
 from django.contrib.admin import DateFieldListFilter
-from .models import User
+from .models import CustomUser
 
 
-@admin.register(User)
+@admin.register(CustomUser)
 class UserAdmin(admin.ModelAdmin):
     list_display = ('name', 'surname', 'username')
     search_fields = ['name', 'surname', 'username']

@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import User
+from .models import CustomUser
 
 
 class UserForm(forms.ModelForm):
@@ -8,7 +8,7 @@ class UserForm(forms.ModelForm):
     password2 = forms.CharField(widget=forms.PasswordInput, required=True)
 
     class Meta:
-        model = User
+        model = CustomUser
         fields = ['name', 'surname', 'username', 'password']
 
     def __init__(self, *args, **kwargs):
