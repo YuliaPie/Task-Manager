@@ -14,7 +14,7 @@ class LoginForm(forms.Form):
         password = cleaned_data.get('password')
         try:
             user = CustomUser.objects.get(username=username)
-            if not check_password(password, user.password):  # Используйте check_password вместо user.check_password
+            if not check_password(password, user.password):
                 raise ValidationError('Неверный логин или пароль.')
         except CustomUser.DoesNotExist:
             raise ValidationError('Пользователь не найден.')

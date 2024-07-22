@@ -9,7 +9,7 @@ class UserForm(forms.ModelForm):
 
     class Meta:
         model = CustomUser
-        fields = ['name', 'surname', 'username', 'password']
+        fields = ['name', 'surname', 'username']
 
     def __init__(self, *args, **kwargs):
         super(UserForm, self).__init__(*args, **kwargs)
@@ -34,6 +34,12 @@ class UserForm(forms.ModelForm):
         self.fields['password2'].help_text = 'Для подтверждения введите, пожалуйста, пароль ещё раз.'
         self.fields['password2'].widget.attrs.update({'placeholder': 'Подтверждение пароля'})
 
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+        if CustomUser.objects.filter(username=username).exists():
+            raise ValidationError("Пользователь с таким именем уже существует.")
+        return username
+
     def clean(self):
         cleaned_data = super().clean()
         password = cleaned_data.get('password')
@@ -46,10 +52,9 @@ class UserForm(forms.ModelForm):
 
         return cleaned_data
 
-    def clean_username(self):
-        username = self.cleaned_data.get('username')
-        if len(username) > 150:
-            raise ValidationError('Введите правильное имя пользователя. Оно не должно превышать 150 символов.')
-        if not username.replace('@', '').replace('.', '').replace('+', '').replace('-', '').replace('_', '').isalnum():
-            raise ValidationError('Введите правильное имя пользователя. Оно может содержать только буквы, цифры и знаки @/./+/-/_.')
-        return username
+    def save(self, commit=True):
+        user = super(UserForm, self).save(commit=False)
+        user.set_password(self.cleaned_data["password"])
+        if commit:
+            user.save()
+        return user

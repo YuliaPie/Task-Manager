@@ -20,6 +20,7 @@ class CustomUserManager(BaseUserManager):
 
         return self.create_user(username, password, **extra_fields)
 
+
 class CustomUser(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=150, unique=True)
     name = models.CharField(max_length=200)
@@ -35,7 +36,6 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['name', 'surname', 'password']
 
-    # Добавляем related_name для связей с группами и разрешениями
     groups = models.ManyToManyField(
         Group,
         verbose_name=_('groups'),

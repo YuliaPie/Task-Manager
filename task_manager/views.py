@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from task_manager.forms import LoginForm
-from django.contrib.auth import authenticate, logout
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
 
@@ -9,29 +9,23 @@ def index(request):
     return render(request, 'index.html')
 
 
-class LoginView(View):
-    def get(self, request, *args, **kwargs):
-        form = LoginForm()
-        return render(request, 'login.html', {'form': form})
-
-    def post(self, request, *args, **kwargs):
+def login_view(request):
+    if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            user = authenticate_user(request, username, password)
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(request, username=username, password=password)
             if user is not None:
-                messages.success(request, "Вы залогинены", extra_tags='success')
+                login(request, user)
                 return redirect('main_page')
             else:
-                messages.error(request, "Неверный логин или пароль", extra_tags='danger')
-        return render(request, 'login.html', {'form': form})
-
-
-def authenticate_user(request, username, password):
-    user = authenticate(request, username=username, password=password)
-    return user
-
+                messages.error(request, 'Неверный логин или пароль.')
+        else:
+            messages.error(request, 'Ошибка в форме.')
+    else:
+        form = LoginForm()
+    return render(request, 'login.html', {'form': form})
 
 def logout_view(request):
     logout(request)

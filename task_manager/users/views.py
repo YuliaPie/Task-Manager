@@ -23,13 +23,11 @@ class UserFormCreateView(View):
     def post(self, request, *args, **kwargs):
         print(request.POST)
         form = UserForm(request.POST)
-        print(form)
-        print(form.is_valid())  # Добавьте эту строку для отладки
-        if form.is_valid():  # Если данные корректные, то сохраняем данные формы
+        if form.is_valid():
             form.save()
             messages.success(request, "Пользователь успешно зарегистрирован", extra_tags='success')
             return redirect('users:users')
-        else:  # Если данные некорректны, передаем форму с ошибками обратно
+        else:
             print(form.errors)
             print(form.non_field_errors())
             messages.error(request, "Проверьте введенные данные", extra_tags='danger')
@@ -39,17 +37,18 @@ class UserFormCreateView(View):
 class UserFormEditView(View):
 
     def get(self, request, *args, **kwargs):
-        user_id = kwargs.get('id')
-        article = CustomUser.objects.get(id=user_id)
+        username = kwargs.get('username')
+        article = CustomUser.objects.get(username=user_username)
         form = UserForm(instance=article)
         return render(request, 'users/update.html',
                       {'form': form, 'user_id': user_id})
 
     def post(self, request, *args, **kwargs):
-        user_id = kwargs.get('id')
+        username = kwargs.get('username')
         user = CustomUser.objects.get(id=user_id)
         form = UserForm(request.POST, instance=user)
         if form.is_valid():
+            user.set_password(form.cleaned_data.get('password'))
             form.save()
             messages.success(request, "Пользователь успешно изменен", extra_tags='success')
             return redirect('user:user')
