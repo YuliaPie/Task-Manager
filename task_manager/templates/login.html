@@ -1,28 +1,21 @@
  {% extends "main.html" %}
 {% load i18n %}
 {% block content %}
-{% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
- {% if form.non_field_errors %}
-<div class="alert alert-danger">
-    {{ form.non_field_errors }}
-</div>
-{% endif %}
-{% for field in form %}
-{% for error in field.errors %}
-<div class="alert alert-danger">{{ error }}</div>
-{% endfor %}
-{% endfor %}
+
+
+
+
  <div class="container wrapper flex-grow-1">
  <h1 class="my-4">
         
 Вход
-
+    {% if messages %}
+    <ul class="list-unstyled text-danger mt-3 fs-6">
+        {% for message in messages %}
+        <li class="font-weight-normal">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
       </h1>
       
     <form method="post">
