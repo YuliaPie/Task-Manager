@@ -2,11 +2,22 @@
 {% load i18n %}
 {% block content %}
 <div class="container wrapper flex-grow-1">
+        {% if request.session.auth_error_message %}
+    <div class="alert alert-danger alert-dismissible fade show"
+      role="alert">
+        {{ request.session.auth_error_message }}
+ <button type="button" class="btn-close" data-bs-dismiss="alert"
+             aria-label="Close"></button></div>
+    {% endif %}
+
+
     <h1 class="my-4">Вход</h1>
 {% if messages %}
 <ul class="list-unstyled text-danger mt-3 fs-6">
     {% for message in messages %}
+     {% if message.message != request.session.auth_error_message %}
     <li class="font-weight-normal">{{ message }}</li>
+    {% endif %}
     {% endfor %}
 </ul>
 {% endif %}

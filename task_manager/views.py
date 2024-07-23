@@ -36,7 +36,7 @@ def login_view(request):
             if 'username' in request.POST:
                 request.session['username'] = request.POST['username']
                 request.session.modified = True
-            messages.error(request, 'Произошла ошибка при заполнении формы. Пожалуйста, проверьте введенные данные.')
+            messages.error(request, 'Пожалуйста, введите правильные имя пользователя и пароль. Оба поля могут быть чувствительны к регистру.')
 
     else:
         form = LoginForm()

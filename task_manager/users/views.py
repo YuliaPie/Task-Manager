@@ -1,8 +1,10 @@
-from task_manager.users.models import CustomUser
-from django.shortcuts import render, redirect
-from django.views import View
+from django.contrib.auth.views import redirect_to_login
+from django.views.generic import View
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import CustomUser
+from .forms import UserForm
+from django.shortcuts import redirect, render
 from django.contrib import messages
-from task_manager.users.forms import UserForm
 
 
 class IndexView(View):
@@ -32,35 +34,58 @@ class UserFormCreateView(View):
 
 
 class UserFormEditView(View):
-
     def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            request.session['auth_error_message'] = "Вы не авторизованы! Пожалуйста, выполните вход."
+            return redirect_to_login(request.path, '/login/', 'next')
         username = kwargs.get('username')
-        article = CustomUser.objects.get(username=user_username)
-        form = UserForm(instance=article)
-        return render(request, 'users/update.html',
-                      {'form': form, 'user_id': user_id})
+        if request.user.username != username:
+            messages.error(request, "Вы не имеете права редактировать эту учетную запись.", extra_tags='danger')
+            return redirect('users:users')
+
+        user = get_object_or_404(CustomUser, username=username)
+        form = UserForm(instance=user)
+        return render(request, 'users/update.html', {'form': form})
 
     def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            request.session['auth_error_message'] = "Вы не авторизованы! Пожалуйста, выполните вход."
+            return redirect_to_login(request.path, '/login/', 'next')
+
         username = kwargs.get('username')
-        user = CustomUser.objects.get(id=user_id)
+        if request.user.username != username:
+            messages.error(request, "Вы не авторизованы! Пожалуйста, выполните вход.", extra_tags='danger')
+            return redirect('login')
+
+        user = get_object_or_404(CustomUser, username=username)
         form = UserForm(request.POST, instance=user)
         if form.is_valid():
             user.set_password(form.cleaned_data.get('password'))
             form.save()
             messages.success(request, "Пользователь успешно изменен", extra_tags='success')
-            return redirect('user:user')
+            return redirect('users:users')
         messages.error(request, "Ошибка в форме", extra_tags='danger')
-        return render(request, 'users/update.html',
-                      {'form': form, 'user_id': user_id})
+        return render(request, 'users/update.html', {'form': form})
 
 
 def user_confirm_delete(request, user_id):
-    user = CustomUser.objects.get(id=user_id)
+    user = get_object_or_404(CustomUser, id=user_id)
+    if request.user.id != user.id:
+        request.session['auth_error_message'] = "Вы не авторизованы! Пожалуйста, выполните вход."
+        return redirect_to_login(request.path, '/login/', 'next')  # Используем 'next' для перенаправления после входа
+
     return render(request, 'users/user_confirm_delete.html', {'user': user})
 
 
 def user_delete(request, user_id):
-    user = CustomUser.objects.get(id=user_id)
+    if not request.user.is_authenticated:
+        request.session['auth_error_message'] = "Вы не авторизованы! Пожалуйста, выполните вход."
+        return redirect_to_login(request.path, '/login/', 'next')
+    user = get_object_or_404(CustomUser, id=user_id)
+    if request.user.id != user.id:
+        messages.error(request, "У вас нет прав для изменения другого пользователя.", extra_tags='danger')
+        return redirect('users:users')
+
     user.delete()
     messages.success(request, "Пользователь успешно удален.")
-    return redirect('users_list')
+    return redirect('users:users')
