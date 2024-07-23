@@ -1,34 +1,26 @@
- {% extends "main.html" %}
+{% extends "main.html" %}
 {% load i18n %}
 {% block content %}
-
-
-
-
- <div class="container wrapper flex-grow-1">
- <h1 class="my-4">
-        
-Вход
-    {% if messages %}
-    <ul class="list-unstyled text-danger mt-3 fs-6">
-        {% for message in messages %}
-        <li class="font-weight-normal">{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-      </h1>
-      
-    <form method="post">
-        {% csrf_token %}
-        <div class="mb-3">
-            <label class="form-label" for="id_username">Логин</label>
-            <input type="text" name="username" autofocus autocapitalize="none" autocomplete="username" maxlength="150" class="form-control" placeholder="Логин" required id="id_username">
-        </div>
-        <div class="mb-3">
-            <label class="form-label" for="id_password">Пароль</label>
-            <input type="password" name="password" autocomplete="current-password" class="form-control" placeholder="Пароль" required id="id_password">
-        </div>
-        <input class="btn btn-primary" type="submit" value="Войти">
-    </form>
- </div>
+<div class="container wrapper flex-grow-1">
+    <h1 class="my-4">Вход</h1>
+{% if messages %}
+<ul class="list-unstyled text-danger mt-3 fs-6">
+    {% for message in messages %}
+    <li class="font-weight-normal">{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+<form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label class="form-label" for="id_username">Логин</label>
+        <input type="text" name="username" autofocus autocapitalize="none" autocomplete="username" maxlength="150" class="form-control" placeholder="Логин" required id="id_username" value="{{ request.session.username | default_if_none:'' }}">
+    </div>
+    <div class="mb-3">
+        <label class="form-label" for="id_password">Пароль</label>
+        <input type="password" name="password" autocomplete="current-password" class="form-control" placeholder="Пароль" required id="id_password">
+    </div>
+    <input class="btn btn-primary" type="submit" value="Войти">
+</form>
+</div>
 {% endblock %}

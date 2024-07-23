@@ -21,15 +21,12 @@ class UserFormCreateView(View):
         return render(request, 'users/create.html', {'form': form})
 
     def post(self, request, *args, **kwargs):
-        print(request.POST)
         form = UserForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, "Пользователь успешно зарегистрирован", extra_tags='success')
             return redirect('users:users')
         else:
-            print(form.errors)
-            print(form.non_field_errors())
             messages.error(request, "Проверьте введенные данные", extra_tags='danger')
             return render(request, 'users/create.html', {'form': form})
 

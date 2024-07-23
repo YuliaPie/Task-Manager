@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.translation import gettext as _
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class CustomUserManager(BaseUserManager):
