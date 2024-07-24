@@ -4,12 +4,12 @@ from .models import CustomUser
 
 
 class UserForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput, required=True)
-    password2 = forms.CharField(widget=forms.PasswordInput, required=True)
+    password = forms.CharField(widget=forms.PasswordInput, required=True, initial='')
+    password2 = forms.CharField(widget=forms.PasswordInput, required=True, initial='')
 
     class Meta:
         model = CustomUser
-        fields = ['name', 'surname', 'username']
+        fields = ['name', 'surname', 'username', 'password', 'password2']
 
     def __init__(self, *args, **kwargs):
         super(UserForm, self).__init__(*args, **kwargs)

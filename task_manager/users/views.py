@@ -3,8 +3,8 @@ from django.views.generic import View
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import CustomUser
 from .forms import UserForm
-from django.shortcuts import redirect, render
 from django.contrib import messages
+from django.urls import reverse
 
 
 class IndexView(View):
@@ -17,63 +17,69 @@ class IndexView(View):
 
 
 class UserFormCreateView(View):
-
     def get(self, request, *args, **kwargs):
         form = UserForm()
-        return render(request, 'users/create.html', {'form': form})
+        action_url = reverse('users:users_create')  # Определите правильный URL для создания
+        return render(request, 'users/create.html', {'form': form, 'action_url': action_url})
 
     def post(self, request, *args, **kwargs):
         form = UserForm(request.POST)
+        action_url = reverse('users:users_create')
         if form.is_valid():
-            form.save()
+            new_user = form.save(commit=False)
+            new_user.set_password(form.cleaned_data.get('password'))
+            new_user.save()
             messages.success(request, "Пользователь успешно зарегистрирован", extra_tags='success')
-            return redirect('users:users')
+            return redirect('main_page')
         else:
             messages.error(request, "Проверьте введенные данные", extra_tags='danger')
-            return render(request, 'users/create.html', {'form': form})
+            return render(request, 'users/create.html', {'form': form, 'action_url': action_url})
 
 
 class UserFormEditView(View):
-    def get(self, request, *args, **kwargs):
+    def get(self, request, user_id):
         if not request.user.is_authenticated:
             messages.error(request, "Вы не авторизованы! Пожалуйста, выполните вход.", extra_tags='danger')
             return redirect_to_login(request.path, '/login/', 'next')
-        username = kwargs.get('username')
-        if request.user.username != username:
-            messages.error(request, "Вы не имеете права редактировать чужую учетную запись.", extra_tags='danger')
+        user = get_object_or_404(CustomUser, id=user_id)
+        if request.user.id != user.id:
+            messages.error(request, "У вас нет прав для изменения другого пользователя.", extra_tags='danger')
             return redirect('users:users')
+        form = UserForm(instance=user)  # Создание формы с экземпляром пользователя
+        form.initial['password'] = ''  # Очистка полей пароля
+        form.initial['password2'] = ''
+        print(form.as_p())  # Вывод формы для отладки
+        action_url = reverse('users:users_update', args=[user.id])  # Определите правильный URL для редактирования
+        return render(request, 'users/update.html', {'form': form, 'action_url': action_url})
 
-        user = get_object_or_404(CustomUser, username=username)
-        form = UserForm(instance=user)
-        return render(request, 'users/update.html', {'form': form})
-
-    def post(self, request, *args, **kwargs):
+    def post(self, request, user_id):
         if not request.user.is_authenticated:
             messages.error(request, "Вы не авторизованы! Пожалуйста, выполните вход.", extra_tags='danger')
             return redirect_to_login(request.path, '/login/', 'next')
-
-        username = kwargs.get('username')
-        if request.user.username != username:
-            messages.error(request, "Вы не авторизованы! Пожалуйста, выполните вход.", extra_tags='danger')
-            return redirect('login')
-
-        user = get_object_or_404(CustomUser, username=username)
+        user = get_object_or_404(CustomUser, id=user_id)
+        if request.user.id != user.id:
+            messages.error(request, "У вас нет прав для изменения другого пользователя.", extra_tags='danger')
+            return redirect('users:users')
         form = UserForm(request.POST, instance=user)
         if form.is_valid():
             user.set_password(form.cleaned_data.get('password'))
             form.save()
             messages.success(request, "Пользователь успешно изменен", extra_tags='success')
             return redirect('users:users')
+        action_url = reverse('users:users_update')
         messages.error(request, "Ошибка в форме", extra_tags='danger')
-        return render(request, 'users/update.html', {'form': form})
+        return render(request, 'users/update.html', {'form': form, 'action_url': action_url})
 
 
 def user_confirm_delete(request, user_id):
+    if not request.user.is_authenticated:
+        messages.error(request, "Вы не авторизованы! Пожалуйста, выполните вход.", extra_tags='danger')
+        return redirect_to_login(request.path, '/login/', 'next')
     user = get_object_or_404(CustomUser, id=user_id)
     if request.user.id != user.id:
-        messages.error(request, "Вы не авторизованы! Пожалуйста, выполните вход.", extra_tags='danger')
-        return redirect_to_login(request.path, '/login/', 'next')  # Используем 'next' для перенаправления после входа
-
+        messages.error(request, "У вас нет прав для изменения другого пользователя.", extra_tags='danger')
+        return redirect(
+            'users:users')
     return render(request, 'users/user_confirm_delete.html', {'user': user})
 
 

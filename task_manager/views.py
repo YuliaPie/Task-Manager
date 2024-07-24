@@ -32,7 +32,6 @@ def login_view(request):
             if user is not None:
                 login(request, user)
                 messages.success(request, 'Вы залогинены')
-                # Успешная аутентификация, перенаправление на главную страницу
                 return redirect('main_page')
             else:
                 form_error = True  # Ошибка аутентификации
