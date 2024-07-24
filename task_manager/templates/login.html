@@ -2,25 +2,27 @@
 {% load i18n %}
 {% block content %}
 <div class="container wrapper flex-grow-1">
-        {% if request.session.auth_error_message %}
+        {% if messages %}
+    {% for message in messages %}
     <div class="alert alert-danger alert-dismissible fade show"
       role="alert">
-        {{ request.session.auth_error_message }}
+        {{ message }}
  <button type="button" class="btn-close" data-bs-dismiss="alert"
              aria-label="Close"></button></div>
+    {% endfor %}
     {% endif %}
 
 
     <h1 class="my-4">Вход</h1>
-{% if messages %}
+{% if form_error %}
 <ul class="list-unstyled text-danger mt-3 fs-6">
-    {% for message in messages %}
-     {% if message.message != request.session.auth_error_message %}
-    <li class="font-weight-normal">{{ message }}</li>
-    {% endif %}
-    {% endfor %}
+<li class="font-weight-normal">
+    Пожалуйста, введите правильные имя пользователя и пароль. Оба поля могут быть чувствительны к регистру.
+</li>
 </ul>
 {% endif %}
+
+
 <form method="post" action="{% url 'login' %}">
     {% csrf_token %}
     <div class="mb-3">

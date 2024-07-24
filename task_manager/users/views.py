@@ -36,11 +36,11 @@ class UserFormCreateView(View):
 class UserFormEditView(View):
     def get(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            request.session['auth_error_message'] = "Вы не авторизованы! Пожалуйста, выполните вход."
+            messages.error(request, "Вы не авторизованы! Пожалуйста, выполните вход.", extra_tags='danger')
             return redirect_to_login(request.path, '/login/', 'next')
         username = kwargs.get('username')
         if request.user.username != username:
-            messages.error(request, "Вы не имеете права редактировать эту учетную запись.", extra_tags='danger')
+            messages.error(request, "Вы не имеете права редактировать чужую учетную запись.", extra_tags='danger')
             return redirect('users:users')
 
         user = get_object_or_404(CustomUser, username=username)
@@ -49,7 +49,7 @@ class UserFormEditView(View):
 
     def post(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
-            request.session['auth_error_message'] = "Вы не авторизованы! Пожалуйста, выполните вход."
+            messages.error(request, "Вы не авторизованы! Пожалуйста, выполните вход.", extra_tags='danger')
             return redirect_to_login(request.path, '/login/', 'next')
 
         username = kwargs.get('username')
@@ -71,7 +71,7 @@ class UserFormEditView(View):
 def user_confirm_delete(request, user_id):
     user = get_object_or_404(CustomUser, id=user_id)
     if request.user.id != user.id:
-        request.session['auth_error_message'] = "Вы не авторизованы! Пожалуйста, выполните вход."
+        messages.error(request, "Вы не авторизованы! Пожалуйста, выполните вход.", extra_tags='danger')
         return redirect_to_login(request.path, '/login/', 'next')  # Используем 'next' для перенаправления после входа
 
     return render(request, 'users/user_confirm_delete.html', {'user': user})
