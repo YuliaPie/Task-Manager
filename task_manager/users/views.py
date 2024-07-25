@@ -5,6 +5,9 @@ from .models import CustomUser
 from .forms import UserForm
 from django.contrib import messages
 from django.urls import reverse
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class IndexView(View):
@@ -18,11 +21,13 @@ class IndexView(View):
 
 class UserFormCreateView(View):
     def get(self, request, *args, **kwargs):
+        logger.debug("GET request in UserFormCreateView")
         form = UserForm()
         action_url = reverse('users:users_create')  # Определите правильный URL для создания
         return render(request, 'users/create.html', {'form': form, 'action_url': action_url})
 
     def post(self, request, *args, **kwargs):
+        logger.debug("POST request in UserFormCreateView")
         form = UserForm(request.POST)
         action_url = reverse('users:users_create')
         if form.is_valid():
@@ -32,12 +37,14 @@ class UserFormCreateView(View):
             messages.success(request, "Пользователь успешно зарегистрирован", extra_tags='success')
             return redirect('main_page')
         else:
-            messages.error(request, "Проверьте введенные данные", extra_tags='danger')
+            logger.debug("Form errors: %s", form.errors)
+            messages.error(request, None, extra_tags='danger')
             return render(request, 'users/create.html', {'form': form, 'action_url': action_url})
 
 
 class UserFormEditView(View):
     def get(self, request, user_id):
+        logger.debug("GET request in UserFormEditView")
         if not request.user.is_authenticated:
             messages.error(request, "Вы не авторизованы! Пожалуйста, выполните вход.", extra_tags='danger')
             return redirect_to_login(request.path, '/login/', 'next')
@@ -49,10 +56,11 @@ class UserFormEditView(View):
         form.initial['password'] = ''  # Очистка полей пароля
         form.initial['password2'] = ''
         print(form.as_p())  # Вывод формы для отладки
-        action_url = reverse('users:users_update', args=[user.id])  # Определите правильный URL для редактирования
+        action_url = reverse('users:users_update', kwargs={'user_id': user.id})
         return render(request, 'users/update.html', {'form': form, 'action_url': action_url})
 
     def post(self, request, user_id):
+        logger.debug("POST request in UserFormEditView")
         if not request.user.is_authenticated:
             messages.error(request, "Вы не авторизованы! Пожалуйста, выполните вход.", extra_tags='danger')
             return redirect_to_login(request.path, '/login/', 'next')
@@ -66,8 +74,9 @@ class UserFormEditView(View):
             form.save()
             messages.success(request, "Пользователь успешно изменен", extra_tags='success')
             return redirect('users:users')
-        action_url = reverse('users:users_update')
-        messages.error(request, "Ошибка в форме", extra_tags='danger')
+        logger.debug("Form errors: %s", form.errors)
+        action_url = reverse('users:users_update', kwargs={'user_id': user.id})
+        messages.error(request, None, extra_tags='danger')
         return render(request, 'users/update.html', {'form': form, 'action_url': action_url})
 
 

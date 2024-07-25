@@ -2,28 +2,39 @@
 {% load i18n %}
 {% block content %}
 
-<div class="container wrapper flex-grow-1 px-3">
+<div class="container wrapper flex-grow-1">
     {% block h1 %}
-    {% endblock %}<!-- Добавляем px-3 для отступов по бокам -->
-    <form action="{{ action_url }}" method="post" autocomplete="off">
-        {% csrf_token %}
-        <div class="row g-3"> <!-- Добавляем row для группировки полей -->
-            {% for field in form %}
-                <div class="col-12 d-flex"> <!-- Используем col-12 и d-flex для полного занимания ширины -->
-                    {{ field.label_tag }}</div>
-                    <input type="text" name="{{ field.auto_id }}" class="flex-fill form-control" placeholder="{{ field.field.widget.attrs.placeholder|default_if_none:'' }}" value="{{ field.value|default_if_none:'' }}" />
-                </div>
-                {% if field.name == 'password' %}
-                    <ul class="form-text text-muted mb-2">
-                        <li>{{ field.help_text }}</li>
-                    </ul>
+    {% endblock %}
+<form action="{{ action_url }}" method="post" autocomplete="off">
+    {% csrf_token %}
+    {% for field in form %}
+        <div class="mb-3">
+            {{ field.label_tag }}
+            <input
+                name="{{ field.name }}"
+                class="flex-fill form-control {% if field.errors %}is-invalid{% endif %}{% if field.errors and not field.errors %}is-valid{% endif %}"
+                placeholder="{{ field.field.widget.attrs.placeholder|default_if_none:'' }}"
+                value="{{ field.value|default_if_none:'' }}"
+                {% if field.name == 'password' or field.name == 'password2' %}
+                    type="password"
                 {% else %}
-                    <div class="form-text text-muted mb-2"><small>{{ field.help_text }}</small></div>
+                    type="text"
                 {% endif %}
-            {% endfor %}
+            />
+            {% if field.errors %}
+            <small class="text-danger">{{ field.errors.as_text }}</small>
+            {% endif %}
+            {% if field.name == 'password' %}
+                <ul class="form-text text-muted mb-2">
+                    <li>{{ field.help_text }}</li>
+                </ul>
+            {% else %}
+                <div class="form-text text-muted mb-2"><small>{{ field.help_text }}</small></div>
+            {% endif %}
         </div>
-        {% block submit_button %}
-        {% endblock %}
-    </form>
+    {% endfor %}
+    {% block submit_button %}
+    {% endblock %}
+</form>
 </div>
 {% endblock %}

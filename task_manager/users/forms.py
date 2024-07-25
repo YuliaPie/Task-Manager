@@ -1,11 +1,12 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from .models import CustomUser
+from django.utils.translation import gettext_lazy as _
 
 
 class UserForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput, required=True, initial='')
-    password2 = forms.CharField(widget=forms.PasswordInput, required=True, initial='')
+    password = forms.CharField(widget=forms.PasswordInput(render_value=True), required=True, initial='')
+    password2 = forms.CharField(widget=forms.PasswordInput(render_value=True), required=True, initial='')
 
     class Meta:
         model = CustomUser
@@ -36,8 +37,15 @@ class UserForm(forms.ModelForm):
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
-        if CustomUser.objects.filter(username=username).exists():
-            raise ValidationError("Пользователь с таким именем уже существует.")
+
+        # Проверяем, есть ли другой пользователь с таким же именем
+        if self.instance.pk is None:  # Если это новый объект (создание), просто проверяем наличие имени
+            if CustomUser.objects.filter(username=username).exists():
+                raise ValidationError(_("Пользователь с таким именем уже существует."))
+        else:  # Если это обновление существующего объекта
+            if CustomUser.objects.exclude(pk=self.instance.pk).filter(username=username).exists():
+                raise ValidationError(_("Пользователь с таким именем уже существует."))
+
         return username
 
     def clean(self):
