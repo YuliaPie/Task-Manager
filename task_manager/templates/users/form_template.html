@@ -21,15 +21,19 @@
                     type="text"
                 {% endif %}
             />
-            {% if field.errors %}
-            <small class="text-danger">{{ field.errors.as_text }}</small>
-            {% endif %}
+{% if field.errors %}
+    <div class="invalid-feedback">
+        {% for error in field.errors %}
+            {{ error }}
+        {% endfor %}
+    </div>
+{% endif %}
             {% if field.name == 'password' %}
                 <ul class="form-text text-muted mb-2">
                     <li>{{ field.help_text }}</li>
                 </ul>
             {% else %}
-                <div class="form-text text-muted mb-2"><small>{{ field.help_text }}</small></div>
+            <div class="form-text">{{ field.help_text }}</div>
             {% endif %}
         </div>
     {% endfor %}

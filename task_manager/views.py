@@ -20,7 +20,8 @@ def login_view(request):
             pass
         form = LoginForm()
         if 'username' in request.session:
-            form.fields['username'].initial = request.session.get('username', '')
+            form.fields['username'].initial =\
+                request.session.get('username', '')
         return render(request, 'login.html', {'form': form})
 
     elif request.method == 'POST':
@@ -44,7 +45,9 @@ def login_view(request):
             request.session['username'] = request.POST['username']
             request.session.modified = True
 
-        return render(request, 'login.html', {'form': form, 'form_error': form_error})
+        return render(request, 'login.html',
+                      {'form': form, 'form_error': form_error})
+
 
 def logout_view(request):
     logout(request)

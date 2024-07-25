@@ -3,3 +3,6 @@ build:
 
 start:
 	poetry run gunicorn task_manager.wsgi --log-file -
+
+lint:
+	poetry run flake8
