@@ -5,9 +5,6 @@ from .models import CustomUser
 from .forms import UserForm
 from django.contrib import messages
 from django.urls import reverse
-import logging
-
-logger = logging.getLogger(__name__)
 
 
 class IndexView(View):
@@ -21,7 +18,6 @@ class IndexView(View):
 
 class UserFormCreateView(View):
     def get(self, request, *args, **kwargs):
-        logger.debug("GET request in UserFormCreateView")
         form = UserForm()
         action_url = reverse('users:users_create')
         return render(request,
@@ -29,7 +25,6 @@ class UserFormCreateView(View):
                       {'form': form, 'action_url': action_url})
 
     def post(self, request, *args, **kwargs):
-        logger.debug("POST request in UserFormCreateView")
         form = UserForm(request.POST)
         action_url = reverse('users:users_create')
         if form.is_valid():
@@ -41,7 +36,6 @@ class UserFormCreateView(View):
                              extra_tags='success')
             return redirect('main_page')
         else:
-            logger.debug("Form errors: %s", form.errors)
             messages.error(request, None, extra_tags='danger')
             return render(request,
                           'users/create.html',
@@ -50,7 +44,6 @@ class UserFormCreateView(View):
 
 class UserFormEditView(View):
     def get(self, request, user_id):
-        logger.debug("GET request in UserFormEditView")
         if not request.user.is_authenticated:
             messages.error(request,
                            "Вы не авторизованы! Пожалуйста, выполните вход.",
@@ -74,7 +67,6 @@ class UserFormEditView(View):
                       {'form': form, 'action_url': action_url})
 
     def post(self, request, user_id):
-        logger.debug("POST request in UserFormEditView")
         if not request.user.is_authenticated:
             messages.error(request,
                            "Вы не авторизованы! Пожалуйста, выполните вход.",
@@ -95,7 +87,6 @@ class UserFormEditView(View):
                              "Пользователь успешно изменен",
                              extra_tags='success')
             return redirect('users:users')
-        logger.debug("Form errors: %s", form.errors)
         action_url = reverse('users:users_update', kwargs={'user_id': user.id})
         messages.error(request, None, extra_tags='danger')
         return render(request,

@@ -26,3 +26,9 @@ def authenticated_client(client, user):
                          'password': 'testpassword', 'password2': 'testpassword'}])
 def form_data(request):
     return request.param
+
+
+@pytest.fixture(params=[{'name': 'ok', 'surname': 'ok', 'username': '*bad',
+                         'password': '1', 'password2': '2'}])
+def invalid_form_data(request):
+    return request.param

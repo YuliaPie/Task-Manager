@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 USERNAME_EXISTS_ERROR = _("Пользователь с таким именем уже существует.")
-PASSWORD_MISMATCH_ERROR = _("Пароли не совпадают.")
+PASSWORD_MISMATCH_ERROR = _("Введенные пароли не совпадают.")
 MINIMUM_PASSWORD_LENGTH_ERROR = _("Введённый пароль "
                                   "слишком короткий. "
                                   "Он должен содержать как "
