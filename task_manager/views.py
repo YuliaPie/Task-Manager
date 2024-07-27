@@ -11,7 +11,7 @@ def index(request):
 
 @csrf_protect
 def login_view(request):
-    form_error = False  # Переменная для отслеживания ошибок формы
+    form_error = False
 
     if request.method == 'GET':
         try:
@@ -39,7 +39,7 @@ def login_view(request):
                 request.session['username'] = username
                 request.session.modified = True
         else:
-            form_error = True  # Форма невалидна
+            form_error = True
 
         if 'username' in request.POST:
             request.session['username'] = request.POST['username']
