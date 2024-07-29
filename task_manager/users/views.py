@@ -111,18 +111,11 @@ def user_confirm_delete(request, user_id):
     return render(request, 'users/user_confirm_delete.html', {'user': user})
 
 
-def user_delete(request, user_id):
-    if not request.user.is_authenticated:
-        request.session['auth_error_message'] =\
-            "Вы не авторизованы! Пожалуйста, выполните вход."
-        return redirect_to_login(request.path, '/login/', 'next')
-    user = get_object_or_404(CustomUser, id=user_id)
-    if request.user.id != user.id:
-        messages.error(request,
-                       "У вас нет прав для изменения другого пользователя.",
-                       extra_tags='danger')
-        return redirect('users:users')
+class UserDeleteView(View):
 
-    user.delete()
-    messages.success(request, "Пользователь успешно удален.")
-    return redirect('users:users')
+    def post(self, request, user_id):
+        user = CustomUser.objects.get(id=user_id)
+        if user:
+            user.delete()
+        messages.success(request, "Пользователь успешно удален.")
+        return redirect('users:users')

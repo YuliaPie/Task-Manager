@@ -5,14 +5,11 @@ from django.test import Client
 from django.urls import reverse
 from django.contrib.auth.hashers import check_password
 from django.db import transaction
-from ..forms import LoginForm
-import pytest
-from django.contrib.auth import authenticate
 from django.contrib.messages import get_messages
 
 
 @pytest.mark.urls('task_manager.urls')
-def test_user_create_valid_data(form_data, db):
+def test_create_user(form_data, db):
     client = Client()
     with transaction.atomic():
         CustomUser.objects.filter(username=form_data['username']).delete()
@@ -27,7 +24,7 @@ def test_user_create_valid_data(form_data, db):
 
 
 @pytest.mark.urls('task_manager.urls')
-def test_user_create_invalid_data(invalid_form_data, db):
+def test_create_user_inv_data(invalid_form_data, db):
     client = Client()
     url = reverse('users:users_create')
     response = client.post(url, data=invalid_form_data)
@@ -38,11 +35,11 @@ def test_user_create_invalid_data(invalid_form_data, db):
 
 
 @pytest.mark.django_db
-def test_login_valid_data(form_data):
+def test_login(form_data):
     client = Client()
     username = form_data['username']
     password = form_data['password']
-    user = CustomUser.objects.create_user(username=username, password=password)
+    CustomUser.objects.create_user(username=username, password=password)
     url = reverse('login')
     response = client.post(url, {'username': username, 'password': password})
     assert response.status_code == 302, "Expected redirect after successful login"
@@ -71,7 +68,7 @@ def test_login_wrong_username(form_data):
 
 
 @pytest.mark.urls('task_manager.urls')
-def test_user_edit_no_auth(user, form_data):
+def test_get_upd_page_unauthorised(user, form_data):
     client = Client()
     url = reverse('users:users_update', kwargs={'user_id': user.id})
     with transaction.atomic():
@@ -83,9 +80,8 @@ def test_user_edit_no_auth(user, form_data):
 
 
 @pytest.mark.urls('task_manager.urls')
-def test_cannot_change_another_users_data(user, another_user, form_data):
-    client = Client()
-    client.force_login(user)
+def test_upd_another_user(authenticated_client, another_user, form_data):
+    client = authenticated_client
     url = reverse('users:users_update', kwargs={'user_id': another_user.id})
     response = client.post(url, data=form_data, follow=True)
     assert response.redirect_chain[-1][0] == reverse(
@@ -96,9 +92,30 @@ def test_cannot_change_another_users_data(user, another_user, form_data):
 
 
 @pytest.mark.urls('task_manager.urls')
-def test_can_edit_own_data(user, form_data):
-    client = Client()
-    client.force_login(user)
+def test_get_another_user_upd_page(authenticated_client, another_user):
+    client = authenticated_client
+    url = reverse('users:users_update', kwargs={'user_id': another_user.id})
+    response = client.get(url)
+    assert response.status_code == 302
+    assert response.url == reverse('users:users'), "Пользователь не был перенаправлен на ожидаемую страницу"
+    messages = list(get_messages(response.wsgi_request))
+    assert len(messages) > 0, "Сообщение об ошибке не было добавлено"
+    assert "У вас нет прав для изменения другого пользователя." in str(messages[0]), "Неверное сообщение об ошибке"
+
+
+@pytest.mark.urls('task_manager.urls')
+def test_get_own_upd_page(authenticated_client, user):
+    client = authenticated_client
+    url = reverse('users:users_update', kwargs={'user_id': user.id})
+    response = client.get(url)
+    assert response.status_code == 200
+    messages = list(get_messages(response.wsgi_request))
+    assert len(messages) == 0, "Сообщение об ошибке было добавлено"
+
+
+@pytest.mark.urls('task_manager.urls')
+def test_upd_user(authenticated_client, user, form_data):
+    client = authenticated_client
     original_name = user.name
     original_surname = user.surname
     url = reverse('users:users_update', kwargs={'user_id': user.id})
@@ -114,7 +131,7 @@ def test_can_edit_own_data(user, form_data):
 
 
 @pytest.mark.urls('task_manager.urls')
-def test_cannot_save_invalid_data(user, invalid_form_data):
+def test_upd_inv_data(user, invalid_form_data):
     client = Client()
     client.force_login(user)
     action_url = reverse('users:users_update', kwargs={'user_id': user.id})
@@ -126,7 +143,7 @@ def test_cannot_save_invalid_data(user, invalid_form_data):
 
 
 @pytest.mark.urls('task_manager.urls')
-def test_user_edit_no_auth(user):
+def test_get_del_page_unauthorised(user):
     client = Client()
     url = reverse('users:users_confirm_delete', kwargs={'user_id': user.id})
     response = client.get(url)
@@ -137,3 +154,38 @@ def test_user_edit_no_auth(user):
     assert CustomUser.objects.filter(id=user.id).exists()
     with transaction.atomic():
         CustomUser.objects.filter(id=user.id).delete()
+
+
+@pytest.mark.urls('task_manager.urls')
+def test_get_del_page_another_user(authenticated_client, another_user):
+    client = authenticated_client
+    url = reverse('users:users_confirm_delete', kwargs={'user_id': another_user.id})
+    response = client.get(url)
+    assert response.status_code == 302
+    assert response.url == reverse('users:users'), "Пользователь не был перенаправлен на ожидаемую страницу"
+    messages = list(get_messages(response.wsgi_request))
+    assert len(messages) > 0, "Сообщение об ошибке не было добавлено"
+    assert "У вас нет прав для изменения другого пользователя." in str(messages[0]), "Неверное сообщение об ошибке"
+
+
+@pytest.mark.urls('task_manager.urls')
+def test_get_own_del_page(authenticated_client, user):
+    client = authenticated_client
+    url = reverse('users:users_confirm_delete', kwargs={'user_id': user.id})
+    response = client.get(url)
+    assert response.status_code == 200
+    messages = list(get_messages(response.wsgi_request))
+    assert len(messages) == 0, "Сообщение об ошибке было добавлено"
+
+
+@pytest.mark.django_db(transaction=True)
+def test_user_can_delete_own_account(authenticated_client, user):
+    client = authenticated_client
+    id = user.id
+    url = reverse('users:users_delete', kwargs={'user_id': id})
+    print(f"URL: {url}")
+    print(f"Authenticated client: {authenticated_client}")
+    response = client.post(url)
+    with transaction.atomic():
+        deleted_user = CustomUser.objects.filter(id=id)
+        assert not deleted_user.exists(), "Пользователь не был удален"

@@ -13,8 +13,8 @@ def user(db):  # Использование фикстуры db для дост�
 
 @pytest.fixture
 def another_user(db):
-    CustomUserModel = get_user_model()
-    user = CustomUserModel.objects.create_user(username='anotheruser', password='anotherpass')
+    model = get_user_model()
+    user = model.objects.create_user(username='anotheruser', password='anotherpass')
     return user
 
 
