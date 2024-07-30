@@ -83,6 +83,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'task_manager',
     'task_manager.users',
+    'task_manager.statuses',
 ]
 
 MIDDLEWARE = [
@@ -150,7 +151,7 @@ LANGUAGES = [
 
 LANGUAGE_CODE = 'ru'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'
 
 USE_I18N = True
 

@@ -18,31 +18,31 @@
 
       <h1 class="my-4">
 
-{% trans "Пользователи" %}
+Статусы
 
       </h1>
 
+<a href="{% url 'statuses:statuses_create' %}" class="btn btn-primary">Создать статус</a>
+
 <table class="table table-striped">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>{% trans "Имя пользователя" %}</th>
-      <th>{% trans "Полное имя" %}</th>
-      <th>{% trans "Дата создания" %}</th>
-      <th></th>
-    </tr>
-  </thead>
+<thead>
+  <tr>
+    <th class="col-1">ID</th>
+    <th class="col-8 wide-column">Имя</th>
+    <th class="col-2">Дата создания</th>
+    <th class="col-1"></th>
+  </tr>
+</thead>
   <tbody>
-    {% for user in users %}
+    {% for status in statuses %}
       <tr>
-        <td>{{ user.id }}</td>
-        <td>{{ user.username }}</td>
-        <td>{{ user.name }} {{ user.surname}}</td>
-        <td>{{ user.created_at|date:"d.m.Y H:i" }}</td>
+        <td>{{ status.id }}</td>
+        <td>{{ status.name }}</td>
+        <td>{{ status.created_at|date:"d.m.Y H:i" }}</td>
         <td>
-          <a href="{% url 'users:users_update' user.id %}">{% trans "Изменить" %}</a>
+          <a href="{% url 'statuses:statuses_update' status.id %}">{% trans "Изменить" %}</a>
           <br>
-           <a href="{% url 'users:users_confirm_delete' user.id %}">{% trans "Удалить" %}</a>
+           <a href="{% url 'statuses:status_confirm_delete' status.id %}">{% trans "Удалить" %}</a>
         </td>
       </tr>
    {% endfor %}

@@ -10,3 +10,7 @@ lint:
 test:
 	 poetry run pytest
 	 poetry run coverage report
+
+migrations:
+	python manage.py makemigrations
+	python manage.py migrate

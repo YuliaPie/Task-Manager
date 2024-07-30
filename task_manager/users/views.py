@@ -108,7 +108,7 @@ def user_confirm_delete(request, user_id):
                        extra_tags='danger')
         return redirect(
             'users:users')
-    return render(request, 'users/user_confirm_delete.html', {'user': user})
+    return render(request, 'users/status_confirm_delete.html', {'user': user})
 
 
 class UserDeleteView(View):
