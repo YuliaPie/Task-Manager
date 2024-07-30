@@ -17,6 +17,7 @@ flake8 = "^7.1.0"
 pytest = "^8.3.2"
 pytest-django = "^4.8.0"
 coverage = "^7.6.0"
+dj-database-url = "^2.2.0"
 
 [build-system]
 requires = ["poetry-core"]

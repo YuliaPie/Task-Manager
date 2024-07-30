@@ -14,6 +14,22 @@ from pathlib import Path
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 import os
+import dj_database_url
+import logging
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
+}
 
 
 load_dotenv()
@@ -28,10 +44,32 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = os.getenv('DEBUG', False)
 
+logger = logging.getLogger(__name__)
 
-ALLOWED_HOSTS = ['python-project-52-41ik.onrender.com',
-                 '127.0.0.1',
-                 'localhost']
+
+def get_db_config():
+    current_host = os.getenv('CURRENT_HOST')
+    if current_host == 'localhost' or current_host == '127.0.0.1':
+        logger.info("Using SQLite database.")
+        return {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    else:
+        db_url = os.getenv('DATABASE_URL')
+        logger.info(f"Using PostgreSQL database with URL: {db_url}")
+        return dj_database_url.config(default=db_url)
+
+
+DATABASES = {
+    'default': get_db_config()
+}
+
+ALLOWED_HOSTS = [
+    'python-project-52-41ik.onrender.com',
+    '127.0.0.1',
+    'localhost'
+]
 
 
 # Application definition
@@ -76,17 +114,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'task_manager.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 
 
 # Password validation
