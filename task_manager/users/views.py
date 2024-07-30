@@ -34,7 +34,7 @@ class UserFormCreateView(View):
             messages.success(request,
                              "Пользователь успешно зарегистрирован",
                              extra_tags='success')
-            return redirect('main_page')
+            return redirect('login')
         else:
             messages.error(request, None, extra_tags='danger')
             return render(request,

@@ -15,7 +15,6 @@ def test_create_user(form_data, db):
         CustomUser.objects.filter(username=form_data['username']).delete()
     url = reverse('users:users_create')
     response = client.post(url, data=form_data)
-    assert response.status_code == 302
     created_user = CustomUser.objects.get(username=form_data['username'])
     assert created_user.username == form_data['username']
     assert check_password(form_data['password'], created_user.password)

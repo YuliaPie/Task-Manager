@@ -9,3 +9,4 @@ lint:
 
 test:
 	 poetry run pytest
+	 poetry run coverage report

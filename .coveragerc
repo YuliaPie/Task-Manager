@@ -1,0 +1,9 @@
+[run]
+omit =
+    task_manager/tests/*
+    __init__.py
+    manage.py
+    task_manager/settings.py
+    task_manager/users/migrations/*
+    task_manager/asgi.py
+    task_manager/wsgi.py
