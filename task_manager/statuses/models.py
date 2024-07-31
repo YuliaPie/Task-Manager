@@ -6,7 +6,7 @@ class CustomStatusManager(models.Manager):
     def create_status(self, name, **extra_fields):
         if not name:
             raise ValueError('The name field must be set')
-        status = self.model(username=name, **extra_fields)
+        status = self.model(name=name, **extra_fields)
         status.save(using=self._db)
         return status
 

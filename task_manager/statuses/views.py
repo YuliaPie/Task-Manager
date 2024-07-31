@@ -11,6 +11,13 @@ class IndexView(View):
 
     def get(self, request, *args, **kwargs):
         statuses = Status.objects.all()
+        if not request.user.is_authenticated:
+            messages.error(request,
+                           "Вы не авторизованы! Пожалуйста, выполните вход.",
+                           extra_tags='danger')
+            return redirect_to_login(request.path,
+                                     '/login/',
+                                     'next')
         return render(request, 'statuses/status_list.html', context={
             'statuses': statuses,
         })
@@ -20,6 +27,13 @@ class StatusFormCreateView(View):
     def get(self, request, *args, **kwargs):
         form = StatusForm()
         action_url = reverse('statuses:statuses_create')
+        if not request.user.is_authenticated:
+            messages.error(request,
+                           "Вы не авторизованы! Пожалуйста, выполните вход.",
+                           extra_tags='danger')
+            return redirect_to_login(request.path,
+                                     '/login/',
+                                     'next')
         return render(request,
                       'statuses/create.html',
                       {'form': form, 'action_url': action_url})
@@ -27,6 +41,13 @@ class StatusFormCreateView(View):
     def post(self, request, *args, **kwargs):
         form = StatusForm(request.POST)
         action_url = reverse('statuses:statuses_create')
+        if not request.user.is_authenticated:
+            messages.error(request,
+                           "Вы не авторизованы! Пожалуйста, выполните вход.",
+                           extra_tags='danger')
+            return redirect_to_login(request.path,
+                                     '/login/',
+                                     'next')
         if form.is_valid():
             new_status = form.save(commit=False)
             new_status.save()

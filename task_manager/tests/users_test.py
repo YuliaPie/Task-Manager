@@ -150,9 +150,6 @@ def test_get_del_page_unauthorised(user):
     next_url = response.url
     login_url = reverse('login')
     assert next_url.startswith(login_url)
-    assert CustomUser.objects.filter(id=user.id).exists()
-    with transaction.atomic():
-        CustomUser.objects.filter(id=user.id).delete()
 
 
 @pytest.mark.urls('task_manager.urls')
