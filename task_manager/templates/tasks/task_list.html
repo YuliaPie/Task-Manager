@@ -1,0 +1,84 @@
+{% extends "main.html" %}
+{% load i18n %}
+{% block content %}
+<div class="container wrapper flex-grow-1">
+   {% if messages %}
+<div class="container">
+    <div class="row">
+        {% for message in messages %}
+        <div class="col-12 alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+
+      <h1 class="my-4">
+
+Задачи
+
+      </h1>
+
+<a href="{% url 'tasks:tasks_create' %}" class="btn btn-primary mb-3">Создать задачу</a>
+<div class="card mb-3">
+  <div class="card-body bg-light">
+<form class="form-inline center" method="get">
+    {% for field in filter_form %}
+        <div class="mb-3">
+            {% if field.name == 'show_my_tasks' %}
+                <input
+                    name="{{ field.name }}"
+                    type="checkbox"
+                >
+                <label for="{{ field.auto_id }}" class="checkbox-label">Только свои задачи</label>
+            {% else %}
+            {{ field.label_tag }}
+            <select name="{{ field.name }}" class="form-select {% if form.is_valid %}is-valid{% endif %}">
+                {% for choice in field.field.choices %}
+                    <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                {% endfor %}
+            </select>
+            {% endif %}
+        </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Показать</button>
+</form>
+  </div>
+</div>
+
+<table class="table table-striped">
+<thead>
+  <tr>
+    <th class="col-1">ID</th>
+    <th class="col-2 wide-column">Имя</th>
+      <th class="col-2 wide-column">Статус</th>
+      <th class="col-2 wide-column">Автор</th>
+      <th class="col-2 wide-column">Исполнитель</th>
+    <th class="col-2">Дата создания</th>
+    <th class="col-1"></th>
+  </tr>
+</thead>
+  <tbody>
+    {% for task in tasks %}
+      <tr>
+        <td>{{ task.id }}</td>
+        <td>{{ task.name }}</td>
+          <td>{{ task.status.name }}</td>
+         <td>{ {{ task.author.name }} {{ task.author.surname }}</td>
+         <td> {{ task.executor.name }} {{ task.executor.surname }}</td>
+        <td>{{ task.created_at|date:"d.m.Y H:i" }}</td>
+        <td>
+          <a href="{% url 'statuses:statuses_update' status.id %}">{% trans "Изменить" %}</a>
+          <br>
+           <a href="{% url 'statuses:status_confirm_delete' status.id %}">{% trans "Удалить" %}</a>
+        </td>
+      </tr>
+   {% endfor %}
+        </tbody>
+</table>
+
+    </div>
+{% endblock %}
