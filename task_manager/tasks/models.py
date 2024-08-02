@@ -5,7 +5,6 @@ from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 
 
-# Менеджер модели для упрощения создания объектов Task
 class TaskManager(models.Manager):
     def create_task(self, author, name, description, status=None, executor=None):
         task = self.model(author=author, name=name, description=description, status=status, executor=executor)
@@ -14,19 +13,17 @@ class TaskManager(models.Manager):
 
 
 class Task(models.Model):
-    STATUS_CHOICES = [(status.id, status.name) for status in Status.objects.all()]
-
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='created_tasks')
     executor = models.ForeignKey(CustomUser, null=True, blank=True, on_delete=models.SET_NULL, related_name='executed_tasks')
     name = models.CharField(max_length=255)
-    description = models.TextField()
-    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default='new')
+    description = models.TextField(blank=True)
+    status = models.ForeignKey(Status, on_delete=models.CASCADE, related_name='tasks', default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = TaskManager()
 
     def save(self, *args, **kwargs):
-        if not self.pk:  # Если объект новый
+        if not self.pk:
             self.author = kwargs.get('author') or self.author
         super().save(*args, **kwargs)
 
@@ -34,12 +31,10 @@ class Task(models.Model):
         ordering = ['-created_at']
 
 
-# Собственное исключение для обработки ошибок удаления
 class ProtectedByDependencyError(Exception):
     pass
 
 
-# Сигналы для предотвращения удаления связанных записей
 @receiver(pre_delete, sender=Task)
 def prevent_task_deletion(sender, instance, **kwargs):
     if instance.author or instance.executor:

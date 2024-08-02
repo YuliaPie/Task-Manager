@@ -65,15 +65,15 @@
     {% for task in tasks %}
       <tr>
         <td>{{ task.id }}</td>
-        <td>{{ task.name }}</td>
-          <td>{{ task.status.name }}</td>
-         <td>{ {{ task.author.name }} {{ task.author.surname }}</td>
+        <td><a href="{% url 'tasks:task_info' task.id %}">{{ task.name }}</a></td>
+          <td>{{ task.status }}</td>
+         <td> {{ task.author.name }} {{ task.author.surname }}</td>
          <td> {{ task.executor.name }} {{ task.executor.surname }}</td>
         <td>{{ task.created_at|date:"d.m.Y H:i" }}</td>
         <td>
-          <a href="{% url 'statuses:statuses_update' status.id %}">{% trans "Изменить" %}</a>
+          <a href="{% url 'tasks:task_update' task.id %}">{% trans "Изменить" %}</a>
           <br>
-           <a href="{% url 'statuses:status_confirm_delete' status.id %}">{% trans "Удалить" %}</a>
+           <a href="{% url 'tasks:task_confirm_delete' task.id %}">{% trans "Удалить" %}</a>
         </td>
       </tr>
    {% endfor %}
