@@ -12,31 +12,62 @@ import logging
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
+from django.db.models import Q
+
 
 class IndexView(View):
-
     def get(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            messages.error(request,
-                           "Вы не авторизованы! Пожалуйста, выполните вход.",
-                           extra_tags='danger')
-            return redirect_to_login(request.path,
-                                     '/login/',
-                                     'next')
+        logging.debug("GET request received")  # Логирование начала обработки GET запроса
 
+        if not request.user.is_authenticated:
+            messages.error(request, "Вы не авторизованы! Пожалуйста, выполните вход.", extra_tags='danger')
+            logging.info(
+                "Redirecting unauthenticated user to login page")  # Логирование редиректа неподтвержденного пользователя
+            return redirect_to_login(request.path, '/login/', 'next')
+
+        # Создаем экземпляр формы фильтрации с данными из GET-запроса
         filter_form = TaskFilterForm(request.GET)
+        logging.debug(
+            f"Filter form initialized with GET parameters: {request.GET}")  # Логирование параметров формы фильтрации
+
+        # Определяем список задач до применения фильтров
         tasks = Task.objects.all().order_by('created_at')
+        logging.debug("Using default tasks list without filters")  # Логирование использования списка задач по умолчанию
+
+        # Проверяем форму на валидность
         if filter_form.is_valid():
+            logging.debug("Filter form is valid")  # Логирование валидности формы фильтрации
+
+            # Получаем очищенные данные формы
             status = filter_form.cleaned_data.get('status')
             executor = filter_form.cleaned_data.get('executor')
             show_my_tasks = filter_form.cleaned_data.get('show_my_tasks')
 
+            # Создаем запрос с возможностью применения нескольких фильтров
+            query = Q()
+
             if status:
-                tasks = tasks.filter(status=status)
-            elif executor:
-                tasks = tasks.filter(executor=executor)
+                query &= Q(status=status)
+                logging.debug(f"Applying status filter: {status}")  # Логирование применения фильтра статуса
+            if executor:
+                query &= Q(executor=executor)
+                logging.debug(f"Applying executor filter: {executor}")  # Логирование применения фильтра исполнителя
             if show_my_tasks:
-                tasks = tasks.filter(author=request.user)
+                query &= Q(author=request.user)
+                logging.debug("Applying 'only my tasks' filter")  # Логирование применения фильтра 'только мои задачи'
+
+            # Применяем фильтры к списку задач
+            tasks = tasks.filter(query).order_by('created_at')
+            logging.debug("Tasks filtered based on form data")  # Логирование применения фильтров к задачам
+
+        else:
+            logging.warning("Filter form is not valid")  # Логирование невалидности формы фильтрации
+            errors = filter_form.errors
+            for error in errors.values():
+                for err in error:
+                    logging.error(err)  # Логирование деталей ошибок валидации
+
+        # Передаем список задач и форму фильтрации в шаблон
         return render(request, 'tasks/task_list.html', {'filter_form': filter_form, 'tasks': tasks})
 
 
