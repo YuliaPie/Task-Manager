@@ -57,6 +57,7 @@ class IndexView(View):
 
         return render(request, 'tasks/task_list.html', context)
 
+
 class TaskFormCreateView(View):
     def get(self, request, *args, **kwargs):
         form = TaskForm()

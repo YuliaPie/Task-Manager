@@ -9,12 +9,10 @@ class TaskForm(forms.ModelForm):
     status = forms.ChoiceField(choices=STATUS_CHOICES, required=True)
 
     # Создаем начальный список с пустым значением для executor
-    EXECUTOR_CHOICES = [("", "---------")] + [(user.id, f"{user.name} {user.surname}") for user in
-                                              CustomUser.objects.all()]
+    EXECUTOR_CHOICES = [("", "---------")] + [(user.id, f"{user.name} {user.surname}") for user in CustomUser.objects.all()]
 
     # Используем empty_label для ModelChoiceField
-    executor = forms.ModelChoiceField(queryset=CustomUser.objects.all(),
-                                      required=False)
+    executor = forms.ModelChoiceField(queryset=CustomUser.objects.all(), required=False, empty_label="---------")
 
     class Meta:
         model = Task
@@ -40,7 +38,6 @@ class TaskForm(forms.ModelForm):
             msg = 'Неверный статус.'
             self.add_error('status', msg)
             return None
-
 
 class TaskFilterForm(forms.Form):
     STATUS_CHOICES = [("", "---------")] + [(status.id, status.name) for status in Status.objects.all()]
