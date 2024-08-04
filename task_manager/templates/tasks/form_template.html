@@ -11,27 +11,26 @@
         <div class="mb-3">
             {{ field.label_tag }}
             {% if field.field.choices %}
-                <select name="{{ field.name }}" class="form-select {% if form.is_valid %}is-valid{% endif %}">
+                <select name="{{ field.name }}" class="form-select {% if field.errors %}is-invalid{% endif %}
+                {% if form_errors and not field.errors %}is-valid{% endif %}">
                     {% for choice in field.field.choices %}
                         <option value="{{ choice.0 }}">{{ choice.1 }}</option>
                     {% endfor %}
                 </select>
-            {% else %}
-                {% if field.name == 'description' %}
+            {% elif field.name == 'description' %}
                 <textarea
                     name="{{ field.name }}"
-                    class="form-control {% if field.errors %}is-invalid{% endif %}{% if field.errors and not field.errors %}is-valid{% endif %}"
+                    class="form-control {% if field.errors %}is-invalid{% endif %}{% if form_errors and not field.errors %}is-valid{% endif %}"
                     placeholder="{{ field.field.widget.attrs.placeholder|default_if_none:'' }}"
                     rows="3">{{ field.value|default_if_none:'' }}</textarea>
-                {% else %}
-                    <input
-                        name="{{ field.name }}"
-                        class="form-control {% if field.errors %}is-invalid{% endif %}{% if field.errors and not field.errors %}is-valid{% endif %}"
-                        placeholder="{{ field.field.widget.attrs.placeholder|default_if_none:'' }}"
-                        value="{{ field.value|default_if_none:'' }}"
-                        type="text"
-                    />
-                {% endif %}
+            {% else %}
+                <input
+                    name="{{ field.name }}"
+                    class="form-control {% if field.errors %}is-invalid{% endif %}{% if form_errors and not field.errors %}is-valid{% endif %}"
+                    placeholder="{{ field.field.widget.attrs.placeholder|default_if_none:'' }}"
+                    value="{{ field.value|default_if_none:'' }}"
+                    type="text"
+                />
             {% endif %}
             {% if field.errors %}
                 <div class="invalid-feedback">

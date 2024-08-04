@@ -35,12 +35,6 @@ class ProtectedByDependencyError(Exception):
     pass
 
 
-@receiver(pre_delete, sender=Task)
-def prevent_task_deletion(sender, instance, **kwargs):
-    if instance.author or instance.executor:
-        raise ProtectedByDependencyError(f"Нельзя удалить задачу, потому что она  используется.")
-
-
 @receiver(pre_delete, sender=CustomUser)
 def prevent_user_deletion(sender, instance, **kwargs):
     if instance.created_tasks.exists() or instance.executed_tasks.exists():

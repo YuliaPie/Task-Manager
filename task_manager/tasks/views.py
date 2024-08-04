@@ -94,9 +94,11 @@ class TaskFormCreateView(View):
             return redirect('tasks:tasks')
         else:
             messages.error(request, None, extra_tags='danger')
+            form_errors = form.errors
+            print(form_errors)
             return render(request,
                           'tasks/create.html',
-                          {'form': form, 'action_url': action_url})
+                          {'form': form, 'form_errors': form_errors, 'action_url': action_url})
 
 
 def task_info(request, task_id):
