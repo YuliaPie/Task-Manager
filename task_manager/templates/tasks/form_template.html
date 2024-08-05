@@ -7,29 +7,41 @@
     {% endblock %}
 <form action="{{ action_url }}" method="post" autocomplete="off">
     {% csrf_token %}
+
     {% for field in form %}
         <div class="mb-3">
             {{ field.label_tag }}
             {% if field.field.choices %}
-                <select name="{{ field.name }}" class="form-select {% if field.errors %}is-invalid{% endif %}
-                {% if form_errors and not field.errors %}is-valid{% endif %}">
-                    {% for choice in field.field.choices %}
-                        <option value="{{ choice.0 }}">{{ choice.1 }}</option>
-                    {% endfor %}
-                </select>
+            <select name="{{ field.name }}" class="form-select
+            {% if field.errors %}is-invalid{% endif %}
+            {% if form_errors and not field.errors %}is-valid{% endif %}"
+            {% if field.name == 'status' %} required {% endif %}>
+        {% for choice in field.field.choices %}
+            {% if field.value == choice.0 %}
+                <option value="{{ choice.0 }}" selected>{{ choice.1 }}</option>
+            {% else %}
+                <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+            {% endif %}
+        {% endfor %}
+            </select>
             {% elif field.name == 'description' %}
                 <textarea
                     name="{{ field.name }}"
-                    class="form-control {% if field.errors %}is-invalid{% endif %}{% if form_errors and not field.errors %}is-valid{% endif %}"
+                    class="form-control
+                    {% if field.errors %}is-invalid{% endif %}
+                    {% if form_errors and not field.errors %}is-valid{% endif %}"
                     placeholder="{{ field.field.widget.attrs.placeholder|default_if_none:'' }}"
                     rows="3">{{ field.value|default_if_none:'' }}</textarea>
             {% else %}
                 <input
                     name="{{ field.name }}"
-                    class="form-control {% if field.errors %}is-invalid{% endif %}{% if form_errors and not field.errors %}is-valid{% endif %}"
+                    class="form-control
+                    {% if field.errors %}is-invalid{% endif %}
+                    {% if form_errors and not field.errors %}is-valid{% endif %}"
                     placeholder="{{ field.field.widget.attrs.placeholder|default_if_none:'' }}"
                     value="{{ field.value|default_if_none:'' }}"
                     type="text"
+                    required
                 />
             {% endif %}
             {% if field.errors %}

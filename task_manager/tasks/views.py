@@ -25,17 +25,14 @@ class IndexView(View):
                                      '/login/',
                                      'next')
 
-        # Инициализируем форму с начальными значениями из request.GET
         filter_form = TaskFilterForm(request.GET or None)
 
         tasks = Task.objects.all().order_by('created_at')
         context = {
             'filter_form': filter_form,
             'tasks': tasks,
-            'form_processed': False,  # Форма ещё не была обработана
+            'form_processed': False,
         }
-
-        # Проверяем, прошли ли данные формы валидацию
         if filter_form.is_valid():
             status = filter_form.cleaned_data.get('status')
             executor = filter_form.cleaned_data.get('executor')
@@ -95,7 +92,6 @@ class TaskFormCreateView(View):
         else:
             messages.error(request, None, extra_tags='danger')
             form_errors = form.errors
-            print(form_errors)
             return render(request,
                           'tasks/create.html',
                           {'form': form, 'form_errors': form_errors, 'action_url': action_url})
@@ -126,6 +122,7 @@ class TaskFormEditView(View):
                                      'next')
         task = get_object_or_404(Task, id=task_id)
         form = TaskForm(instance=task)
+        logger.debug(f"Form data: {form.as_p()}")
         action_url = reverse('tasks:task_update', kwargs={'task_id': task.id})
         return render(request,
                       'tasks/update.html',

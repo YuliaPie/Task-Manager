@@ -2,21 +2,21 @@ from django import forms
 from .models import Task, Status, CustomUser
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+import logging
+
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+
 
 NAME_EXISTS_ERROR = _("Задача с таким именем уже существует.")
 
 
 class TaskForm(forms.ModelForm):
     STATUS_CHOICES = [("", "---------")] + [(status.id, status.name) for status in Status.objects.all()]
-
-    # Используем empty_label для ChoiceField
     status = forms.ChoiceField(choices=STATUS_CHOICES, required=True)
 
-    # Создаем начальный список с пустым значением для executor
-    EXECUTOR_CHOICES = [("", "---------")] + [(user.id, f"{user.name} {user.surname}") for user in
-                                              CustomUser.objects.all()]
-
-    # Используем empty_label для ModelChoiceField
+    EXECUTOR_CHOICES = [("", "---------")] + [(user.id, f"{user.name} {user.surname}") for user in CustomUser.objects.all()]
     executor = forms.ModelChoiceField(queryset=CustomUser.objects.all(), required=False, empty_label="---------")
 
     class Meta:
@@ -25,6 +25,11 @@ class TaskForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(TaskForm, self).__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:
+            self.fields['status'].initial = self.instance.status.id
+            self.fields['executor'].initial = self.instance.executor.id
+            logger.debug(
+                f"Initial values set: status={self.fields['status'].initial}, executor={self.fields['executor'].initial}")
         self.fields['name'].label = 'Имя'
         self.fields['name'].widget.attrs.update({'placeholder': 'Имя'})
         self.fields['description'].label = 'Описание'
@@ -33,6 +38,15 @@ class TaskForm(forms.ModelForm):
         self.fields['status'].widget.attrs.update({'placeholder': 'Статус'})
         self.fields['executor'].label = 'Исполнитель'
         self.fields['executor'].widget.attrs.update({'placeholder': 'Исполнитель', 'required': False})
+
+    def clean(self):
+        cleaned_data = super().clean()
+        # Проверяем, заполнены ли все обязательные поля
+        required_fields = ['name', 'status']
+        for field in required_fields:
+            if cleaned_data.get(field) is None:
+                self.add_error(field, 'Поле обязательно для заполнения.')
+        return cleaned_data
 
     def clean_status(self):
         status_id = self.cleaned_data.get('status')
