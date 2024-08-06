@@ -17,14 +17,25 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Task',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.BigAutoField(auto_created=True,
+                                           primary_key=True,
+                                           serialize=False,
+                                           verbose_name='ID')),
                 ('name', models.CharField(max_length=255)),
                 ('description', models.TextField()),
-                ('status', models.CharField(choices=[(3, 'Новый')], default='new', max_length=50)),
+                ('status', models.CharField(choices=[(3, 'Новый')],
+                                            default='new', max_length=50)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='created_tasks', to=settings.AUTH_USER_MODEL)),
-                ('executor', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='executed_tasks', to=settings.AUTH_USER_MODEL)),
+                ('author', models.ForeignKey(on_delete=django.db.models.
+                                             deletion.CASCADE,
+                                             related_name='created_tasks',
+                                             to=settings.AUTH_USER_MODEL)),
+                ('executor', models.ForeignKey(blank=True, null=True,
+                                               on_delete=django.db.models.
+                                               deletion.SET_NULL,
+                                               related_name='executed_tasks',
+                                               to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'ordering': ['-created_at'],

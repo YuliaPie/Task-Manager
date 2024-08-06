@@ -15,5 +15,6 @@ class StatusForm(forms.ModelForm):
     def clean_name(self):
         name = self.cleaned_data.get('name')
         if Status.objects.filter(name=name).exists():
-            raise forms.ValidationError("Статус с таким именем уже существует.")
+            raise forms.ValidationError(
+                "Статус с таким именем уже существует.")
         return name

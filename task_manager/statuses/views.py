@@ -73,7 +73,8 @@ class StatusFormEditView(View):
                                      'next')
         status = get_object_or_404(Status, id=status_id)
         form = StatusForm(instance=status)
-        action_url = reverse('statuses:statuses_update', kwargs={'status_id': status.id})
+        action_url = reverse('statuses:statuses_update',
+                             kwargs={'status_id': status.id})
         return render(request,
                       'statuses/update.html',
                       {'form': form, 'action_url': action_url})
@@ -92,7 +93,8 @@ class StatusFormEditView(View):
                              "Статус успешно изменен",
                              extra_tags='success')
             return redirect('statuses:statuses')
-        action_url = reverse('statuses:statuses_update', kwargs={'status_id': status.id})
+        action_url = reverse('statuses:statuses_update',
+                             kwargs={'status_id': status.id})
         messages.error(request, None, extra_tags='danger')
         return render(request,
                       'statuses/update.html',
@@ -107,7 +109,9 @@ def status_confirm_delete(request, status_id):
                        extra_tags='danger')
         return redirect_to_login(request.path, '/login/', 'next')
     status = get_object_or_404(Status, id=status_id)
-    return render(request, 'statuses/status_confirm_delete.html', {'status': status})
+    return render(request,
+                  'statuses/status_confirm_delete.html',
+                  {'status': status})
 
 
 class StatusDeleteView(View):

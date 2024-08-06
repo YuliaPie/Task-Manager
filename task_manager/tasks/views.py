@@ -79,7 +79,9 @@ class TaskFormCreateView(View):
             return redirect_to_login(request.path,
                                      '/login/',
                                      'next')
+        logger.debug(request)
         form = TaskForm(request.POST)
+        logger.debug(form)
         if form.is_valid():
             author = request.user
             new_task = form.save(commit=False)
@@ -94,7 +96,8 @@ class TaskFormCreateView(View):
             form_errors = form.errors
             return render(request,
                           'tasks/create.html',
-                          {'form': form, 'form_errors': form_errors, 'action_url': action_url})
+                          {'form': form, 'form_errors': form_errors,
+                           'action_url': action_url})
 
 
 def task_info(request, task_id):

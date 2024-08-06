@@ -13,11 +13,8 @@ NAME_EXISTS_ERROR = _("Задача с таким именем уже сущес
 
 
 class TaskForm(forms.ModelForm):
-    STATUS_CHOICES = [("", "---------")] + [(status.id, status.name) for status in Status.objects.all()]
-    status = forms.ChoiceField(choices=STATUS_CHOICES, required=True)
-
-    EXECUTOR_CHOICES = [("", "---------")] + [(user.id, f"{user.name} {user.surname}") for user in CustomUser.objects.all()]
-    executor = forms.ModelChoiceField(queryset=CustomUser.objects.all(), required=False, empty_label="---------")
+    status = forms.ChoiceField(choices=[], required=True)  # Инициализируем пустой список
+    executor = forms.ModelChoiceField(queryset=None, required=False, empty_label="---------")  # Инициализируем None
 
     class Meta:
         model = Task
@@ -25,23 +22,29 @@ class TaskForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(TaskForm, self).__init__(*args, **kwargs)
+        self.fields['status'].choices = [("", "---------")] + [(status.id, status.name) for status in
+                                                               Status.objects.all()]
+        self.fields['executor'].queryset = CustomUser.objects.all()
+
         if self.instance and self.instance.pk:
             self.fields['status'].initial = self.instance.status.id
-            self.fields['executor'].initial = self.instance.executor.id
-            logger.debug(
-                f"Initial values set: status={self.fields['status'].initial}, executor={self.fields['executor'].initial}")
+            if self.instance.executor:
+                self.fields['executor'].initial = self.instance.executor.id
+            else:
+                pass
         self.fields['name'].label = 'Имя'
         self.fields['name'].widget.attrs.update({'placeholder': 'Имя'})
         self.fields['description'].label = 'Описание'
-        self.fields['description'].widget.attrs.update({'placeholder': 'Описание', 'required': False})
+        self.fields['description'].widget.attrs.update(
+            {'placeholder': 'Описание', 'required': False})
         self.fields['status'].label = 'Статус'
         self.fields['status'].widget.attrs.update({'placeholder': 'Статус'})
         self.fields['executor'].label = 'Исполнитель'
-        self.fields['executor'].widget.attrs.update({'placeholder': 'Исполнитель', 'required': False})
+        self.fields['executor'].widget.attrs.update(
+            {'placeholder': 'Исполнитель', 'required': False})
 
     def clean(self):
         cleaned_data = super().clean()
-        # Проверяем, заполнены ли все обязательные поля
         required_fields = ['name', 'status']
         for field in required_fields:
             if cleaned_data.get(field) is None:
@@ -72,10 +75,15 @@ class TaskForm(forms.ModelForm):
 
 
 class TaskFilterForm(forms.Form):
-    STATUS_CHOICES = [("", "---------")] + [(status.id, status.name) for status in Status.objects.all()]
-    EXECUTOR_CHOICES = [("", "---------")] + [(user.id, f"{user.name} {user.surname}") for user in
-                                              CustomUser.objects.all()]
-
-    status = forms.ChoiceField(required=False, choices=STATUS_CHOICES, label="Статус")
-    executor = forms.ChoiceField(required=False, choices=EXECUTOR_CHOICES, label="Исполнитель")
+    status = forms.ChoiceField(required=False, label="Статус")
+    executor = forms.ChoiceField(required=False, label="Исполнитель")
     show_my_tasks = forms.BooleanField(required=False, label="Показать только мои задачи")
+
+    def __init__(self, *args, **kwargs):
+        super(TaskFilterForm, self).__init__(*args, **kwargs)
+
+        # Инициализируем STATUS_CHOICES и EXECUTOR_CHOICES внутри метода __init__
+        self.fields['status'].choices = [("", "---------")] + [(status.id, status.name) for status in
+                                                               Status.objects.all()]
+        self.fields['executor'].choices = [("", "---------")] + [(user.id, f"{user.name} {user.surname}") for user in
+                                                                 CustomUser.objects.all()]
