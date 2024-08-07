@@ -13,8 +13,8 @@ NAME_EXISTS_ERROR = _("Задача с таким именем уже сущес
 
 
 class TaskForm(forms.ModelForm):
-    status = forms.ChoiceField(choices=[], required=True)  # Инициализируем пустой список
-    executor = forms.ModelChoiceField(queryset=None, required=False, empty_label="---------")  # Инициализируем None
+    status = forms.ChoiceField(choices=[], required=True)
+    executor = forms.ModelChoiceField(queryset=None, required=False, empty_label="---------")
 
     class Meta:
         model = Task
@@ -81,8 +81,6 @@ class TaskFilterForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(TaskFilterForm, self).__init__(*args, **kwargs)
-
-        # Инициализируем STATUS_CHOICES и EXECUTOR_CHOICES внутри метода __init__
         self.fields['status'].choices = [("", "---------")] + [(status.id, status.name) for status in
                                                                Status.objects.all()]
         self.fields['executor'].choices = [("", "---------")] + [(user.id, f"{user.name} {user.surname}") for user in

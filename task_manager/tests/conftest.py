@@ -3,6 +3,7 @@ from django.test import Client
 from django.contrib.auth import get_user_model
 from task_manager.statuses.models import Status
 from task_manager.tasks.models import Task
+from task_manager.labels.models import Label
 
 
 @pytest.fixture
@@ -78,3 +79,14 @@ def task(user, status):
         status=status
     )
     return task
+
+
+@pytest.fixture(params=[{'name': 'test_status_name'}])
+def label_form_data(request):
+    return request.param
+
+
+@pytest.fixture
+def label(db):
+    label = Label.objects.create_label(name='test')
+    return label

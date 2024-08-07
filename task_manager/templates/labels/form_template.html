@@ -1,0 +1,34 @@
+{% extends "main.html" %}
+{% load i18n %}
+{% block content %}
+
+<div class="container wrapper flex-grow-1">
+    {% block h1 %}
+    {% endblock %}
+<form action="{{ action_url }}" method="post" autocomplete="off">
+    {% csrf_token %}
+    {% for field in form %}
+        <div class="mb-3">
+            {{ field.label_tag }}
+            <input
+                name="{{ field.name }}"
+                class="flex-fill form-control {% if field.errors %}is-invalid{% endif %}{% if field.errors and not field.errors %}is-valid{% endif %}"
+                placeholder="{{ field.field.widget.attrs.placeholder|default_if_none:'' }}"
+                value="{{ field.value|default_if_none:'' }}"
+                type="text"
+            />
+{% if field.errors %}
+    <div class="invalid-feedback">
+        {% for error in field.errors %}
+            {{ error }}
+        {% endfor %}
+    </div>
+{% endif %}
+
+        </div>
+    {% endfor %}
+    {% block submit_button %}
+    {% endblock %}
+</form>
+</div>
+{% endblock %}
