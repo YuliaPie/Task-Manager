@@ -55,8 +55,7 @@ def test_create_task_unauthorised(db):
 def test_create_task_same_data(authenticated_client, task_form_data):
     url = reverse('tasks:tasks_create')
     authenticated_client.post(url, data=task_form_data, follow=True)
-    response = authenticated_client.post(url,
-                                         data=task_form_data, follow=True)
+    response = authenticated_client.post(url, data=task_form_data, follow=True)
     assert response.status_code != 302
     name_to_check = task_form_data['name']
     statuses_count = Task.objects.filter(name=name_to_check).count()
@@ -88,13 +87,15 @@ def test_upd_task(authenticated_client, task):
     original_name = task.name
     url = reverse('tasks:task_update', kwargs={'task_id': task.id})
     new_name = 'New name'
+    labels_ids = task.labels.values_list('id', flat=True)
     response = authenticated_client.post(url, data={
-        'author': task.author.id,
         'name': new_name,
         'description': task.description,
-        'status': task.status.id
+        'status': 1,
+        'labels': labels_ids,
     }, follow=True)
     assert response.status_code == 200
+    logger.info(f"Server response: {response.content.decode()}")
     updated_task = Task.objects.get(id=task.id)
     assert updated_task.name != original_name, "Название задачи не было обновлено"
     assert updated_task.name == new_name, "Название задачи не совпадает с отправленным"

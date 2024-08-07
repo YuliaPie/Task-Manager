@@ -5,6 +5,7 @@ from .models import Label
 from .forms import LabelForm
 from django.contrib import messages
 from django.urls import reverse
+from django.db.models import ProtectedError
 
 
 class IndexView(View):
@@ -119,6 +120,11 @@ class LabelDeleteView(View):
     def post(self, request, label_id):
         label = Label.objects.get(id=label_id)
         if label:
-            label.delete()
+            try:
+                label.delete()
+            except ProtectedError:
+                messages.error(request, 'Невозможно удалить метку, потому что она используется.',
+                               extra_tags='danger')
+                return redirect('labels:labels')
         messages.success(request, "Метка успешно удалена.")
         return redirect('labels:labels')

@@ -84,9 +84,12 @@ class TaskFormCreateView(View):
         logger.debug(form)
         if form.is_valid():
             author = request.user
+            labels = form.cleaned_data.get('labels')
             new_task = form.save(commit=False)
             new_task.author = author
             new_task.save()
+            if labels:
+                new_task.labels.set(labels)
             messages.success(request,
                              "Задача успешно добавлена",
                              extra_tags='success')
@@ -132,14 +135,22 @@ class TaskFormEditView(View):
                       {'form': form, 'action_url': action_url})
 
     def post(self, request, task_id):
+        logger.info(f"Updating task with id {task_id}")
         if not request.user.is_authenticated:
             messages.error(request,
                            "Вы не авторизованы! Пожалуйста, выполните вход.",
                            extra_tags='danger')
             return redirect_to_login(request.path, '/login/', 'next')
         task = get_object_or_404(Task, id=task_id)
+        author = task.author
         form = TaskForm(request.POST, instance=task)
         if form.is_valid():
+            labels = form.cleaned_data.get('labels')
+            updated_task = form.save(commit=False)
+            updated_task.author = author
+            updated_task.save()
+            if labels:
+                updated_task.labels.set(labels)
             form.save()
             messages.success(request,
                              "Задача успешно измененa",

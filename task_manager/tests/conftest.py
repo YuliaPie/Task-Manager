@@ -60,24 +60,27 @@ def status(db):
 
 
 @pytest.fixture
-def task_form_data(user, status):
+def task_form_data(user, status, label):
     form_data = {
         'author': user.id,
         'name': 'Test Task',
         'description': 'This is a test task.',
-        'status': status.id
+        'status': status.id,
+        'executor': user.id,
+        'labels': [label.id]
     }
     return form_data
 
 
 @pytest.fixture
-def task(user, status):
+def task(db, user, status, label):
     task = Task.objects.create_task(
         author=user,
         name='Test Task',
         description='Description of the test task',
-        status=status
+        status=status,
     )
+    task.labels.set([label.id])
     return task
 
 

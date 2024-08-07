@@ -3,6 +3,7 @@ from .models import Task, Status, CustomUser
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 import logging
+from task_manager.labels.models import Label
 
 
 logger = logging.getLogger(__name__)
@@ -15,10 +16,11 @@ NAME_EXISTS_ERROR = _("Задача с таким именем уже сущес
 class TaskForm(forms.ModelForm):
     status = forms.ChoiceField(choices=[], required=True)
     executor = forms.ModelChoiceField(queryset=None, required=False, empty_label="---------")
+    labels = forms.ModelMultipleChoiceField(queryset=Label.objects.all(), widget=forms.CheckboxSelectMultiple)
 
     class Meta:
         model = Task
-        fields = ['name', 'description', 'status', 'executor']
+        fields = ['name', 'description', 'status', 'executor', 'labels']
 
     def __init__(self, *args, **kwargs):
         super(TaskForm, self).__init__(*args, **kwargs)
@@ -42,9 +44,13 @@ class TaskForm(forms.ModelForm):
         self.fields['executor'].label = 'Исполнитель'
         self.fields['executor'].widget.attrs.update(
             {'placeholder': 'Исполнитель', 'required': False})
+        self.fields['labels'].label = 'Метки'
+        self.fields['labels'].widget.attrs.update(
+            {'placeholder': 'Метки', 'required': False})
 
     def clean(self):
         cleaned_data = super().clean()
+        logger.info(f"Cleaned data: {cleaned_data}")
         required_fields = ['name', 'status']
         for field in required_fields:
             if cleaned_data.get(field) is None:
@@ -77,6 +83,7 @@ class TaskForm(forms.ModelForm):
 class TaskFilterForm(forms.Form):
     status = forms.ChoiceField(required=False, label="Статус")
     executor = forms.ChoiceField(required=False, label="Исполнитель")
+    label = forms.ChoiceField(required=False, label="Метка")
     show_my_tasks = forms.BooleanField(required=False, label="Показать только мои задачи")
 
     def __init__(self, *args, **kwargs):
@@ -85,3 +92,5 @@ class TaskFilterForm(forms.Form):
                                                                Status.objects.all()]
         self.fields['executor'].choices = [("", "---------")] + [(user.id, f"{user.name} {user.surname}") for user in
                                                                  CustomUser.objects.all()]
+        self.fields['label'].choices = [("", "---------")] + [(label.id, label.name) for label in
+                                                                 Label.objects.all()]
