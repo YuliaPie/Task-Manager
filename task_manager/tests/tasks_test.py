@@ -19,6 +19,28 @@ def test_get_task_list(authenticated_client):
 
 
 @pytest.mark.urls('task_manager.urls')
+def test_task_filter_with_params(authenticated_client, user, task, task1, task2, label):
+    url = reverse('tasks:tasks')
+    response = authenticated_client.get(url)
+    assert response.status_code == 200
+    assert len(response.context['tasks']) == 3
+    response = authenticated_client.get(url, {'status': task.status.id})
+    assert response.status_code == 200
+    assert len(response.context['tasks']) == 2
+    assert response.context['tasks'][0].id == task.id
+    authenticated_client.login(username=user.username,
+                               password=user. password)
+    response = authenticated_client.get(url, {'show_my_tasks': 'true'})
+    assert response.status_code == 200
+    assert len(response.context['tasks']) == 2
+    assert set(task.id for task in response.context['tasks']) == {task.id, task2.id}
+    response = authenticated_client.get(url, {'label': label.id})
+    assert response.status_code == 200
+    assert len(response.context['tasks']) == 2
+    assert set(task.id for task in response.context['tasks']) == {task.id, task1.id}
+
+
+@pytest.mark.urls('task_manager.urls')
 def test_get_task_list_unauthorised(db):
     url = reverse('tasks:tasks')
     response = Client().get(url)
@@ -31,12 +53,7 @@ def test_get_task_list_unauthorised(db):
 @pytest.mark.urls('task_manager.urls')
 def test_create_task(db, authenticated_client, task_form_data):
     url = reverse('tasks:tasks_create')
-    logger.debug("Sending POST request to create task")
-    logger.debug(f"{task_form_data}")
     response = authenticated_client.post(url, task_form_data, follow=False)
-    logger.debug(f"Response status code: {response.status_code}")
-    logger.debug(f"{Task.objects.all()}")  # Проверяем, создана ли задача
-    logger.debug(f"{response}")
     assert response.status_code == 302
     assert Task.objects.filter(name=task_form_data['name']).exists()
 

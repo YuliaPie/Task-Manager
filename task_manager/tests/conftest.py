@@ -17,9 +17,9 @@ def user(db):
 @pytest.fixture
 def another_user(db):
     model = get_user_model()
-    user = model.objects.create_user(username='anotheruser',
-                                     password='anotherpass')
-    return user
+    another_user = model.objects.create_user(username='anotheruser',
+                                             password='anotherpass')
+    return another_user
 
 
 @pytest.fixture
@@ -60,6 +60,12 @@ def status(db):
 
 
 @pytest.fixture
+def another_status(db):
+    another_status = Status.objects.create_status(name='test1')
+    return another_status
+
+
+@pytest.fixture
 def task_form_data(user, status, label):
     form_data = {
         'author': user.id,
@@ -79,9 +85,34 @@ def task(db, user, status, label):
         name='Test Task',
         description='Description of the test task',
         status=status,
+        executor=user,
     )
     task.labels.set([label.id])
     return task
+
+
+@pytest.fixture
+def task1(db, another_user, status, label):
+    task1 = Task.objects.create_task(
+        author=another_user,
+        name='Test Task1',
+        description='Description of the test task1',
+        status=status,
+    )
+    task1.labels.set([label.id])
+    return task1
+
+
+@pytest.fixture
+def task2(db, user, another_status, another_label):
+    task2 = Task.objects.create_task(
+        author=user,
+        name='Test Task1',
+        description='Description of the test task2',
+        status=another_status,
+    )
+    task2.labels.set([another_label.id])
+    return task2
 
 
 @pytest.fixture(params=[{'name': 'test_status_name'}])
@@ -93,3 +124,9 @@ def label_form_data(request):
 def label(db):
     label = Label.objects.create_label(name='test')
     return label
+
+
+@pytest.fixture
+def another_label(db):
+    another_label = Label.objects.create_label(name='another_test')
+    return another_label

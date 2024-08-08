@@ -36,12 +36,15 @@ class IndexView(View):
         if filter_form.is_valid():
             status = filter_form.cleaned_data.get('status')
             executor = filter_form.cleaned_data.get('executor')
+            label_id = filter_form.cleaned_data.get('label')
             show_my_tasks = filter_form.cleaned_data.get('show_my_tasks')
             query = Q()
             if status:
                 query &= Q(status=status)
             if executor:
                 query &= Q(executor=executor)
+            if label_id:
+                query &= Q(labels__in=[label_id])
             if show_my_tasks:
                 query &= Q(author=request.user)
             tasks = tasks.filter(query).order_by('created_at')
@@ -49,7 +52,7 @@ class IndexView(View):
             context = {
                 'filter_form': filter_form,
                 'tasks': tasks,
-                'form_processed': True,  # Форма была обработана
+                'form_processed': True,
             }
 
         return render(request, 'tasks/task_list.html', context)
