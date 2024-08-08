@@ -1,5 +1,4 @@
 import pytest
-from ..tasks.forms import TaskForm
 from ..tasks.models import Task
 from django.test import Client
 from django.urls import reverse
@@ -19,7 +18,7 @@ def test_get_task_list(authenticated_client):
 
 
 @pytest.mark.urls('task_manager.urls')
-def test_task_filter_with_params(authenticated_client, user, task, task1, task2, label):
+def test_task_filter(authenticated_client, user, task, task1, task2, label):
     url = reverse('tasks:tasks')
     response = authenticated_client.get(url)
     assert response.status_code == 200
