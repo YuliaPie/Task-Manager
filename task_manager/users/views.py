@@ -44,9 +44,9 @@ class UserFormCreateView(View):
 
 class UserFormEditView(View):
     def get(self, request, user_id):
-        result = check_and_redirect_if_not_auth(request)
-        if result:
-            return result
+        is_authorised = check_and_redirect_if_not_auth(request)
+        if is_authorised:
+            return is_authorised
         user = get_object_or_404(CustomUser, id=user_id)
         if request.user.id != user.id:
             messages.error(request,
@@ -63,9 +63,9 @@ class UserFormEditView(View):
                       {'form': form, 'action_url': action_url})
 
     def post(self, request, user_id):
-        result = check_and_redirect_if_not_auth(request)
-        if result:
-            return result
+        is_authorised = check_and_redirect_if_not_auth(request)
+        if is_authorised:
+            return is_authorised
         user = get_object_or_404(CustomUser, id=user_id)
         if request.user.id != user.id:
             messages.error(request,
@@ -90,9 +90,9 @@ class UserFormEditView(View):
 
 
 def user_confirm_delete(request, user_id):
-    result = check_and_redirect_if_not_auth(request)
-    if result:
-        return result
+    is_authorised = check_and_redirect_if_not_auth(request)
+    if is_authorised:
+        return is_authorised
     user = get_object_or_404(CustomUser, id=user_id)
     if request.user.id != user.id:
         messages.error(request,

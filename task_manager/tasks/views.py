@@ -9,7 +9,6 @@ import logging
 from django.db.models import Q
 from task_manager.tools import check_and_redirect_if_not_auth
 
-
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
@@ -17,9 +16,9 @@ logger.setLevel(logging.DEBUG)
 class IndexView(View):
 
     def get(self, request, *args, **kwargs):
-        result = check_and_redirect_if_not_auth(request)
-        if result:
-            return result
+        is_unauthorised = check_and_redirect_if_not_auth(request)
+        if is_unauthorised:
+            return is_unauthorised
         filter_form = TaskFilterForm(request.GET or None)
 
         tasks = Task.objects.all().order_by('created_at')
@@ -57,21 +56,19 @@ class TaskFormCreateView(View):
     def get(self, request, *args, **kwargs):
         form = TaskForm()
         action_url = reverse('tasks:tasks_create')
-        result = check_and_redirect_if_not_auth(request)
-        if result:
-            return result
-        return render(request,
-                      'tasks/create.html',
-                      {'form': form, 'action_url': action_url})
+        return (check_and_redirect_if_not_auth(request)
+                or render(
+                    request,
+                    'tasks/create.html',
+                    {'form': form,
+                     'action_url': action_url}))
 
     def post(self, request, *args, **kwargs):
         action_url = reverse('tasks:tasks_create')
-        result = check_and_redirect_if_not_auth(request)
-        if result:
-            return result
-        logger.debug(request)
+        is_unauthorised = check_and_redirect_if_not_auth(request)
+        if is_unauthorised:
+            return is_unauthorised
         form = TaskForm(request.POST)
-        logger.debug(form)
         if form.is_valid():
             author = request.user
             labels = form.cleaned_data.get('labels')
@@ -94,13 +91,10 @@ class TaskFormCreateView(View):
 
 
 def task_info(request, task_id):
-    result = check_and_redirect_if_not_auth(request)
-    if result:
-        return result
-    task = Task.objects.get(id=task_id)
-    return render(request,
-                  'tasks/info.html',
-                  {'task': task})
+    return (check_and_redirect_if_not_auth(request)
+            or render(request,
+                      'tasks/info.html',
+                      {'task': Task.objects.get(id=task_id)}))
 
 
 class TaskFormEditView(View):
@@ -144,11 +138,10 @@ class TaskFormEditView(View):
 
 
 def task_confirm_delete(request, task_id):
-    result = check_and_redirect_if_not_auth(request)
-    if result:
-        return result
-    task = get_object_or_404(Task, id=task_id)
-    return render(request, 'tasks/task_confirm_delete.html', {'task': task})
+    return (check_and_redirect_if_not_auth(request)
+            or render(request,
+                      'tasks/task_confirm_delete.html',
+                      {'task': get_object_or_404(Task, id=task_id)}))
 
 
 class TaskDeleteView(View):
