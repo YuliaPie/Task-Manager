@@ -3,7 +3,6 @@ from django.core.exceptions import ValidationError
 from .models import CustomUser
 from django.utils.translation import gettext_lazy as _
 
-
 USERNAME_EXISTS_ERROR = _("Пользователь с таким именем уже существует.")
 PASSWORD_MISMATCH_ERROR = _("Введенные пароли не совпадают.")
 MINIMUM_PASSWORD_LENGTH_ERROR = _("Введённый пароль "
@@ -43,12 +42,12 @@ class UserForm(forms.ModelForm):
             {'placeholder': 'Имя пользователя'})
 
         self.fields['password'].label = 'Пароль'
-        self.fields['password'].help_text =\
+        self.fields['password'].help_text = \
             'Ваш пароль должен содержать как минимум 3 символа.'
         self.fields['password'].widget.attrs.update({'placeholder': 'Пароль'})
 
         self.fields['password2'].label = 'Подтверждение пароля'
-        self.fields['password2'].help_text =\
+        self.fields['password2'].help_text = \
             'Для подтверждения введите, пожалуйста, пароль ещё раз.'
         self.fields['password2'].widget.attrs.update(
             {'placeholder': 'Подтверждение пароля'})
@@ -58,12 +57,11 @@ class UserForm(forms.ModelForm):
         if self.instance.pk is None:
             if CustomUser.objects.filter(username=username).exists():
                 raise ValidationError(USERNAME_EXISTS_ERROR)
-        else:
-            if CustomUser.objects.exclude(
-                    pk=self.instance.pk
-            ).filter(username=username).exists():
-                raise ValidationError(USERNAME_EXISTS_ERROR)
-
+            return username
+        if CustomUser.objects.exclude(
+                pk=self.instance.pk
+        ).filter(username=username).exists():
+            raise ValidationError(USERNAME_EXISTS_ERROR)
         return username
 
     def clean(self):

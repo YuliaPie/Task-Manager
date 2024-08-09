@@ -14,14 +14,8 @@ def login_view(request):
     form_error = False
 
     if request.method == 'GET':
-        try:
-            del request.session['username']
-        except KeyError:
-            pass
-        form = LoginForm()
-        if 'username' in request.session:
-            form.fields['username'].initial =\
-                request.session.get('username', '')
+        clear_session_username(request)
+        form = initialize_login_form_with_session(request)
         return render(request, 'login.html', {'form': form})
 
     elif request.method == 'POST':
@@ -35,7 +29,7 @@ def login_view(request):
                 messages.success(request, 'Вы залогинены')
                 return redirect('main_page')
             else:
-                form_error = True  # Ошибка аутентификации
+                form_error = True
                 request.session['username'] = username
                 request.session.modified = True
         else:
@@ -46,7 +40,22 @@ def login_view(request):
             request.session.modified = True
 
         return render(request, 'login.html',
-                      {'form': form, 'form_error': form_error})
+                      {'form': form,
+                       'form_error': form_error})
+
+
+def clear_session_username(request):
+    try:
+        del request.session['username']
+    except KeyError:
+        pass
+
+
+def initialize_login_form_with_session(request):
+    form = LoginForm()
+    if 'username' in request.session:
+        form.fields['username'].initial = request.session.get('username', '')
+    return form
 
 
 def logout_view(request):

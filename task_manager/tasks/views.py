@@ -14,42 +14,44 @@ logger.setLevel(logging.DEBUG)
 
 
 class IndexView(View):
-
     def get(self, request, *args, **kwargs):
         is_unauthorised = check_and_redirect_if_not_auth(request)
         if is_unauthorised:
             return is_unauthorised
-        filter_form = TaskFilterForm(request.GET or None)
 
-        tasks = Task.objects.all().order_by('created_at')
+        filter_form = TaskFilterForm(request.GET or None)
+        tasks = Task.objects.all()
+        author = request.user
+        tasks = filter_tasks(tasks, filter_form, author)
+
         context = {
             'filter_form': filter_form,
             'tasks': tasks,
-            'form_processed': False,
+            'form_processed': filter_form.is_valid(),
         }
-        if filter_form.is_valid():
-            status = filter_form.cleaned_data.get('status')
-            executor = filter_form.cleaned_data.get('executor')
-            label_id = filter_form.cleaned_data.get('label')
-            show_my_tasks = filter_form.cleaned_data.get('show_my_tasks')
-            query = Q()
-            if status:
-                query &= Q(status=status)
-            if executor:
-                query &= Q(executor=executor)
-            if label_id:
-                query &= Q(labels__in=[label_id])
-            if show_my_tasks:
-                query &= Q(author=request.user)
-            tasks = tasks.filter(query).order_by('created_at')
-
-            context = {
-                'filter_form': filter_form,
-                'tasks': tasks,
-                'form_processed': True,
-            }
 
         return render(request, 'tasks/task_list.html', context)
+
+
+def filter_tasks(tasks, filter_form, author):
+    query = Q()
+    if filter_form.is_valid():
+        status = filter_form.cleaned_data.get('status')
+        executor = filter_form.cleaned_data.get('executor')
+        label_id = filter_form.cleaned_data.get('label')
+        show_my_tasks = filter_form.cleaned_data.get('show_my_tasks')
+
+        if status:
+            query &= Q(status=status)
+        if executor:
+            query &= Q(executor=executor)
+        if label_id:
+            query &= Q(labels__in=[label_id])
+        if show_my_tasks:
+            query &= Q(author=author)
+
+        return tasks.filter(query).order_by('created_at')
+    return tasks.order_by('created_at')
 
 
 class TaskFormCreateView(View):

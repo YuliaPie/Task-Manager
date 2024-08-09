@@ -83,11 +83,10 @@ class TaskForm(forms.ModelForm):
         if self.instance.pk is None:
             if Task.objects.filter(name=name).exists():
                 raise ValidationError(NAME_EXISTS_ERROR)
-        else:
-            if Task.objects.exclude(
-                    pk=self.instance.pk
-            ).filter(name=name).exists():
-                raise ValidationError(NAME_EXISTS_ERROR)
+            return name
+        if Task.objects.exclude(
+                pk=self.instance.pk).filter(name=name).exists():
+            raise ValidationError(NAME_EXISTS_ERROR)
         return name
 
 

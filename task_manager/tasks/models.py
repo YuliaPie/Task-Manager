@@ -8,16 +8,10 @@ from django.dispatch import receiver
 
 
 class TaskManager(models.Manager):
-    def create_task(self, author, name, status, description=None,
-                    executor=None, labels=None):
-        task = self.model(author=author,
-                          name=name,
-                          description=description,
-                          status=status,
-                          executor=executor
-                          )
-        if labels:
-            task.labels.set(labels)
+    def create_task(self, **kwargs):
+        task = self.model(**kwargs)
+        if 'labels' in kwargs:
+            task.labels.set(kwargs['labels'])
         task.save()
         return task
 
