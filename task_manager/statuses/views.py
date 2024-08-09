@@ -5,19 +5,16 @@ from .models import Status
 from .forms import StatusForm
 from django.contrib import messages
 from django.urls import reverse
+from task_manager.tools import check_and_redirect_if_not_auth
 
 
 class IndexView(View):
 
     def get(self, request, *args, **kwargs):
         statuses = Status.objects.all()
-        if not request.user.is_authenticated:
-            messages.error(request,
-                           "Вы не авторизованы! Пожалуйста, выполните вход.",
-                           extra_tags='danger')
-            return redirect_to_login(request.path,
-                                     '/login/',
-                                     'next')
+        result = check_and_redirect_if_not_auth(request)
+        if result:
+            return result
         return render(request, 'statuses/status_list.html', context={
             'statuses': statuses,
         })
@@ -27,13 +24,9 @@ class StatusFormCreateView(View):
     def get(self, request, *args, **kwargs):
         form = StatusForm()
         action_url = reverse('statuses:statuses_create')
-        if not request.user.is_authenticated:
-            messages.error(request,
-                           "Вы не авторизованы! Пожалуйста, выполните вход.",
-                           extra_tags='danger')
-            return redirect_to_login(request.path,
-                                     '/login/',
-                                     'next')
+        result = check_and_redirect_if_not_auth(request)
+        if result:
+            return result
         return render(request,
                       'statuses/create.html',
                       {'form': form, 'action_url': action_url})
@@ -41,13 +34,9 @@ class StatusFormCreateView(View):
     def post(self, request, *args, **kwargs):
         form = StatusForm(request.POST)
         action_url = reverse('statuses:statuses_create')
-        if not request.user.is_authenticated:
-            messages.error(request,
-                           "Вы не авторизованы! Пожалуйста, выполните вход.",
-                           extra_tags='danger')
-            return redirect_to_login(request.path,
-                                     '/login/',
-                                     'next')
+        result = check_and_redirect_if_not_auth(request)
+        if result:
+            return result
         if form.is_valid():
             new_status = form.save(commit=False)
             new_status.save()
@@ -64,13 +53,9 @@ class StatusFormCreateView(View):
 
 class StatusFormEditView(View):
     def get(self, request, status_id):
-        if not request.user.is_authenticated:
-            messages.error(request,
-                           "Вы не авторизованы! Пожалуйста, выполните вход.",
-                           extra_tags='danger')
-            return redirect_to_login(request.path,
-                                     '/login/',
-                                     'next')
+        result = check_and_redirect_if_not_auth(request)
+        if result:
+            return result
         status = get_object_or_404(Status, id=status_id)
         form = StatusForm(instance=status)
         action_url = reverse('statuses:statuses_update',
@@ -80,11 +65,9 @@ class StatusFormEditView(View):
                       {'form': form, 'action_url': action_url})
 
     def post(self, request, status_id):
-        if not request.user.is_authenticated:
-            messages.error(request,
-                           "Вы не авторизованы! Пожалуйста, выполните вход.",
-                           extra_tags='danger')
-            return redirect_to_login(request.path, '/login/', 'next')
+        result = check_and_redirect_if_not_auth(request)
+        if result:
+            return result
         status = get_object_or_404(Status, id=status_id)
         form = StatusForm(request.POST, instance=status)
         if form.is_valid():
@@ -103,11 +86,9 @@ class StatusFormEditView(View):
 
 
 def status_confirm_delete(request, status_id):
-    if not request.user.is_authenticated:
-        messages.error(request,
-                       "Вы не авторизованы! Пожалуйста, выполните вход.",
-                       extra_tags='danger')
-        return redirect_to_login(request.path, '/login/', 'next')
+    result = check_and_redirect_if_not_auth(request)
+    if result:
+        return result
     status = get_object_or_404(Status, id=status_id)
     return render(request,
                   'statuses/status_confirm_delete.html',

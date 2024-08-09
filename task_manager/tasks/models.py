@@ -14,7 +14,7 @@ class TaskManager(models.Manager):
                           name=name,
                           description=description,
                           status=status,
-                          executor=executor  # Добавлена закрывающая скобка здесь
+                          executor=executor
                           )
         if labels:
             task.labels.set(labels)
@@ -37,7 +37,8 @@ class Task(models.Model):
     description = models.TextField(blank=True)
     status = models.ForeignKey(Status, on_delete=models.CASCADE,
                                related_name='tasks', default=1)
-    labels = models.ManyToManyField(Label, through='TaskLabel', related_name='tasks')
+    labels = models.ManyToManyField(Label,
+                                    through='TaskLabel', related_name='tasks')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = TaskManager()
@@ -64,5 +65,8 @@ def prevent_user_deletion(sender, instance, **kwargs):
 
 
 class TaskLabel(models.Model):
-    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='task_labels')
-    label = models.ForeignKey(Label, on_delete=models.PROTECT, related_name='task_labels')
+    task = models.ForeignKey(Task, on_delete=models.CASCADE,
+                             related_name='task_labels')
+    label = models.ForeignKey(Label,
+                              on_delete=models.PROTECT,
+                              related_name='task_labels')

@@ -1,24 +1,20 @@
-from django.contrib.auth.views import redirect_to_login
+from django.db.models import ProtectedError
 from django.views.generic import View
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Label
 from .forms import LabelForm
 from django.contrib import messages
 from django.urls import reverse
-from django.db.models import ProtectedError
+from task_manager.tools import check_and_redirect_if_not_auth
 
 
 class IndexView(View):
 
     def get(self, request, *args, **kwargs):
         labels = Label.objects.all()
-        if not request.user.is_authenticated:
-            messages.error(request,
-                           "Вы не авторизованы! Пожалуйста, выполните вход.",
-                           extra_tags='danger')
-            return redirect_to_login(request.path,
-                                     '/login/',
-                                     'next')
+        result = check_and_redirect_if_not_auth(request)
+        if result:
+            return result
         return render(request, 'labels/label_list.html', context={
             'labels': labels,
         })
@@ -28,13 +24,9 @@ class LabelFormCreateView(View):
     def get(self, request, *args, **kwargs):
         form = LabelForm()
         action_url = reverse('labels:labels_create')
-        if not request.user.is_authenticated:
-            messages.error(request,
-                           "Вы не авторизованы! Пожалуйста, выполните вход.",
-                           extra_tags='danger')
-            return redirect_to_login(request.path,
-                                     '/login/',
-                                     'next')
+        result = check_and_redirect_if_not_auth(request)
+        if result:
+            return result
         return render(request,
                       'labels/create.html',
                       {'form': form, 'action_url': action_url})
@@ -42,13 +34,9 @@ class LabelFormCreateView(View):
     def post(self, request, *args, **kwargs):
         form = LabelForm(request.POST)
         action_url = reverse('labels:labels_create')
-        if not request.user.is_authenticated:
-            messages.error(request,
-                           "Вы не авторизованы! Пожалуйста, выполните вход.",
-                           extra_tags='danger')
-            return redirect_to_login(request.path,
-                                     '/login/',
-                                     'next')
+        result = check_and_redirect_if_not_auth(request)
+        if result:
+            return result
         if form.is_valid():
             new_label = form.save(commit=False)
             new_label.save()
@@ -65,13 +53,9 @@ class LabelFormCreateView(View):
 
 class LabelFormEditView(View):
     def get(self, request, label_id):
-        if not request.user.is_authenticated:
-            messages.error(request,
-                           "Вы не авторизованы! Пожалуйста, выполните вход.",
-                           extra_tags='danger')
-            return redirect_to_login(request.path,
-                                     '/login/',
-                                     'next')
+        result = check_and_redirect_if_not_auth(request)
+        if result:
+            return result
         label = get_object_or_404(Label, id=label_id)
         form = LabelForm(instance=label)
         action_url = reverse('labels:labels_update',
@@ -81,11 +65,9 @@ class LabelFormEditView(View):
                       {'form': form, 'action_url': action_url})
 
     def post(self, request, label_id):
-        if not request.user.is_authenticated:
-            messages.error(request,
-                           "Вы не авторизованы! Пожалуйста, выполните вход.",
-                           extra_tags='danger')
-            return redirect_to_login(request.path, '/login/', 'next')
+        result = check_and_redirect_if_not_auth(request)
+        if result:
+            return result
         label = get_object_or_404(Label, id=label_id)
         form = LabelForm(request.POST, instance=label)
         if form.is_valid():
@@ -104,11 +86,9 @@ class LabelFormEditView(View):
 
 
 def label_confirm_delete(request, label_id):
-    if not request.user.is_authenticated:
-        messages.error(request,
-                       "Вы не авторизованы! Пожалуйста, выполните вход.",
-                       extra_tags='danger')
-        return redirect_to_login(request.path, '/login/', 'next')
+    result = check_and_redirect_if_not_auth(request)
+    if result:
+        return result
     label = get_object_or_404(Label, id=label_id)
     return render(request,
                   'labels/label_confirm_delete.html',

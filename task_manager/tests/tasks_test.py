@@ -32,11 +32,13 @@ def test_task_filter(authenticated_client, user, task, task1, task2, label):
     response = authenticated_client.get(url, {'show_my_tasks': 'true'})
     assert response.status_code == 200
     assert len(response.context['tasks']) == 2
-    assert set(task.id for task in response.context['tasks']) == {task.id, task2.id}
+    assert set(task.id for task in
+               response.context['tasks']) == {task.id, task2.id}
     response = authenticated_client.get(url, {'label': label.id})
     assert response.status_code == 200
     assert len(response.context['tasks']) == 2
-    assert set(task.id for task in response.context['tasks']) == {task.id, task1.id}
+    assert set(task.id for task in
+               response.context['tasks']) == {task.id, task1.id}
 
 
 @pytest.mark.urls('task_manager.urls')
@@ -113,8 +115,10 @@ def test_upd_task(authenticated_client, task):
     assert response.status_code == 200
     logger.info(f"Server response: {response.content.decode()}")
     updated_task = Task.objects.get(id=task.id)
-    assert updated_task.name != original_name, "Название задачи не было обновлено"
-    assert updated_task.name == new_name, "Название задачи не совпадает с отправленным"
+    assert updated_task.name != original_name, \
+        "Название задачи не было обновлено"
+    assert updated_task.name == new_name, \
+        "Название задачи не совпадает с отправленным"
 
 
 @pytest.mark.urls('task_manager.urls')

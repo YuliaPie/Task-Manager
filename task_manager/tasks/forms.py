@@ -5,18 +5,26 @@ from django.utils.translation import gettext_lazy as _
 import logging
 from task_manager.labels.models import Label
 
-
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-
 
 NAME_EXISTS_ERROR = _("Задача с таким именем уже существует.")
 
 
 class TaskForm(forms.ModelForm):
-    status = forms.ChoiceField(choices=[], required=True)
-    executor = forms.ModelChoiceField(queryset=None, required=False, empty_label="---------")
-    labels = forms.ModelMultipleChoiceField(queryset=Label.objects.all(), widget=forms.CheckboxSelectMultiple)
+    status =\
+        forms.ChoiceField(
+            choices=[],
+            required=True)
+    executor =\
+        forms.ModelChoiceField(
+            queryset=None,
+            required=False,
+            empty_label="---------")
+    labels =\
+        forms.ModelMultipleChoiceField(
+            queryset=Label.objects.all(),
+            widget=forms.CheckboxSelectMultiple)
 
     class Meta:
         model = Task
@@ -24,8 +32,11 @@ class TaskForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(TaskForm, self).__init__(*args, **kwargs)
-        self.fields['status'].choices = [("", "---------")] + [(status.id, status.name) for status in
-                                                               Status.objects.all()]
+        self.fields['status'].choices \
+            = ([("", "---------")]
+               + [(status.id, status.name)
+                  for status in
+                  Status.objects.all()])
         self.fields['executor'].queryset = CustomUser.objects.all()
 
         if self.instance and self.instance.pk:
@@ -81,16 +92,36 @@ class TaskForm(forms.ModelForm):
 
 
 class TaskFilterForm(forms.Form):
-    status = forms.ChoiceField(required=False, label="Статус")
-    executor = forms.ChoiceField(required=False, label="Исполнитель")
-    label = forms.ChoiceField(required=False, label="Метка")
-    show_my_tasks = forms.BooleanField(required=False, label="Показать только мои задачи")
+    status \
+        = forms.ChoiceField(
+                    required=False,
+                    label="Статус")
+    executor \
+        = forms.ChoiceField(
+                    required=False,
+                    label="Исполнитель")
+    label \
+        = forms.ChoiceField(
+                    required=False,
+                    label="Метка")
+    show_my_tasks \
+        = forms.BooleanField(
+                    required=False,
+                    label="Показать только мои задачи")
 
     def __init__(self, *args, **kwargs):
         super(TaskFilterForm, self).__init__(*args, **kwargs)
-        self.fields['status'].choices = [("", "---------")] + [(status.id, status.name) for status in
-                                                               Status.objects.all()]
-        self.fields['executor'].choices = [("", "---------")] + [(user.id, f"{user.name} {user.surname}") for user in
-                                                                 CustomUser.objects.all()]
-        self.fields['label'].choices = [("", "---------")] + [(label.id, label.name) for label in
-                                                                 Label.objects.all()]
+        self.fields['status'].choices \
+            = ([("", "---------")]
+               + [(status.id,
+                   status.name) for status in
+                  Status.objects.all()])
+        self.fields['executor'].choices \
+            = ([("", "---------")]
+               + [(user.id,
+                   f"{user.name} {user.surname}") for user in
+                  CustomUser.objects.all()])
+        self.fields['label'].choices \
+            = ([("", "---------")]
+               + [(label.id, label.name) for label in
+                  Label.objects.all()])

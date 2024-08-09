@@ -1,10 +1,10 @@
-from django.contrib.auth.views import redirect_to_login
 from django.views.generic import View
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import CustomUser
 from .forms import UserForm
-from django.contrib import messages
 from django.urls import reverse
+from django.contrib import messages
+from task_manager.tools import check_and_redirect_if_not_auth
 
 
 class IndexView(View):
@@ -44,13 +44,9 @@ class UserFormCreateView(View):
 
 class UserFormEditView(View):
     def get(self, request, user_id):
-        if not request.user.is_authenticated:
-            messages.error(request,
-                           "Вы не авторизованы! Пожалуйста, выполните вход.",
-                           extra_tags='danger')
-            return redirect_to_login(request.path,
-                                     '/login/',
-                                     'next')
+        result = check_and_redirect_if_not_auth(request)
+        if result:
+            return result
         user = get_object_or_404(CustomUser, id=user_id)
         if request.user.id != user.id:
             messages.error(request,
@@ -67,11 +63,9 @@ class UserFormEditView(View):
                       {'form': form, 'action_url': action_url})
 
     def post(self, request, user_id):
-        if not request.user.is_authenticated:
-            messages.error(request,
-                           "Вы не авторизованы! Пожалуйста, выполните вход.",
-                           extra_tags='danger')
-            return redirect_to_login(request.path, '/login/', 'next')
+        result = check_and_redirect_if_not_auth(request)
+        if result:
+            return result
         user = get_object_or_404(CustomUser, id=user_id)
         if request.user.id != user.id:
             messages.error(request,
@@ -96,11 +90,9 @@ class UserFormEditView(View):
 
 
 def user_confirm_delete(request, user_id):
-    if not request.user.is_authenticated:
-        messages.error(request,
-                       "Вы не авторизованы! Пожалуйста, выполните вход.",
-                       extra_tags='danger')
-        return redirect_to_login(request.path, '/login/', 'next')
+    result = check_and_redirect_if_not_auth(request)
+    if result:
+        return result
     user = get_object_or_404(CustomUser, id=user_id)
     if request.user.id != user.id:
         messages.error(request,
