@@ -1,17 +1,21 @@
 from django.db import models
-from django.db.models import Model
 
 
-class CustomStatusManager(models.Manager):
-    def create_status(self, name, **extra_fields):
+class BaseModelManager(models.Manager):
+    def create_model_instance(self, name, **extra_fields):
         if not name:
             raise ValueError('The name field must be set')
-        status = self.model(name=name, **extra_fields)
-        status.save(using=self._db)
-        return status
+        model_instance = self.model(name=name, **extra_fields)
+        model_instance.save(using=self._db)
+        return model_instance
 
 
-class Status(Model):
+class CustomStatusManager(BaseModelManager):
+    def create_status(self, name, **extra_fields):
+        return self.create_model_instance(name, **extra_fields)
+
+
+class Status(models.Model):
     name = models.CharField(max_length=150, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
