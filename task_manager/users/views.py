@@ -76,6 +76,8 @@ class UserFormEditView(View):
         form = UserForm(request.POST, instance=user)
         if form.is_valid():
             user.set_password(form.cleaned_data.get('password'))
+            form.full_clean()
+            form.save()
             messages.success(request,
                              "Пользователь успешно изменен",
                              extra_tags='success')
