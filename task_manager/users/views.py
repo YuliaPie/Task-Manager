@@ -55,8 +55,8 @@ class UserFormEditView(View):
                            extra_tags='danger')
             return redirect('users:users')
         form = UserForm(instance=user)
-        form.initial['password'] = ''
-        form.initial['password2'] = ''
+        form.initial['password1'] = None
+        form.initial['password2'] = None
         action_url = reverse('users:users_update', kwargs={'user_id': user.id})
         return render(request,
                       'users/update.html',
