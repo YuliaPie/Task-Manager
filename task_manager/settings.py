@@ -67,7 +67,8 @@ DATABASES = {
 ALLOWED_HOSTS = [
     'python-project-52-41ik.onrender.com',
     '127.0.0.1',
-    'localhost'
+    'localhost',
+    'webserver'
 ]
 
 # Application definition

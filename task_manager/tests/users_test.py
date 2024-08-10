@@ -13,9 +13,9 @@ def test_create_user(form_data, db):
     Client().post(url, data=form_data)
     created_user = CustomUser.objects.get(username=form_data['username'])
     assert created_user.username == form_data['username']
-    assert check_password(form_data['password'], created_user.password)
-    assert created_user.name == form_data['name']
-    assert created_user.surname == form_data['surname']
+    assert check_password(form_data['password1'], created_user.password)
+    assert created_user.first_name == form_data['first_name']
+    assert created_user.last_name == form_data['last_name']
 
 
 @pytest.mark.urls('task_manager.urls')
@@ -33,7 +33,7 @@ def test_create_user_inv_data(invalid_form_data, db):
 def test_login(form_data):
     client = Client()
     username = form_data['username']
-    password = form_data['password']
+    password = form_data['password1']
     CustomUser.objects.create_user(username=username, password=password)
     url = reverse('login')
     response = client.post(url, {'username': username, 'password': password})
@@ -45,7 +45,7 @@ def test_login(form_data):
 def test_login_wrong_password(form_data):
     client = Client()
     username = form_data['username']
-    password = form_data['password']
+    password = form_data['password1']
     CustomUser.objects.create_user(username=username, password=password)
     url = reverse('login')
     response = client.post(url, {'username': username, 'password': 'wrong'})
@@ -57,7 +57,7 @@ def test_login_wrong_password(form_data):
 def test_login_wrong_username(form_data):
     client = Client()
     username = form_data['username']
-    password = form_data['password']
+    password = form_data['password1']
     CustomUser.objects.create_user(username=username, password=password)
     url = reverse('login')
     response = client.post(url, {'username': 'wrong', 'password': password})
@@ -116,21 +116,21 @@ def test_get_own_upd_page(authenticated_client, user):
 
 @pytest.mark.urls('task_manager.urls')
 def test_upd_user(authenticated_client, user, form_data):
-    original_name = user.name
-    original_surname = user.surname
+    original_first_name = user.first_name
+    original_last_name = user.last_name
     url = reverse('users:users_update', kwargs={'user_id': user.id})
     response = authenticated_client.post(url, data=form_data, follow=True)
     assert response.status_code == 200
     updated_user = CustomUser.objects.get(id=user.id)
-    new_name = updated_user.name
-    new_surname = updated_user.surname
-    assert new_name != original_name, \
+    new_first_name = updated_user.first_name
+    new_last_name = updated_user.last_name
+    assert new_first_name != original_first_name, \
         "Имя пользователя не было обновлено"
-    assert new_surname != original_surname, \
+    assert new_last_name != original_last_name, \
         "Фамилия пользователя не была обновлена"
-    assert new_name == form_data['name'], \
+    assert new_first_name == form_data['first_name'], \
         "Имя пользователя не совпадает с отправленным"
-    assert new_surname == form_data['surname'], \
+    assert new_last_name == form_data['last_name'], \
         "Фамилия пользователя не совпадает с отправленной"
 
 
@@ -142,9 +142,9 @@ def test_upd_inv_data(user, invalid_form_data):
     response = client.post(action_url, data=invalid_form_data, follow=True)
     assert response.status_code == 200
     updated_user = CustomUser.objects.get(id=user.id)
-    assert updated_user.name == user.name, \
+    assert updated_user.first_name == user.first_name, \
         "Имя пользователя должно остаться неизменным"
-    assert updated_user.surname == user.surname, \
+    assert updated_user.last_name == user.last_name, \
         "Фамилия пользователя должна остаться неизменной"
 
 

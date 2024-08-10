@@ -118,7 +118,7 @@ class TaskFilterForm(forms.Form):
         self.fields['executor'].choices \
             = ([("", "---------")]
                + [(user.id,
-                   f"{user.name} {user.surname}") for user in
+                   f"{user.first_name} {user.last_name}") for user in
                   CustomUser.objects.all()])
         self.fields['label'].choices \
             = ([("", "---------")]

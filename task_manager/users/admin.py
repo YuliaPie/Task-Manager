@@ -5,6 +5,6 @@ from .models import CustomUser
 
 @admin.register(CustomUser)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('name', 'surname', 'username')
-    search_fields = ['name', 'surname', 'username']
+    list_display = ('first_name', 'last_name', 'username')
+    search_fields = ['first_name', 'last_name', 'username']
     list_filter = (('created_at', DateFieldListFilter),)

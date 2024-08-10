@@ -29,7 +29,7 @@ class UserFormCreateView(View):
         action_url = reverse('users:users_create')
         if form.is_valid():
             new_user = form.save(commit=False)
-            new_user.set_password(form.cleaned_data.get('password'))
+            new_user.set_password(form.cleaned_data.get('password1'))
             new_user.save()
             messages.success(request,
                              "Пользователь успешно зарегистрирован",

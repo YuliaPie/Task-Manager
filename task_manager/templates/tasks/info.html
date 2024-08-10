@@ -18,13 +18,13 @@
     <div class="container">
       <div class="row p-1">
         <div class="col">Автор</div>
-        <div class="col">{{ task.author.name }} {{ task.author.surname }}</div>
+        <div class="col">{{ task.author.first_name }} {{ task.author.last_name }}</div>
       </div>
       <div class="row p-1">
         <div class="col">Исполнитель</div>
         <div class="col">
           {% if task.executor %}
-    {{ task.executor.name }} {{ task.executor.surname }}
+    {{ task.executor.first_name }} {{ task.executor.last_name }}
 
 {% else %}
     None

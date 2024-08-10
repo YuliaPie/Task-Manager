@@ -12,7 +12,7 @@ MINIMUM_PASSWORD_LENGTH_ERROR = _("Введённый пароль "
 
 
 class UserForm(forms.ModelForm):
-    password = forms.CharField(
+    password1 = forms.CharField(
         widget=forms.PasswordInput(
             render_value=True
         ), required=True, initial='')
@@ -23,15 +23,15 @@ class UserForm(forms.ModelForm):
 
     class Meta:
         model = CustomUser
-        fields = ['name', 'surname', 'username', 'password', 'password2']
+        fields = ['first_name', 'last_name', 'username', 'password1', 'password2']
 
     def __init__(self, *args, **kwargs):
         super(UserForm, self).__init__(*args, **kwargs)
-        self.fields['name'].label = 'Имя'
-        self.fields['name'].widget.attrs.update({'placeholder': 'Имя'})
+        self.fields['first_name'].label = 'Имя'
+        self.fields['first_name'].widget.attrs.update({'placeholder': 'Имя'})
 
-        self.fields['surname'].label = 'Фамилия'
-        self.fields['surname'].widget.attrs.update({'placeholder': 'Фамилия'})
+        self.fields['last_name'].label = 'Фамилия'
+        self.fields['last_name'].widget.attrs.update({'placeholder': 'Фамилия'})
 
         self.fields['username'].label = 'Имя пользователя'
         self.fields['username'].help_text = (
@@ -41,10 +41,10 @@ class UserForm(forms.ModelForm):
         self.fields['username'].widget.attrs.update(
             {'placeholder': 'Имя пользователя'})
 
-        self.fields['password'].label = 'Пароль'
-        self.fields['password'].help_text = \
+        self.fields['password1'].label = 'Пароль'
+        self.fields['password1'].help_text = \
             'Ваш пароль должен содержать как минимум 3 символа.'
-        self.fields['password'].widget.attrs.update({'placeholder': 'Пароль'})
+        self.fields['password1'].widget.attrs.update({'placeholder': 'Пароль'})
 
         self.fields['password2'].label = 'Подтверждение пароля'
         self.fields['password2'].help_text = \
@@ -66,7 +66,7 @@ class UserForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super().clean()
-        password = cleaned_data.get('password')
+        password = cleaned_data.get('password1')
         password2 = cleaned_data.get('password2')
         if password and password2 and password != password2:
             raise ValidationError({
@@ -80,7 +80,7 @@ class UserForm(forms.ModelForm):
 
     def save(self, commit=True):
         user = super(UserForm, self).save(commit=False)
-        user.set_password(self.cleaned_data["password"])
+        user.set_password(self.cleaned_data["password1"])
         if commit:
             user.save()
         return user

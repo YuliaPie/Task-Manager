@@ -33,17 +33,17 @@ def authenticated_client(client, user):
     return client
 
 
-@pytest.fixture(params=[{'name': 'testname',
-                         'surname': 'testsurname',
+@pytest.fixture(params=[{'first_name': 'test_first_name',
+                         'last_name': 'test_last_name',
                          'username': 'testuser',
-                         'password': 'testpassword',
+                         'password1': 'testpassword',
                          'password2': 'testpassword'}])
 def form_data(request):
     return request.param
 
 
-@pytest.fixture(params=[{'name': 'ok', 'surname': 'ok', 'username': '*bad',
-                         'password': '1', 'password2': '2'}])
+@pytest.fixture(params=[{'first_name': 'ok', 'last_name': 'ok', 'username': '*bad',
+                         'password1': '1', 'password2': '2'}])
 def invalid_form_data(request):
     return request.param
 
