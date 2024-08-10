@@ -15,7 +15,9 @@
                 name="{{ field.name }}"
                 class="flex-fill form-control {% if field.errors %}is-invalid{% endif %}{% if form.errors and not field.errors %}is-valid{% endif %}"
                 placeholder="{{ field.field.widget.attrs.placeholder|default_if_none:'' }}"
-                value="{{ field.value|default_if_none:'' }}"
+                        {% if field.value is not none %}
+            value="{{ field.value|default_if_none:'' }}"
+        {% endif %}
                 {% if field.name == 'password' or field.name == 'password2' %}
                     input type="password"
                 {% else %}
