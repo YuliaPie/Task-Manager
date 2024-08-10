@@ -69,14 +69,13 @@ class UserFormEditView(View):
         user = get_object_or_404(CustomUser, id=user_id)
         if request.user.id != user.id:
             messages.error(request,
-                           "У вас нет прав для"
-                           " изменения другого пользователя.",
+                           "У вас нет прав для изменения другого пользователя.",
                            extra_tags='danger')
             return redirect('users:users')
+
         form = UserForm(request.POST, instance=user)
         if form.is_valid():
             user.set_password(form.cleaned_data.get('password'))
-            form.save()
             messages.success(request,
                              "Пользователь успешно изменен",
                              extra_tags='success')

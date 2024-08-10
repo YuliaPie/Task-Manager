@@ -18,7 +18,7 @@
                         {% if field.value is not none %}
             value="{{ field.value|default_if_none:'' }}"
         {% endif %}
-                {% if field.name == 'password' or field.name == 'password2' %}
+                {% if field.name == 'password1' or field.name == 'password2' %}
                     input type="password"
                 {% else %}
                     input type="text"
