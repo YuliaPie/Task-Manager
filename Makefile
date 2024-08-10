@@ -1,6 +1,7 @@
-build:
+install:
 	poetry install
-
+build:
+	./build.sh
 start:
 	poetry run gunicorn task_manager.wsgi --log-file -
 
@@ -14,3 +15,5 @@ test:
 migrations:
 	python manage.py makemigrations
 	python manage.py migrate
+package-install:
+	python -m pip install --user dist/*.whl
