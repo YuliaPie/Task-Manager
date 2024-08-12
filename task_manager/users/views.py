@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.views.generic import View, UpdateView, CreateView
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import CustomUser
-from .forms import UserForm
+from .forms import UserForm, UserUpdateForm
 from django.urls import reverse_lazy
 from django.contrib import messages
 from task_manager.tools import check_and_redirect_if_not_auth
@@ -39,7 +39,7 @@ class UserCreateView(SuccessMessageMixin, CreateView):
 
 class UserUpdateView(UserPassesTestMixin, UpdateView, SuccessMessageMixin):
     model = CustomUser
-    form_class = UserForm
+    form_class = UserUpdateForm
     template_name = 'users/update.html'
     success_url = reverse_lazy('users:users')
     success_message = "Пользователь успешно изменен."

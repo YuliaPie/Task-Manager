@@ -84,3 +84,11 @@ class UserForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+
+
+class UserUpdateForm(UserForm):
+    password1 = forms.CharField(widget=forms.HiddenInput(), required=False)
+    password2 = forms.CharField(widget=forms.HiddenInput(), required=False)
+
+    class Meta(UserForm.Meta):
+        fields = UserForm.Meta.fields + ['password1', 'password2']
