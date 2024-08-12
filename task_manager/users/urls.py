@@ -9,8 +9,8 @@ app_name = 'users'
 
 urlpatterns = [
     path('', IndexView.as_view(), name='users'),
-    path('create/',UserCreateView.as_view(), name='users_create'),
-    path('update/<int:pk>/',
+    path('create/', UserCreateView.as_view(), name='users_create'),
+    path('<int:pk>/update/',
          UserUpdateView.as_view(),
          name='users_update'),
     path('<int:user_id>/delete/',
