@@ -2,6 +2,7 @@
 {% load i18n %}
 {% block content %}
 <div class="container wrapper flex-grow-1">
+
 {% if messages %}
 <div class="container">
     <div class="row">
@@ -14,7 +15,6 @@
     </div>
 </div>
 {% endif %}
-
 
       <h1 class="my-4">
 
@@ -40,7 +40,7 @@
         <td>{{ user.first_name }} {{ user.last_name}}</td>
         <td>{{ user.created_at|date:"d.m.Y H:i" }}</td>
         <td>
-          <a href="{% url 'users:users_update' user.id %}">{% trans "Изменить" %}</a>
+          <a href="{% url 'users:users_update' user.pk %}">{% trans "Изменить" %}</a>
           <br>
            <a href="{% url 'users:users_confirm_delete' user.id %}">{% trans "Удалить" %}</a>
         </td>

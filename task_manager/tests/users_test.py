@@ -68,7 +68,7 @@ def test_login_wrong_username(form_data):
 @pytest.mark.urls('task_manager.urls')
 def test_get_upd_page_unauthorised(user, form_data):
     client = Client()
-    url = reverse('users:users_update', kwargs={'user_id': user.id})
+    url = reverse('users:users_update', kwargs={'pk': user.pk})
     with transaction.atomic():
         CustomUser.objects.filter(username=form_data['username']).delete()
     response = client.post(url, data=form_data, follow=True)
@@ -80,7 +80,7 @@ def test_get_upd_page_unauthorised(user, form_data):
 
 @pytest.mark.urls('task_manager.urls')
 def test_upd_another_user(authenticated_client, another_user, form_data):
-    url = reverse('users:users_update', kwargs={'user_id': another_user.id})
+    url = reverse('users:users_update', kwargs={'pk': another_user.pk})
     response = authenticated_client.post(url, data=form_data, follow=True)
     assert response.redirect_chain[-1][0] == reverse(
         'users:users'), ("Пользователь не был "
@@ -93,7 +93,7 @@ def test_upd_another_user(authenticated_client, another_user, form_data):
 
 @pytest.mark.urls('task_manager.urls')
 def test_get_another_user_upd_page(authenticated_client, another_user):
-    url = reverse('users:users_update', kwargs={'user_id': another_user.id})
+    url = reverse('users:users_update', kwargs={'pk': another_user.pk})
     response = authenticated_client.get(url)
     assert response.status_code == 302
     assert response.url == reverse('users:users'), \
@@ -107,7 +107,7 @@ def test_get_another_user_upd_page(authenticated_client, another_user):
 
 @pytest.mark.urls('task_manager.urls')
 def test_get_own_upd_page(authenticated_client, user):
-    url = reverse('users:users_update', kwargs={'user_id': user.id})
+    url = reverse('users:users_update', kwargs={'pk': user.pk})
     response = authenticated_client.get(url)
     assert response.status_code == 200
     messages = list(get_messages(response.wsgi_request))
@@ -118,7 +118,7 @@ def test_get_own_upd_page(authenticated_client, user):
 def test_upd_user(authenticated_client, user, form_data):
     original_first_name = user.first_name
     original_last_name = user.last_name
-    url = reverse('users:users_update', kwargs={'user_id': user.id})
+    url = reverse('users:users_update', kwargs={'pk': user.pk})
     response = authenticated_client.post(url, data=form_data, follow=True)
     assert response.status_code == 200
     updated_user = CustomUser.objects.get(id=user.id)
@@ -138,7 +138,7 @@ def test_upd_user(authenticated_client, user, form_data):
 def test_upd_inv_data(user, invalid_form_data):
     client = Client()
     client.force_login(user)
-    action_url = reverse('users:users_update', kwargs={'user_id': user.id})
+    action_url = reverse('users:users_update', kwargs={'pk': user.pk})
     response = client.post(action_url, data=invalid_form_data, follow=True)
     assert response.status_code == 200
     updated_user = CustomUser.objects.get(id=user.id)

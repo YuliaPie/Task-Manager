@@ -1,10 +1,17 @@
-from django.views.generic import View
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.messages.views import SuccessMessageMixin
+from django.db.models import ProtectedError
+from django.http import HttpResponseRedirect
+from django.views.generic import View, UpdateView, CreateView
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import CustomUser
 from .forms import UserForm
-from django.urls import reverse
+from django.urls import reverse_lazy
 from django.contrib import messages
 from task_manager.tools import check_and_redirect_if_not_auth
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class IndexView(View):
@@ -16,78 +23,53 @@ class IndexView(View):
         })
 
 
-class UserFormCreateView(View):
-    def get(self, request, *args, **kwargs):
-        form = UserForm()
-        action_url = reverse('users:users_create')
-        return render(request,
-                      'users/create.html',
-                      {'form': form, 'action_url': action_url})
+class UserCreateView(SuccessMessageMixin, CreateView):
+    model = CustomUser
+    form_class = UserForm
+    template_name = 'users/create.html'
+    success_url = reverse_lazy('login')
+    success_message = "Пользователь успешно зарегистрирован."
 
-    def post(self, request, *args, **kwargs):
-        form = UserForm(request.POST)
-        action_url = reverse('users:users_create')
-        if form.is_valid():
-            new_user = form.save(commit=False)
-            new_user.set_password(form.cleaned_data.get('password1'))
-            new_user.save()
-            messages.success(request,
-                             "Пользователь успешно зарегистрирован",
-                             extra_tags='success')
+    def form_valid(self, form):
+        logger.debug("Форма прошла валидацию")
+        response = super().form_valid(form)
+        logger.debug("Сообщение об успехе: %s", self.success_message)
+        return response
+
+
+class UserUpdateView(UserPassesTestMixin, UpdateView, SuccessMessageMixin):
+    model = CustomUser
+    form_class = UserForm
+    template_name = 'users/update.html'
+    success_url = reverse_lazy('users:users')
+    success_message = "Пользователь успешно изменен."
+
+    def form_valid(self, form):
+        logger.debug("Форма прошла валидацию")
+        response = super().form_valid(form)
+        logger.debug("Сообщение об успехе: %s", self.success_message)
+        return response
+
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            messages.error(
+                request,
+                "Вы не авторизованы! "
+                "Пожалуйста, выполните вход.", extra_tags='danger')
             return redirect('login')
-        else:
-            messages.error(request, None, extra_tags='danger')
-            return render(request,
-                          'users/create.html',
-                          {'form': form, 'action_url': action_url})
+        return super().dispatch(request, *args, **kwargs)
 
+    def test_func(self):
+        if self.request.user.pk != self.get_object().pk:
+            return False
+        return True
 
-class UserFormEditView(View):
-    def get(self, request, user_id):
-        is_authorised = check_and_redirect_if_not_auth(request)
-        if is_authorised:
-            return is_authorised
-        user = get_object_or_404(CustomUser, id=user_id)
-        if request.user.id != user.id:
-            messages.error(request,
-                           "У вас нет прав для "
-                           "изменения другого пользователя.",
-                           extra_tags='danger')
-            return redirect('users:users')
-        form = UserForm(instance=user)
-        form.initial['password1'] = None
-        form.initial['password2'] = None
-        action_url = reverse('users:users_update', kwargs={'user_id': user.id})
-        return render(request,
-                      'users/update.html',
-                      {'form': form, 'action_url': action_url})
-
-    def post(self, request, user_id):
-        is_authorised = check_and_redirect_if_not_auth(request)
-        if is_authorised:
-            return is_authorised
-        user = get_object_or_404(CustomUser, id=user_id)
-        if request.user.id != user.id:
-            messages.error(request,
-                           "У вас нет прав для изменения другого пользователя.",
-                           extra_tags='danger')
-            return redirect('users:users')
-
-        form = UserForm(request.POST, instance=user)
-        if form.is_valid():
-            user.set_password(form.cleaned_data.get('password'))
-            form.full_clean()
-            form.save()
-            messages.success(request,
-                             "Пользователь успешно изменен",
-                             extra_tags='success')
-            return redirect('users:users')
-        action_url = reverse('users:users_update', kwargs={'user_id': user.id})
-        messages.error(request, None, extra_tags='danger')
-        return render(request,
-                      'users/update.html',
-                      {'form': form,
-                       'action_url': action_url})
+    def handle_no_permission(self):
+        messages.error(
+            self.request,
+            "У вас нет прав для изменения другого пользователя.",
+            extra_tags='danger')
+        return HttpResponseRedirect(reverse_lazy('users:users'))
 
 
 def user_confirm_delete(request, user_id):
@@ -109,6 +91,13 @@ class UserDeleteView(View):
     def post(self, request, user_id):
         user = CustomUser.objects.get(id=user_id)
         if user:
-            user.delete()
+            try:
+                user.delete()
+            except ProtectedError:
+                messages.error(
+                    request,
+                    'Невозможно удалить пользователя, потому что он используется.',
+                    extra_tags='danger')
+                return redirect('users:users')
         messages.success(request, "Пользователь успешно удален.")
         return redirect('users:users')
