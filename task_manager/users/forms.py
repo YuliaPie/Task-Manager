@@ -87,8 +87,8 @@ class UserForm(forms.ModelForm):
 
 
 class UserUpdateForm(UserForm):
-    password1 = forms.CharField(widget=forms.HiddenInput(), required=False)
-    password2 = forms.CharField(widget=forms.HiddenInput(), required=False)
+    password1 = forms.CharField(widget=forms.TextInput(attrs={'type': 'password'}), required=True)
+    password2 = forms.CharField(widget=forms.TextInput(attrs={'type': 'password'}), required=True)
 
     class Meta(UserForm.Meta):
         fields = UserForm.Meta.fields + ['password1', 'password2']
