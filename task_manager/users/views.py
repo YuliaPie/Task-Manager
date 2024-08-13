@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.db.models import ProtectedError
 from django.http import HttpResponseRedirect
@@ -10,6 +10,7 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from task_manager.tools import check_and_redirect_if_not_auth
 import logging
+from django.contrib.auth.decorators import login_required
 
 logger = logging.getLogger(__name__)
 
@@ -18,9 +19,10 @@ class IndexView(View):
 
     def get(self, request, *args, **kwargs):
         users = CustomUser.objects.all()
-        return render(request, 'users/user_list.html', context={
-            'users': users,
-        })
+        return render(request, 'users/user_list.html',
+                      context={
+                          'users': users,
+                      })
 
 
 class UserCreateView(SuccessMessageMixin, CreateView):
@@ -30,46 +32,13 @@ class UserCreateView(SuccessMessageMixin, CreateView):
     success_url = reverse_lazy('login')
     success_message = "Пользователь успешно зарегистрирован."
 
-    def form_valid(self, form):
-        logger.debug("Форма прошла валидацию")
-        response = super().form_valid(form)
-        logger.debug("Сообщение об успехе: %s", self.success_message)
-        return response
 
-
-class UserUpdateView(UserPassesTestMixin, UpdateView, SuccessMessageMixin):
+class UserUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = CustomUser
     form_class = UserUpdateForm
     template_name = 'users/update.html'
     success_url = reverse_lazy('users:users')
     success_message = "Пользователь успешно изменен."
-
-    def form_valid(self, form):
-        logger.debug("Форма прошла валидацию")
-        response = super().form_valid(form)
-        logger.debug("Сообщение об успехе: %s", self.success_message)
-        return response
-
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            messages.error(
-                request,
-                "Вы не авторизованы! "
-                "Пожалуйста, выполните вход.", extra_tags='danger')
-            return redirect('login')
-        return super().dispatch(request, *args, **kwargs)
-
-    def test_func(self):
-        if self.request.user.pk != self.get_object().pk:
-            return False
-        return True
-
-    def handle_no_permission(self):
-        messages.error(
-            self.request,
-            "У вас нет прав для изменения другого пользователя.",
-            extra_tags='danger')
-        return HttpResponseRedirect(reverse_lazy('users:users'))
 
 
 def user_confirm_delete(request, user_id):
@@ -83,7 +52,9 @@ def user_confirm_delete(request, user_id):
                        extra_tags='danger')
         return redirect(
             'users:users')
-    return render(request, 'users/user_confirm_delete.html', {'user': user})
+    return render(request,
+                  'users/user_confirm_delete.html',
+                  {'user': user})
 
 
 class UserDeleteView(View):

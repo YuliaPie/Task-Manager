@@ -272,6 +272,16 @@ files = [
 Django = ">=4.2"
 
 [[package]]
+name = "django-login-required-middleware"
+version = "0.9.0"
+description = "Requires login to all requests through middleware."
+optional = false
+python-versions = "*"
+files = [
+    {file = "django-login-required-middleware-0.9.0.tar.gz", hash = "sha256:847ae9a69fd7a07618ed53192b3c06946af70a0caf6d0f4eb40a8f37593cd970"},
+]
+
+[[package]]
 name = "exceptiongroup"
 version = "1.2.2"
 description = "Backport of PEP 654 (exception groups)"
@@ -666,4 +676,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "9f88007cca62d858026408c288c601b02e4d08a2725fc522ded234ff05ffb2b5"
+content-hash = "a8cb2cdb43e5cf6060529eedd1ed1a22fa8996e072262145c223a24cc52e0c13"
