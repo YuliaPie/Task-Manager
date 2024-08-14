@@ -29,7 +29,7 @@ def test_task_filter(authenticated_client, user, task, task1, task2, label):
     assert response.context['tasks'][0].id == task.id
     authenticated_client.login(username=user.username,
                                password=user. password)
-    response = authenticated_client.get(url, {'show_my_tasks': 'true'})
+    response = authenticated_client.get(url, {'self_tasks': 'true'})
     assert response.status_code == 200
     assert len(response.context['tasks']) == 2
     assert set(task.id for task in

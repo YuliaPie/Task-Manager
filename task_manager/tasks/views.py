@@ -39,7 +39,7 @@ def filter_tasks(tasks, filter_form, author):
         status = filter_form.cleaned_data.get('status')
         executor = filter_form.cleaned_data.get('executor')
         label_id = filter_form.cleaned_data.get('label')
-        show_my_tasks = filter_form.cleaned_data.get('show_my_tasks')
+        self_tasks = filter_form.cleaned_data.get('self_tasks')
 
         if status:
             query &= Q(status=status)
@@ -47,7 +47,7 @@ def filter_tasks(tasks, filter_form, author):
             query &= Q(executor=executor)
         if label_id:
             query &= Q(labels__in=[label_id])
-        if show_my_tasks:
+        if self_tasks:
             query &= Q(author=author)
 
         return tasks.filter(query).order_by('created_at')

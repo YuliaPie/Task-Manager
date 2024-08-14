@@ -28,13 +28,17 @@
 <form class="form-inline center" method="get" action="">
     {% for field in filter_form %}
         <div class="mb-3">
-            {% if field.name == 'show_my_tasks' %}
+            {% if field.name == 'self_tasks' %}
+            <div class="form-check">
                 <input
+                    id = "{{ field.auto_id }}"
                     name="{{ field.name }}"
                     type="checkbox"
                     class="form-check-input mr-3 {% if form_processed %}is-valid{% endif %}"
+
                 >
                 <label for="{{ field.auto_id }}" class="form-check-label">Только свои задачи</label>
+                </div>
             {% else %}
             {{ field.label_tag }}
             <select name="{{ field.name }}" class="form-select {% if form_processed %}is-valid{% endif %}">

@@ -110,7 +110,7 @@ class TaskFilterForm(forms.Form):
         = forms.ChoiceField(
                     required=False,
                     label="Метка")
-    show_my_tasks \
+    self_tasks \
         = forms.BooleanField(
                     required=False,
                     label="Показать только мои задачи")
