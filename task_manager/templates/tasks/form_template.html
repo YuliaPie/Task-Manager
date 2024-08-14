@@ -12,7 +12,10 @@
         <div class="mb-3">
             <label class="form-label" for="{{ field.auto_id }}">{{ field.label }}</label>
             {% if field.field.choices %}
-            <select name="{{ field.name }}" class="form-select
+            <select
+                id="{{ field.auto_id }}"
+                name="{{ field.name }}"
+                class="form-select
 
             {% if field.errors %}is-invalid{% endif %}
             {% if form_errors and not field.errors %}is-valid{% endif %}"
@@ -28,6 +31,7 @@
             </select>
             {% elif field.name == 'description' %}
                 <textarea
+                    id="{{ field.auto_id }}"
                     name="{{ field.name }}"
                     class="form-control
                     {% if field.errors %}is-invalid{% endif %}
@@ -36,6 +40,7 @@
                     rows="3">{{ field.value|default_if_none:'' }}</textarea>
             {% else %}
                 <input
+                    id="{{ field.auto_id }}"
                     name="{{ field.name }}"
                     class="form-control
                     {% if field.errors %}is-invalid{% endif %}
