@@ -38,6 +38,11 @@ class TaskForm(forms.ModelForm):
                   for status in
                   Status.objects.all()])
         self.fields['executor'].queryset = CustomUser.objects.all()
+        self.fields['executor'].choices \
+            = ([("", "---------")]
+               + [(user.id,
+                   f"{user.first_name} {user.last_name}") for user in
+                  CustomUser.objects.all()])
         self.fields['executor'].initial = ""
 
         if self.instance and self.instance.pk:
