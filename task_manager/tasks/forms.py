@@ -38,6 +38,7 @@ class TaskForm(forms.ModelForm):
                   for status in
                   Status.objects.all()])
         self.fields['executor'].queryset = CustomUser.objects.all()
+        self.fields['executor'].initial = ""
 
         if self.instance and self.instance.pk:
             self.fields['status'].initial = self.instance.status.id
