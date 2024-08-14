@@ -34,7 +34,7 @@ class LabelFormCreateView(View):
             new_label = form.save(commit=False)
             new_label.save()
             messages.success(request,
-                             "Метка успешно добавлена",
+                             "Метка успешно создана",
                              extra_tags='success')
             return redirect('labels:labels')
         else:
