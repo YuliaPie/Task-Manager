@@ -80,7 +80,7 @@ class TaskFormCreateView(View):
             if labels:
                 new_task.labels.set(labels)
             messages.success(request,
-                             "Задача успешно добавлена",
+                             "Задача успешно создана",
                              extra_tags='success')
             return redirect('tasks:tasks')
         else:
