@@ -10,7 +10,7 @@
 
     {% for field in form %}
         <div class="mb-3">
-            {{ field.label_tag }}
+            <label class="form-label" for="{{ field.auto_id }}">{{ field.label }}</label>
             {% if field.field.choices %}
             <select name="{{ field.name }}" class="form-select
 
