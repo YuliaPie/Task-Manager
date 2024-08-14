@@ -15,10 +15,7 @@
             <select
                 id="{{ field.auto_id }}"
                 name="{{ field.name }}"
-                class="form-select
-
-            {% if field.errors %}is-invalid{% endif %}
-            {% if form_errors and not field.errors %}is-valid{% endif %}"
+                class="form-select{% if field.errors %}is-invalid{% endif %}{% if form_errors and not field.errors %}is-valid{% endif %}"
             {% if field.name == 'labels' %} multiple {% endif %}
             {% if field.name == 'status' %} required {% endif %}>
         {% for choice in field.field.choices %}
