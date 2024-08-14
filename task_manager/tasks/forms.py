@@ -24,7 +24,8 @@ class TaskForm(forms.ModelForm):
     labels =\
         forms.ModelMultipleChoiceField(
             queryset=Label.objects.all(),
-            widget=forms.CheckboxSelectMultiple)
+            widget=forms.CheckboxSelectMultiple,
+            required=False)
 
     class Meta:
         model = Task
