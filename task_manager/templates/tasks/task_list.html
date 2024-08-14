@@ -41,7 +41,10 @@
                 </div>
             {% else %}
             <label class="form-label" for="{{ field.auto_id }}">{{ field.label }}</label>
-            <select name="{{ field.name }}" class="form-select ml-2 mr-3 {% if form_processed %}is-valid{% endif %}">
+            <select
+                    name="{{ field.name }}"
+                    class="form-select ml-2 mr-3 {% if form_processed %}is-valid{% endif %}"
+                    id="{{ field.auto_id }}">
                 {% for choice in field.field.choices %}
                     <option value="{{ choice.0 }}">{{ choice.1 }}</option>
                 {% endfor %}
