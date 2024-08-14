@@ -40,8 +40,8 @@
                 <label for="{{ field.auto_id }}" class="form-check-label">Только свои задачи</label>
                 </div>
             {% else %}
-            {{ field.label_tag }}
-            <select name="{{ field.name }}" class="form-select {% if form_processed %}is-valid{% endif %}">
+            <label class="form-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+            <select name="{{ field.name }}" class="form-select ml-2 mr-3 {% if form_processed %}is-valid{% endif %}">
                 {% for choice in field.field.choices %}
                     <option value="{{ choice.0 }}">{{ choice.1 }}</option>
                 {% endfor %}
