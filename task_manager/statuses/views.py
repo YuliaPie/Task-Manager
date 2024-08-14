@@ -42,7 +42,7 @@ class StatusFormCreateView(View):
             new_status = form.save(commit=False)
             new_status.save()
             messages.success(request,
-                             "Статус успешно добавлен",
+                             "Статус успешно создан",
                              extra_tags='success')
             return redirect('statuses:statuses')
         else:
