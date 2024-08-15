@@ -10,12 +10,10 @@ from ..tasks.models import Task
 
 class IndexView(View):
     def get(self, request, *args, **kwargs):
-        statuses = Status.objects.all()
-        context = {'statuses': statuses}
-        return (
-            check_and_redirect_if_not_auth(request)
-            or render(request, 'statuses/status_list.html', context=context)
-        )
+        return (check_and_redirect_if_not_auth(request)
+                or render(request,
+                          'statuses/status_list.html',
+                          context={'statuses': Status.objects.all()}))
 
 
 class StatusFormCreateView(View):
