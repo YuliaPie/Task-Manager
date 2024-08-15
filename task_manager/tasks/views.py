@@ -140,10 +140,18 @@ class TaskFormEditView(View):
 
 
 def task_confirm_delete(request, task_id):
-    return (check_and_redirect_if_not_auth(request)
-            or render(request,
-                      'tasks/task_confirm_delete.html',
-                      {'task': get_object_or_404(Task, id=task_id)}))
+    result = check_and_redirect_if_not_auth(request)
+    if result:
+        return result
+    if not get_object_or_404(Task, id=task_id).author == request.user:
+        messages.error(
+            request,
+            'Задачу может удалить только ее автор',
+            extra_tags='danger')
+        return redirect('tasks:tasks')
+    render(request,
+           'tasks/task_confirm_delete.html',
+           {'task': get_object_or_404(Task, id=task_id)})
 
 
 class TaskDeleteView(View):
