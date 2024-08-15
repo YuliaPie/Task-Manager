@@ -98,22 +98,22 @@ class TaskForm(forms.ModelForm):
 
 
 class TaskFilterForm(forms.Form):
-    status \
-        = forms.ChoiceField(
-                    required=False,
-                    label="Статус")
-    executor \
-        = forms.ChoiceField(
-                    required=False,
-                    label="Исполнитель")
-    label \
-        = forms.ChoiceField(
-                    required=False,
-                    label="Метка")
-    self_tasks \
-        = forms.BooleanField(
-                    required=False,
-                    label="Показать только мои задачи")
+    status = forms.ChoiceField(
+        required=False,
+        label="Статус"
+    )
+    executor = forms.ChoiceField(
+        required=False,
+        label="Исполнитель"
+    )
+    label = forms.ChoiceField(
+        required=False,
+        label="Метка"
+    )
+    self_tasks = forms.BooleanField(
+        required=False,
+        label="Показать только мои задачи"
+    )
 
     def __init__(self, *args, **kwargs):
         super(TaskFilterForm, self).__init__(*args, **kwargs)
