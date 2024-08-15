@@ -5,6 +5,7 @@ from .forms import StatusForm
 from django.contrib import messages
 from django.urls import reverse
 from task_manager.tools import check_and_redirect_if_not_auth
+from ..tasks.models import Task
 
 
 class IndexView(View):
@@ -103,6 +104,12 @@ class StatusDeleteView(View):
     def post(self, request, status_id):
         status = Status.objects.get(id=status_id)
         if status:
+            if Task.objects.filter(status=status).exists():
+                messages.error(
+                    request,
+                    "Невозможно удалить статус, потому что он используется",
+                    extra_tags='danger')
+                return redirect('statuses:statuses')
             status.delete()
         messages.success(request, "Статус успешно удален.")
         return redirect('statuses:statuses')
