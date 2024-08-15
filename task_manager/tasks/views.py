@@ -128,7 +128,7 @@ class TaskFormEditView(View):
                 updated_task.labels.set(labels)
             form.save()
             messages.success(request,
-                             "Задача успешно измененa",
+                             "Задача успешно изменена",
                              extra_tags='success')
             return redirect('tasks:tasks')
         action_url = reverse('tasks:task_update', kwargs={'task_id': task.id})
