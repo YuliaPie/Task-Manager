@@ -14,7 +14,7 @@ class IndexView(View):
         if is_unauthorised:
             return is_unauthorised
         else:
-            statuses = Status.objects.all()
+            statuses = Status.objects.all()  # what's wrong with this line?
             return render(request,
                           'statuses/status_list.html',
                           {'statuses': statuses})
