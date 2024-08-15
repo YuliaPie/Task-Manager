@@ -9,6 +9,34 @@
     {% csrf_token %}
 
     {% for field in form %}
+        {% if field.name == 'labels' %}
+
+        <div class="mb-3">
+            <label class="form-label" for="{{ field.auto_id }}">Метки</label>
+            <select
+                id="{{ field.auto_id }}"
+                name="{{ field.name }}"
+                class="form-select{% if field.errors %}is-invalid{% endif %}
+                {% if form_errors and not field.errors %}is-valid{% endif %}"
+                multiple>
+                {% for choice in field.field.choices %}
+                    {% if choice.0 in field.value %}
+                        <option value="{{ choice.0 }}" selected>{{ choice.1 }}</option>
+                    {% else %}
+                        <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+                    {% endif %}
+                {% endfor %}
+
+            </select>
+            {% if field.errors %}
+                <div class="invalid-feedback">
+                    {% for error in field.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    {% else %}
         <div class="mb-3">
             <label class="form-label" for="{{ field.auto_id }}">{{ field.label }}</label>
             {% if field.field.choices %}
@@ -16,16 +44,16 @@
                 id="{{ field.auto_id }}"
                 name="{{ field.name }}"
                 class="form-select{% if field.errors %}is-invalid{% endif %}{% if form_errors and not field.errors %}is-valid{% endif %}"
-            {% if field.name == 'labels' %} multiple {% endif %}
             {% if field.name == 'status' %} required {% endif %}>
         {% for choice in field.field.choices %}
-            {% if field.value == choice.0 %}
+            {% if field.value|stringformat:"s" == choice.0|stringformat:"s" %}
                 <option value="{{ choice.0 }}" selected>{{ choice.1 }}</option>
             {% else %}
                 <option value="{{ choice.0 }}">{{ choice.1 }}</option>
             {% endif %}
         {% endfor %}
             </select>
+
             {% elif field.name == 'description' %}
                 <textarea
                     id="{{ field.auto_id }}"
@@ -56,6 +84,7 @@
                 </div>
             {% endif %}
         </div>
+    {% endif %}
     {% endfor %}
 
     {% block submit_button %}
