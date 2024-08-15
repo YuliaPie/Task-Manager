@@ -9,7 +9,6 @@ import logging
 from django.db.models import Q
 from task_manager.tools import check_and_redirect_if_not_auth
 
-
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
@@ -149,9 +148,9 @@ def task_confirm_delete(request, task_id):
             'Задачу может удалить только ее автор',
             extra_tags='danger')
         return redirect('tasks:tasks')
-    render(request,
-           'tasks/task_confirm_delete.html',
-           {'task': get_object_or_404(Task, id=task_id)})
+    return render(request,
+                  'tasks/task_confirm_delete.html',
+                  {'task': get_object_or_404(Task, id=task_id)})
 
 
 class TaskDeleteView(View):
@@ -160,5 +159,5 @@ class TaskDeleteView(View):
         task = Task.objects.get(id=task_id)
         if task:
             task.delete()
-        messages.success(request, "Задача успешно удалена.")
+        messages.success(request, "Задача успешно удалена")
         return redirect('tasks:tasks')
