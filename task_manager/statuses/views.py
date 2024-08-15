@@ -12,10 +12,10 @@ class IndexView(View):
     def get(self, request, *args, **kwargs):
         statuses = Status.objects.all()
         return (
-                check_and_redirect_if_not_auth(request)
-                or render(request,
-                          'statuses/status_list.html',
-                          context={'statuses': statuses}))
+            check_and_redirect_if_not_auth(request)
+            or render(request,
+                      'statuses/status_list.html',
+                      context={'statuses': statuses}))
 
 
 class StatusFormCreateView(View):
