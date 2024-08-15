@@ -24,7 +24,13 @@ class UserForm(UserCreationForm):
 
     class Meta:
         model = CustomUser
-        fields = ['first_name', 'last_name', 'username', 'password1', 'password2']
+        fields = [
+            'first_name',
+            'last_name',
+            'username',
+            'password1',
+            'password2'
+        ]
 
     def __init__(self, *args, **kwargs):
         super(UserForm, self).__init__(*args, **kwargs)
@@ -32,7 +38,8 @@ class UserForm(UserCreationForm):
         self.fields['first_name'].widget.attrs.update({'placeholder': 'Имя'})
 
         self.fields['last_name'].label = 'Фамилия'
-        self.fields['last_name'].widget.attrs.update({'placeholder': 'Фамилия'})
+        self.fields['last_name'].widget.attrs.update(
+            {'placeholder': 'Фамилия'})
 
         self.fields['username'].label = 'Имя пользователя'
         self.fields['username'].help_text = (
@@ -59,7 +66,9 @@ class UserForm(UserCreationForm):
             if CustomUser.objects.filter(username=username).exists():
                 raise ValidationError(USERNAME_EXISTS_ERROR)
         else:
-            if CustomUser.objects.exclude(pk=self.instance.pk).filter(username=username).exists():
+            if CustomUser.objects.exclude(
+                    pk=self.instance.pk).filter(
+                    username=username).exists():
                 raise ValidationError(USERNAME_EXISTS_ERROR)
         return username
 
@@ -75,8 +84,14 @@ class UserForm(UserCreationForm):
 
 
 class UserUpdateForm(UserForm):
-    password1 = forms.CharField(widget=forms.TextInput(attrs={'type': 'password'}), required=True)
-    password2 = forms.CharField(widget=forms.TextInput(attrs={'type': 'password'}), required=True)
+    password1 = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'type': 'password'}),
+        required=True)
+    password2 = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'type': 'password'}),
+        required=True)
 
     class Meta(UserForm.Meta):
         fields = UserForm.Meta.fields + ['password1', 'password2']

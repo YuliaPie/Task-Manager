@@ -22,7 +22,10 @@ class LabelFormCreateView(View):
                 or render(
                     request,
                     'labels/create.html',
-                    {'form': LabelForm(), 'action_url': reverse('labels:labels_create')}))
+                    {
+                        'form': LabelForm(),
+                        'action_url': reverse('labels:labels_create')
+                    }))
 
     def post(self, request, *args, **kwargs):
         form = LabelForm(request.POST)

@@ -42,8 +42,9 @@ def form_data(request):
     return request.param
 
 
-@pytest.fixture(params=[{'first_name': 'ok', 'last_name': 'ok', 'username': '*bad',
-                         'password1': '1', 'password2': '2'}])
+@pytest.fixture(params=[{
+    'first_name': 'ok', 'last_name': 'ok', 'username': '*bad',
+    'password1': '1', 'password2': '2'}])
 def invalid_form_data(request):
     return request.param
 

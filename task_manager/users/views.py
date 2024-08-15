@@ -1,9 +1,7 @@
-from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.core.exceptions import ImproperlyConfigured
 from django.db.models import ProtectedError
 from django.http import HttpResponseRedirect
-from django.utils.decorators import method_decorator
 from django.views.generic import View, UpdateView, CreateView
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import CustomUser
@@ -89,7 +87,8 @@ class UserDeleteView(View):
             except ProtectedError:
                 messages.error(
                     request,
-                    'Невозможно удалить пользователя, потому что он используется.',
+                    'Невозможно удалить пользователя, '
+                    'потому что он используется.',
                     extra_tags='danger')
                 return redirect('users:users')
         messages.success(request, "Пользователь успешно удален.")
