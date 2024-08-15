@@ -24,13 +24,15 @@ class StatusFormCreateView(View):
     def get(self, request, *args, **kwargs):
         form = StatusForm()
         action_url = reverse('statuses:statuses_create')
-        return (check_and_redirect_if_not_auth(request)
-                or
-                render(
-                    request,
-                    'statuses/create.html',
-                    {'form': form,
-                     'action_url': action_url}))
+        is_unauthorised = check_and_redirect_if_not_auth(request)
+        if is_unauthorised:
+            return is_unauthorised
+        else:
+            return render(
+                request,
+                'statuses/create.html',
+                {'form': form,
+                 'action_url': action_url})
 
     def post(self, request, *args, **kwargs):
         form = StatusForm(request.POST)
