@@ -23,40 +23,48 @@
       </h1>
 
 <a href="{% url 'tasks:tasks_create' %}" class="btn btn-primary mb-3">Создать задачу</a>
-<div class="card mb-3">
+    <div class="card mb-3">
   <div class="card-body bg-light">
-<form class="form-inline center" method="get" action="">
-    {% for field in filter_form %}
-        <div class="mb-3">
-            {% if field.name == 'self_tasks' %}
-            <div class="form-check">
-                <input
-                    id = "{{ field.auto_id }}"
-                    name="{{ field.name }}"
-                    type="checkbox"
-                    class="form-check-input mr-3 {% if form_processed %}is-valid{% endif %}"
 
-                >
-                <label for="{{ field.auto_id }}" class="form-check-label">Только свои задачи</label>
-                </div>
-            {% else %}
-            <label class="form-label" for="{{ field.auto_id }}">{{ field.label }}</label>
-            <select
-                    name="{{ field.name }}"
-                    class="form-select ml-2 mr-3 {% if form_processed %}is-valid{% endif %}"
-                    id="{{ field.auto_id }}">
-                {% for choice in field.field.choices %}
-                    <option value="{{ choice.0 }}">{{ choice.1 }}</option>
-                {% endfor %}
-            </select>
-            {% endif %}
+<form class="form-inline center" method="get" action="">
+{% for field in filter_form %}
+    <div class="mb-3">
+        {% if field.name == 'self_tasks' %}
+        <div class="form-check">
+            <input
+                id="{{ field.auto_id }}"
+                name="{{ field.name }}"
+                {% if field.value %}checked{% endif %}
+                type="checkbox"
+                class="form-check-input mr-3 {% if form_processed %}is-valid{% endif %}"
+            >
+            <label for="{{ field.auto_id }}" class="form-check-label">Только свои задачи</label>
         </div>
-    {% endfor %}
-    <button type="submit" class="btn btn-primary">Показать</button>
+        {% else %}
+        <label class="form-label" for="{{ field.auto_id }}">{{ field.label }}</label>
+        <select
+            name="{{ field.name }}"
+            class="form-select ml-2 mr-3 {% if form_processed %}is-valid{% endif %}"
+            id="{{ field.auto_id }}"
+            >
+      {% for choice in field.field.choices %}
+
+    {% if field.value|stringformat:"s" == choice.0|stringformat:"s" %}
+        <option value="{{ choice.0 }}" selected>{{ choice.1 }}</option>
+    {% else %}
+        <option value="{{ choice.0 }}">{{ choice.1 }}</option>
+    {% endif %}
+{% endfor %}
+        </select>
+        {% endif %}
+
+    </div>
+{% endfor %}
+<button type="submit" class="btn btn-primary">Показать</button>
 </form>
+
   </div>
 </div>
-
 <table class="table table-striped">
 <thead>
   <tr>

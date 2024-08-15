@@ -9,6 +9,7 @@ import logging
 from django.db.models import Q
 from task_manager.tools import check_and_redirect_if_not_auth
 
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
@@ -29,7 +30,6 @@ class IndexView(View):
             'tasks': tasks,
             'form_processed': filter_form.is_valid(),
         }
-
         return render(request, 'tasks/task_list.html', context)
 
 
