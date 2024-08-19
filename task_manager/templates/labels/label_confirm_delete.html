@@ -11,7 +11,7 @@
       </h1>
 
 <p>Вы уверены, что хотите удалить {{ label.name }}?</p>
-<form method="post" action="{% url 'labels:labels_delete' label.id %}">
+<form method="post" action="{% url 'labels:labels_delete' label.pk %}">
   {% csrf_token %}
   <input class="btn btn-danger" type="submit" value="Да, удалить">
 </form>

@@ -164,6 +164,8 @@ AUTH_USER_MODEL = 'users.CustomUser'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_AGE = 1200
 SESSION_SAVE_EVERY_REQUEST = True
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 

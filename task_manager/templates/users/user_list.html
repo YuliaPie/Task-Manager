@@ -49,7 +49,7 @@
         <td>
           <a href="{% url 'users:users_update' user.pk %}">{% trans "Изменить" %}</a>
           <br>
-           <a href="{% url 'users:users_confirm_delete' user.id %}">{% trans "Удалить" %}</a>
+           <a href="{% url 'users:users_delete' user.pk %}">{% trans "Удалить" %}</a>
         </td>
       </tr>
    {% endfor %}

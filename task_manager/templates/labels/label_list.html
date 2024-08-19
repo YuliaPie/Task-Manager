@@ -40,9 +40,9 @@
         <td>{{ label.name }}</td>
         <td>{{ label.created_at|date:"d.m.Y H:i" }}</td>
         <td>
-          <a href="{% url 'labels:labels_update' label.id %}">{% trans "Изменить" %}</a>
+          <a href="{% url 'labels:labels_update' label.pk %}">{% trans "Изменить" %}</a>
           <br>
-           <a href="{% url 'labels:labels_confirm_delete' label.id %}">{% trans "Удалить" %}</a>
+           <a href="{% url 'labels:labels_delete' label.pk %}">{% trans "Удалить" %}</a>
         </td>
       </tr>
    {% endfor %}

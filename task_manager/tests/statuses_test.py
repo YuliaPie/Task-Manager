@@ -57,7 +57,7 @@ def test_create_status_same_data(authenticated_client, status_form_data):
 @pytest.mark.urls('task_manager.urls')
 def test_get_statuses_upd_page_unauthorised(user, status):
     client = Client()
-    url = reverse('statuses:statuses_update', kwargs={'status_id': status.id})
+    url = reverse('statuses:statuses_update', kwargs={'pk': status.pk})
     response = client.get(url)
     assert response.status_code == 302
     next_url = response.url
@@ -67,7 +67,7 @@ def test_get_statuses_upd_page_unauthorised(user, status):
 
 @pytest.mark.urls('task_manager.urls')
 def test_get_statuses_upd_page(authenticated_client, status):
-    url = reverse('statuses:statuses_update', kwargs={'status_id': status.id})
+    url = reverse('statuses:statuses_update', kwargs={'pk': status.pk})
     response = authenticated_client.get(url)
     assert response.status_code == 200
     messages = list(get_messages(response.wsgi_request))
@@ -77,11 +77,11 @@ def test_get_statuses_upd_page(authenticated_client, status):
 @pytest.mark.urls('task_manager.urls')
 def test_upd_status(authenticated_client, status, status_form_data):
     original_name = status.name
-    url = reverse('statuses:statuses_update', kwargs={'status_id': status.id})
+    url = reverse('statuses:statuses_update', kwargs={'pk': status.pk})
     response = authenticated_client.post(url,
                                          data=status_form_data, follow=True)
     assert response.status_code == 200
-    updated_status = Status.objects.get(id=status.id)
+    updated_status = Status.objects.get(pk=status.pk)
     new_name = updated_status.name
     assert new_name != original_name, "Название статуса не было обновлено"
     assert new_name == status_form_data['name'], \
@@ -92,11 +92,11 @@ def test_upd_status(authenticated_client, status, status_form_data):
 def test_upd_inv_data(authenticated_client, status, status_form_data):
     original_name = status.name
     Status.objects.create_status(name=status_form_data['name'])
-    url = reverse('statuses:statuses_update', kwargs={'status_id': status.id})
+    url = reverse('statuses:statuses_update', kwargs={'pk': status.pk})
     response = authenticated_client.post(url,
                                          data=status_form_data, follow=True)
     assert response.status_code == 200
-    updated_status = Status.objects.get(id=status.id)
+    updated_status = Status.objects.get(pk=status.pk)
     assert updated_status.name == original_name, \
         "Имя пользователя должно остаться неизменным"
 
@@ -104,8 +104,8 @@ def test_upd_inv_data(authenticated_client, status, status_form_data):
 @pytest.mark.urls('task_manager.urls')
 def test_get_del_page_unauthorised(status):
     client = Client()
-    url = reverse('statuses:status_confirm_delete',
-                  kwargs={'status_id': status.id})
+    url = reverse('statuses:statuses_delete',
+                  kwargs={'pk': status.pk})
     response = client.get(url)
     assert response.status_code == 302
     next_url = response.url
@@ -115,8 +115,8 @@ def test_get_del_page_unauthorised(status):
 
 @pytest.mark.urls('task_manager.urls')
 def test_get_status_del_page(authenticated_client, status):
-    url = reverse('statuses:status_confirm_delete',
-                  kwargs={'status_id': status.id})
+    url = reverse('statuses:statuses_delete',
+                  kwargs={'pk': status.pk})
     response = authenticated_client.get(url)
     assert response.status_code == 200
     messages = list(get_messages(response.wsgi_request))
@@ -125,8 +125,7 @@ def test_get_status_del_page(authenticated_client, status):
 
 @pytest.mark.django_db(transaction=True)
 def test_can_delete_status(authenticated_client, status):
-    id = status.id
-    url = reverse('statuses:statuses_delete', kwargs={'status_id': status.id})
+    url = reverse('statuses:statuses_delete', kwargs={'pk': status.pk})
     authenticated_client.post(url)
-    deleted_status = Status.objects.filter(id=id)
+    deleted_status = Status.objects.filter(pk=status.pk)
     assert not deleted_status.exists(), "Статус не был удален"

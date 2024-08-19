@@ -1,2 +1,7 @@
 .env
 dist/
+empty_migrations.py
+.coveragerc
+.coverage
+.idea
+pycache

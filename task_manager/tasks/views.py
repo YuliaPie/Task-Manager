@@ -1,163 +1,90 @@
-from django.views.generic import View
-from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.messages.views import SuccessMessageMixin
+from django.views.generic import (CreateView,
+                                  ListView,
+                                  DetailView,
+                                  UpdateView,
+                                  DeleteView)
 from .models import Task
 from .forms import TaskForm
-from django.contrib import messages
-from django.urls import reverse
+from django.urls import reverse_lazy
 from .forms import TaskFilterForm
 import logging
 from django.db.models import Q
-from task_manager.tools import check_and_redirect_if_not_auth
+from task_manager.tools import AuthRequiredMixin, AuthorPermissionMixin
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 
-class IndexView(View):
-    def get(self, request, *args, **kwargs):
-        is_unauthorised = check_and_redirect_if_not_auth(request)
-        if is_unauthorised:
-            return is_unauthorised
+class TaskListView(AuthRequiredMixin, ListView):
+    model = Task
+    template_name = 'tasks/task_list.html'
+    context_object_name = 'tasks'
 
-        filter_form = TaskFilterForm(request.GET or None)
-        tasks = Task.objects.all()
-        author = request.user
-        tasks = filter_tasks(tasks, filter_form, author)
+    def get_queryset(self):
+        qs = super().get_queryset()
+        filter_form = TaskFilterForm(self.request.GET or None)
+        if filter_form.is_valid():
+            status = filter_form.cleaned_data.get('status')
+            executor = filter_form.cleaned_data.get('executor')
+            label_id = filter_form.cleaned_data.get('label')
+            self_tasks = filter_form.cleaned_data.get('self_tasks')
 
-        context = {
-            'filter_form': filter_form,
-            'tasks': tasks,
-            'form_processed': filter_form.is_valid(),
-        }
-        return render(request, 'tasks/task_list.html', context)
+            query = Q()
+            if status:
+                query &= Q(status=status)
+            if executor:
+                query &= Q(executor=executor)
+            if label_id:
+                query &= Q(labels__in=[label_id])
+            if self_tasks:
+                query &= Q(author=self.request.user)
 
+            return qs.filter(query).order_by('created_at')
+        return qs.order_by('created_at')
 
-def filter_tasks(tasks, filter_form, author):
-    query = Q()
-    if filter_form.is_valid():
-        status = filter_form.cleaned_data.get('status')
-        executor = filter_form.cleaned_data.get('executor')
-        label_id = filter_form.cleaned_data.get('label')
-        self_tasks = filter_form.cleaned_data.get('self_tasks')
-
-        if status:
-            query &= Q(status=status)
-        if executor:
-            query &= Q(executor=executor)
-        if label_id:
-            query &= Q(labels__in=[label_id])
-        if self_tasks:
-            query &= Q(author=author)
-
-        return tasks.filter(query).order_by('created_at')
-    return tasks.order_by('created_at')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['filter_form'] = TaskFilterForm(self.request.GET or None)
+        context['form_processed'] = context['filter_form'].is_valid()
+        return context
 
 
-class TaskFormCreateView(View):
-    def get(self, request, *args, **kwargs):
-        form = TaskForm()
-        action_url = reverse('tasks:tasks_create')
-        return (check_and_redirect_if_not_auth(request)
-                or render(
-                    request,
-                    'tasks/create.html',
-                    {'form': form,
-                     'action_url': action_url}))
+class TaskCreateView(AuthRequiredMixin,
+                     SuccessMessageMixin,
+                     CreateView):
+    model = Task
+    form_class = TaskForm
+    template_name = 'tasks/create.html'
+    success_url = reverse_lazy('tasks:tasks')
+    success_message = "Задача успешно создана"
 
-    def post(self, request, *args, **kwargs):
-        action_url = reverse('tasks:tasks_create')
-        is_unauthorised = check_and_redirect_if_not_auth(request)
-        if is_unauthorised:
-            return is_unauthorised
-        form = TaskForm(request.POST)
-        if form.is_valid():
-            author = request.user
-            labels = form.cleaned_data.get('labels')
-            new_task = form.save(commit=False)
-            new_task.author = author
-            new_task.save()
-            if labels:
-                new_task.labels.set(labels)
-            messages.success(request,
-                             "Задача успешно создана",
-                             extra_tags='success')
-            return redirect('tasks:tasks')
-        else:
-            messages.error(request, None, extra_tags='danger')
-            form_errors = form.errors
-            return render(request,
-                          'tasks/create.html',
-                          {'form': form, 'form_errors': form_errors,
-                           'action_url': action_url})
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
 
 
-def task_info(request, task_id):
-    return (check_and_redirect_if_not_auth(request)
-            or render(request,
-                      'tasks/info.html',
-                      {'task': Task.objects.get(id=task_id)}))
+class TaskDetailView(AuthRequiredMixin,
+                     DetailView):
+    model = Task
+    template_name = 'tasks/info.html'
 
 
-class TaskFormEditView(View):
-    def get(self, request, task_id):
-        result = check_and_redirect_if_not_auth(request)
-        if result:
-            return result
-        task = get_object_or_404(Task, id=task_id)
-        form = TaskForm(instance=task)
-        logger.debug(f"Form data: {form.as_p()}")
-        action_url = reverse('tasks:task_update', kwargs={'task_id': task.id})
-        return render(request,
-                      'tasks/update.html',
-                      {'form': form, 'action_url': action_url})
-
-    def post(self, request, task_id):
-        result = check_and_redirect_if_not_auth(request)
-        if result:
-            return result
-        task = get_object_or_404(Task, id=task_id)
-        author = task.author
-        form = TaskForm(request.POST, instance=task)
-        if form.is_valid():
-            labels = form.cleaned_data.get('labels')
-            updated_task = form.save(commit=False)
-            updated_task.author = author
-            updated_task.save()
-            if labels:
-                updated_task.labels.set(labels)
-            form.save()
-            messages.success(request,
-                             "Задача успешно изменена",
-                             extra_tags='success')
-            return redirect('tasks:tasks')
-        action_url = reverse('tasks:task_update', kwargs={'task_id': task.id})
-        messages.error(request, None, extra_tags='danger')
-        return render(request,
-                      'tasks/update.html',
-                      {'form': form,
-                       'action_url': action_url})
+class TaskEditView(AuthRequiredMixin,
+                   SuccessMessageMixin,
+                   UpdateView):
+    model = Task
+    form_class = TaskForm
+    template_name = 'tasks/update.html'
+    success_url = reverse_lazy('tasks:tasks')
+    success_message = "Задача успешно изменена"
 
 
-def task_confirm_delete(request, task_id):
-    result = check_and_redirect_if_not_auth(request)
-    if result:
-        return result
-    if not get_object_or_404(Task, id=task_id).author == request.user:
-        messages.error(
-            request,
-            'Задачу может удалить только ее автор',
-            extra_tags='danger')
-        return redirect('tasks:tasks')
-    return render(request,
-                  'tasks/task_confirm_delete.html',
-                  {'task': get_object_or_404(Task, id=task_id)})
-
-
-class TaskDeleteView(View):
-
-    def post(self, request, task_id):
-        task = Task.objects.get(id=task_id)
-        if task:
-            task.delete()
-        messages.success(request, "Задача успешно удалена")
-        return redirect('tasks:tasks')
+class TaskDeleteView(AuthRequiredMixin,
+                     AuthorPermissionMixin,
+                     SuccessMessageMixin,
+                     DeleteView):
+    model = Task
+    success_url = reverse_lazy('tasks:tasks')
+    template_name = 'tasks/task_confirm_delete.html'
+    success_message = "Задача успешно удалена"

@@ -171,7 +171,7 @@ def test_upd_inv_data(user, invalid_form_data):
 @pytest.mark.urls('task_manager.urls')
 def test_get_del_page_unauthorised(user):
     client = Client()
-    url = reverse('users:users_confirm_delete', kwargs={'user_id': user.id})
+    url = reverse('users:users_delete', kwargs={'pk': user.pk})
     response = client.get(url)
     assert response.status_code == 302
     next_url = response.url
@@ -181,8 +181,8 @@ def test_get_del_page_unauthorised(user):
 
 @pytest.mark.urls('task_manager.urls')
 def test_get_del_page_another_user(authenticated_client, another_user):
-    url = reverse('users:users_confirm_delete',
-                  kwargs={'user_id': another_user.id})
+    url = reverse('users:users_delete',
+                  kwargs={'pk': another_user.pk})
     response = authenticated_client.get(url)
     assert response.status_code == 302
     assert response.url == reverse('users:users'), \
@@ -195,7 +195,7 @@ def test_get_del_page_another_user(authenticated_client, another_user):
 
 @pytest.mark.urls('task_manager.urls')
 def test_get_own_del_page(authenticated_client, user):
-    url = reverse('users:users_confirm_delete', kwargs={'user_id': user.id})
+    url = reverse('users:users_delete',  kwargs={'pk': user.pk})
     response = authenticated_client.get(url)
     assert response.status_code == 200
     messages = list(get_messages(response.wsgi_request))
@@ -204,9 +204,8 @@ def test_get_own_del_page(authenticated_client, user):
 
 @pytest.mark.django_db(transaction=True)
 def test_user_can_delete_own_account(authenticated_client, user):
-    id = user.id
-    url = reverse('users:users_delete', kwargs={'user_id': id})
+    url = reverse('users:users_delete', kwargs={'pk': user.pk})
     authenticated_client.post(url)
     with transaction.atomic():
         assert not CustomUser.objects.filter(
-            id=id).exists(), "Пользователь не был удален"
+            pk=user.pk).exists(), "Пользователь не был удален"

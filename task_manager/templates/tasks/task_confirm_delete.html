@@ -11,7 +11,7 @@
       </h1>
 
 <p>Вы уверены, что хотите удалить {{ task.name }}?</p>
-<form method="post" action="{% url 'tasks:tasks_delete' task.id %}">
+<form method="post" action="{% url 'tasks:task_delete' task.pk %}">
   {% csrf_token %}
   <input class="btn btn-danger" type="submit" value="Да, удалить">
 </form>

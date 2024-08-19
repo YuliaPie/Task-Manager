@@ -53,7 +53,7 @@ def test_get_task_list_unauthorised(db):
 
 @pytest.mark.urls('task_manager.urls')
 def test_create_task(db, authenticated_client, task_form_data):
-    url = reverse('tasks:tasks_create')
+    url = reverse('tasks:task_create')
     response = authenticated_client.post(url, task_form_data, follow=False)
     assert response.status_code == 302
     assert Task.objects.filter(name=task_form_data['name']).exists()
@@ -61,7 +61,7 @@ def test_create_task(db, authenticated_client, task_form_data):
 
 @pytest.mark.urls('task_manager.urls')
 def test_create_task_unauthorised(db):
-    url = reverse('tasks:tasks_create')
+    url = reverse('tasks:task_create')
     response = Client().get(url)
     assert response.status_code == 302
     next_url = response.url
@@ -71,7 +71,7 @@ def test_create_task_unauthorised(db):
 
 @pytest.mark.urls('task_manager.urls')
 def test_create_task_same_data(authenticated_client, task_form_data):
-    url = reverse('tasks:tasks_create')
+    url = reverse('tasks:task_create')
     authenticated_client.post(url, data=task_form_data, follow=True)
     response = authenticated_client.post(url, data=task_form_data, follow=True)
     assert response.status_code != 302
@@ -83,7 +83,7 @@ def test_create_task_same_data(authenticated_client, task_form_data):
 @pytest.mark.urls('task_manager.urls')
 def test_get_task_upd_page_unauthorised(user, task):
     client = Client()
-    url = reverse('tasks:task_update', kwargs={'task_id': task.id})
+    url = reverse('tasks:task_update', kwargs={'pk': task.pk})
     response = client.get(url)
     assert response.status_code == 302
     next_url = response.url
@@ -93,7 +93,7 @@ def test_get_task_upd_page_unauthorised(user, task):
 
 @pytest.mark.urls('task_manager.urls')
 def test_get_task_upd_page(authenticated_client, task):
-    url = reverse('tasks:task_update', kwargs={'task_id': task.id})
+    url = reverse('tasks:task_update', kwargs={'pk': task.pk})
     response = authenticated_client.get(url)
     assert response.status_code == 200
     messages = list(get_messages(response.wsgi_request))
@@ -103,7 +103,7 @@ def test_get_task_upd_page(authenticated_client, task):
 @pytest.mark.urls('task_manager.urls')
 def test_upd_task(authenticated_client, task):
     original_name = task.name
-    url = reverse('tasks:task_update', kwargs={'task_id': task.id})
+    url = reverse('tasks:task_update', kwargs={'pk': task.pk})
     new_name = 'New name'
     labels_ids = task.labels.values_list('id', flat=True)
     response = authenticated_client.post(url, data={
@@ -124,7 +124,7 @@ def test_upd_task(authenticated_client, task):
 @pytest.mark.urls('task_manager.urls')
 def test_upd_inv_data(authenticated_client, task):
     original_name = task.name
-    url = reverse('tasks:task_update', kwargs={'task_id': task.id})
+    url = reverse('tasks:task_update', kwargs={'pk': task.pk})
     new_name = 'New name'
     response = authenticated_client.post(url, data={
         'author': task.author.id,
@@ -140,8 +140,8 @@ def test_upd_inv_data(authenticated_client, task):
 
 @pytest.mark.urls('task_manager.urls')
 def test_get_del_page_unauthorised(task):
-    url = reverse('tasks:task_confirm_delete',
-                  kwargs={'task_id': task.id})
+    url = reverse('tasks:task_delete',
+                  kwargs={'pk': task.pk})
     response = Client().get(url)
     assert response.status_code == 302
     next_url = response.url
@@ -151,8 +151,8 @@ def test_get_del_page_unauthorised(task):
 
 @pytest.mark.urls('task_manager.urls')
 def test_get_task_del_page(authenticated_client, task):
-    url = reverse('tasks:task_confirm_delete',
-                  kwargs={'task_id': task.id})
+    url = reverse('tasks:task_delete',
+                  kwargs={'pk': task.pk})
     response = authenticated_client.get(url)
     assert response.status_code == 200
     messages = list(get_messages(response.wsgi_request))
@@ -162,7 +162,7 @@ def test_get_task_del_page(authenticated_client, task):
 @pytest.mark.django_db(transaction=True)
 def test_can_delete_task(authenticated_client, task):
     id = task.id
-    url = reverse('tasks:tasks_delete', kwargs={'task_id': task.id})
+    url = reverse('tasks:task_delete', kwargs={'pk': task.pk})
     authenticated_client.post(url)
     deleted_task = Task.objects.filter(id=id)
     assert not deleted_task.exists(), "Задача не была удалена"
@@ -171,7 +171,7 @@ def test_can_delete_task(authenticated_client, task):
 @pytest.mark.urls('task_manager.urls')
 def test_get_info_page_unauthorised(task):
     url = reverse('tasks:task_info',
-                  kwargs={'task_id': task.id})
+                  kwargs={'pk': task.pk})
     response = Client().get(url)
     assert response.status_code == 302
     next_url = response.url
@@ -182,7 +182,7 @@ def test_get_info_page_unauthorised(task):
 @pytest.mark.urls('task_manager.urls')
 def test_get_task_info_page(authenticated_client, task):
     url = reverse('tasks:task_info',
-                  kwargs={'task_id': task.id})
+                  kwargs={'pk': task.pk})
     response = authenticated_client.get(url)
     assert response.status_code == 200
     messages = list(get_messages(response.wsgi_request))

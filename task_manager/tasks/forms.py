@@ -76,9 +76,9 @@ class TaskForm(forms.ModelForm):
         return cleaned_data
 
     def clean_status(self):
-        status_id = self.cleaned_data.get('status')
-        if Status.objects.filter(id=status_id).exists():
-            status = Status.objects.get(id=status_id)
+        status_pk = self.cleaned_data.get('status')
+        if Status.objects.filter(pk=status_pk).exists():
+            status = Status.objects.get(pk=status_pk)
             return status
         else:
             msg = 'Выберете объект в списке.'

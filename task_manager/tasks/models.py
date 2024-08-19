@@ -59,6 +59,7 @@ def prevent_user_deletion(sender, instance, **kwargs):
 
 
 class TaskLabel(models.Model):
+
     task = models.ForeignKey(Task, on_delete=models.CASCADE,
                              related_name='task_labels')
     label = models.ForeignKey(Label,

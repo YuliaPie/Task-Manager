@@ -1,24 +1,24 @@
 from django.shortcuts import render, redirect
+from django.views import View
 from task_manager.forms import LoginForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from django.views.decorators.csrf import csrf_protect
+from task_manager.tools import (clear_session_username,
+                                initialize_login_form_with_session)
 
 
-def index(request):
-    return render(request, 'index.html')
+class IndexView(View):
+    def get(self, request, *args, **kwargs):
+        return render(request, 'index.html')
 
 
-@csrf_protect
-def login_view(request):
-    form_error = False
-
-    if request.method == 'GET':
+class LoginView(View):
+    def get(self, request, *args, **kwargs):
         clear_session_username(request)
         form = initialize_login_form_with_session(request)
         return render(request, 'login.html', {'form': form})
 
-    elif request.method == 'POST':
+    def post(self, request, *args, **kwargs):
         form = LoginForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data.get('username')
@@ -44,21 +44,8 @@ def login_view(request):
                        'form_error': form_error})
 
 
-def clear_session_username(request):
-    try:
-        del request.session['username']
-    except KeyError:
-        pass
-
-
-def initialize_login_form_with_session(request):
-    form = LoginForm()
-    if 'username' in request.session:
-        form.fields['username'].initial = request.session.get('username', '')
-    return form
-
-
-def logout_view(request):
-    logout(request)
-    messages.info(request, 'Вы разлогинены')
-    return redirect('main_page')
+class LogoutView(View):
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        messages.info(request, 'Вы разлогинены')
+        return redirect('main_page')

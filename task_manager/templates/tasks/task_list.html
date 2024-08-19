@@ -22,7 +22,7 @@
 
       </h1>
 
-<a href="{% url 'tasks:tasks_create' %}" class="btn btn-primary mb-3">Создать задачу</a>
+<a href="{% url 'tasks:task_create' %}" class="btn btn-primary mb-3">Создать задачу</a>
     <div class="card mb-3">
   <div class="card-body bg-light">
 
@@ -81,7 +81,7 @@
     {% for task in tasks %}
       <tr>
         <td>{{ task.id }}</td>
-        <td><a href="{% url 'tasks:task_info' task.id %}">{{ task.name }}</a></td>
+        <td><a href="{% url 'tasks:task_info' task.pk %}">{{ task.name }}</a></td>
           <td>{{ task.status }}</td>
          <td> {{ task.author.first_name }} {{ task.author.last_name }}</td>
          <td> {{ task.executor.first_name }} {{ task.executor.last_name }}</td>
@@ -89,7 +89,7 @@
         <td>
           <a href="{% url 'tasks:task_update' task.id %}">{% trans "Изменить" %}</a>
           <br>
-           <a href="{% url 'tasks:task_confirm_delete' task.id %}">{% trans "Удалить" %}</a>
+           <a href="{% url 'tasks:task_delete' task.id %}">{% trans "Удалить" %}</a>
         </td>
       </tr>
    {% endfor %}
