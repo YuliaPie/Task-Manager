@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views.generic import (CreateView,
                                   ListView,
@@ -83,6 +84,7 @@ class TaskEditView(AuthRequiredMixin,
 class TaskDeleteView(SuccessMessageMixin,
                      AuthRequiredMixin,
                      AuthorPermissionMixin,
+                     UserPassesTestMixin,
                      DeleteView):
     model = Task
     success_url = reverse_lazy('tasks:tasks')

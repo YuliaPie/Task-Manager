@@ -60,8 +60,9 @@ class DeleteProtectMixin:
 
 class AuthorPermissionMixin:
     def test_func(self):
-        obj = self.get_object()
-        return obj.author == self.request.user
+        if self.request.user.pk != self.get_object().author.pk:
+            return False
+        return True
 
     def handle_no_permission(self):
         messages.error(
