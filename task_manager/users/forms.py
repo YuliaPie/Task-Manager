@@ -35,11 +35,13 @@ class UserForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super(UserForm, self).__init__(*args, **kwargs)
         self.fields['first_name'].label = 'Имя'
-        self.fields['first_name'].widget.attrs.update({'placeholder': 'Имя'})
+        self.fields['first_name'].widget.attrs.update({'placeholder': 'Имя'},
+                                                      required=True)
 
         self.fields['last_name'].label = 'Фамилия'
         self.fields['last_name'].widget.attrs.update(
-            {'placeholder': 'Фамилия'})
+            {'placeholder': 'Фамилия'},
+            required=True)
 
         self.fields['username'].label = 'Имя пользователя'
         self.fields['username'].help_text = (
@@ -67,8 +69,7 @@ class UserForm(UserCreationForm):
                 raise ValidationError(USERNAME_EXISTS_ERROR)
         else:
             if CustomUser.objects.exclude(
-                    pk=self.instance.pk).filter(
-                    username=username).exists():
+                    pk=self.instance.pk).filter(username=username).exists():
                 raise ValidationError(USERNAME_EXISTS_ERROR)
         return username
 
@@ -78,7 +79,7 @@ class UserForm(UserCreationForm):
         password2 = cleaned_data.get("password2")
         if password1 and password2 and password1 != password2:
             raise ValidationError(PASSWORD_MISMATCH_ERROR)
-        if len(password1) < 3:
+        if password1 and len(password1) < 3:
             raise ValidationError(MINIMUM_PASSWORD_LENGTH_ERROR)
         return cleaned_data
 
