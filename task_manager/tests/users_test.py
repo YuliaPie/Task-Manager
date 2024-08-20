@@ -195,7 +195,7 @@ def test_get_del_page_another_user(authenticated_client, another_user):
 
 @pytest.mark.urls('task_manager.urls')
 def test_get_own_del_page(authenticated_client, user):
-    url = reverse('users:users_delete',  kwargs={'pk': user.pk})
+    url = reverse('users:users_delete', kwargs={'pk': user.pk})
     response = authenticated_client.get(url)
     assert response.status_code == 200
     messages = list(get_messages(response.wsgi_request))
