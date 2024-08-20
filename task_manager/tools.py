@@ -1,18 +1,10 @@
+from django.db.models import ProtectedError
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from task_manager.forms import LoginForm
-
-
-def check_and_redirect_if_not_auth(request):
-    if not request.user.is_authenticated:
-        messages.error(
-            request,
-            "Вы не авторизованы! "
-            "Пожалуйста, выполните вход.", extra_tags='danger')
-        return redirect('login')
-    return None
+from task_manager.tasks.models import Task
 
 
 def clear_session_username(request):
@@ -52,6 +44,19 @@ class UserPermissionMixin:
             "У вас нет прав для изменения другого пользователя.",
             extra_tags='danger')
         return HttpResponseRedirect(reverse_lazy('users:users'))
+
+
+class DeleteProtectMixin:
+    protected_message = None
+    protected_url = None
+
+    def post(self, request, *args, **kwargs):
+        try:
+            return super().post(request, *args, **kwargs)
+        except ProtectedError:
+            messages.error(request, self.protected_message,
+                           extra_tags='danger')
+            return redirect(self.protected_url)
 
 
 class AuthorPermissionMixin:

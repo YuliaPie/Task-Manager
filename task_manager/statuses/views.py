@@ -6,7 +6,7 @@ from django.views.generic import (CreateView,
 from .models import Status
 from .forms import StatusForm
 from django.urls import reverse_lazy
-from task_manager.tools import AuthRequiredMixin
+from task_manager.tools import AuthRequiredMixin, DeleteProtectMixin
 
 
 class StatusListView(AuthRequiredMixin, ListView):
@@ -35,10 +35,14 @@ class StatusEditView(AuthRequiredMixin,
     success_message = "Статус успешно изменен"
 
 
-class StatusDeleteView(AuthRequiredMixin,
+class StatusDeleteView(DeleteProtectMixin,
+                       AuthRequiredMixin,
                        DeleteView,
                        SuccessMessageMixin):
     model = Status
     success_url = reverse_lazy('statuses:statuses')
+    protected_message = ("Невозможно удалить статус, "
+                         "потому что он используется")
+    protected_url = reverse_lazy('statuses:statuses')
     template_name = 'statuses/status_confirm_delete.html'
-    success_message = "Статус успешно удален."
+    success_message = "Статус успешно удален"

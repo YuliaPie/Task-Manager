@@ -3,7 +3,7 @@ from django.views.generic import CreateView, UpdateView, DeleteView, ListView
 from .models import Label
 from .forms import LabelForm
 from django.urls import reverse_lazy
-from task_manager.tools import AuthRequiredMixin
+from task_manager.tools import AuthRequiredMixin, DeleteProtectMixin
 
 
 class LabelListView(AuthRequiredMixin, ListView):
@@ -32,10 +32,14 @@ class LabelEditView(AuthRequiredMixin,
     success_message = "Метка успешно изменена"
 
 
-class LabelDeleteView(AuthRequiredMixin,
+class LabelDeleteView(DeleteProtectMixin,
+                      AuthRequiredMixin,
                       DeleteView,
                       SuccessMessageMixin):
     model = Label
     success_url = reverse_lazy('labels:labels')
+    protected_message = ("Невозможно удалить метку, "
+                         "потому что она используется")
+    protected_url = reverse_lazy('labels:labels')
     template_name = 'labels/label_confirm_delete.html'
     success_message = "Метка успешно удалена"

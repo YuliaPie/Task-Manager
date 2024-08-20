@@ -18,18 +18,18 @@ class TaskManager(models.Manager):
 
 class Task(models.Model):
     author = models.ForeignKey(CustomUser,
-                               on_delete=models.CASCADE,
+                               on_delete=models.PROTECT,
                                related_name='created_tasks'
                                )
     executor = models.ForeignKey(CustomUser,
                                  null=True,
                                  blank=True,
-                                 on_delete=models.SET_NULL,
+                                 on_delete=models.PROTECT,
                                  related_name='executed_tasks'
                                  )
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    status = models.ForeignKey(Status, on_delete=models.CASCADE,
+    status = models.ForeignKey(Status, on_delete=models.PROTECT,
                                related_name='tasks', default=1)
     labels = models.ManyToManyField(Label,
                                     through='TaskLabel', related_name='tasks')
@@ -45,17 +45,6 @@ class Task(models.Model):
 
     class Meta:
         ordering = ['-created_at']
-
-
-class ProtectedByDependencyError(Exception):
-    pass
-
-
-@receiver(pre_delete, sender=CustomUser)
-def prevent_user_deletion(sender, instance, **kwargs):
-    if instance.created_tasks.exists() or instance.executed_tasks.exists():
-        raise ProtectedByDependencyError(
-            "Нельзя удалить пользователя, потому что он используется.")
 
 
 class TaskLabel(models.Model):
