@@ -1,4 +1,3 @@
-from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
@@ -28,11 +27,12 @@ class UserCreateView(SuccessMessageMixin, CreateView):
     success_message = "Пользователь успешно зарегистрирован."
 
 
-class UserUpdateView(AuthRequiredMixin,
+class UserUpdateView(SuccessMessageMixin,
+                     AuthRequiredMixin,
                      UserPermissionMixin,
                      UserPassesTestMixin,
-                     UpdateView,
-                     SuccessMessageMixin):
+                     UpdateView
+                     ):
     model = CustomUser
     form_class = UserForm
     template_name = 'users/update.html'
@@ -40,16 +40,17 @@ class UserUpdateView(AuthRequiredMixin,
     success_message = "Пользователь успешно изменен."
 
 
-class UserDeleteView(DeleteProtectMixin,
+class UserDeleteView(SuccessMessageMixin,
+                     DeleteProtectMixin,
                      AuthRequiredMixin,
                      UserPermissionMixin,
                      UserPassesTestMixin,
                      DeleteView,
-                     SuccessMessageMixin):
+                     ):
     model = CustomUser
     success_url = reverse_lazy('users:users')
     protected_message = ("Невозможно удалить пользователя, "
                          "потому что он используется")
     protected_url = reverse_lazy('users:users')
     template_name = 'users/user_confirm_delete.html'
-    success_message = _("Пользователь успешно удален.")
+    success_message = "Пользователь успешно удален"
