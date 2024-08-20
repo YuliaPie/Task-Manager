@@ -22,9 +22,9 @@ class LabelCreateView(AuthRequiredMixin,
     success_message = "Метка успешно создана"
 
 
-class LabelEditView(AuthRequiredMixin,
-                    UpdateView,
-                    SuccessMessageMixin):
+class LabelEditView(SuccessMessageMixin,
+                    AuthRequiredMixin,
+                    UpdateView):
     model = Label
     form_class = LabelForm
     template_name = 'labels/update.html'
@@ -32,10 +32,10 @@ class LabelEditView(AuthRequiredMixin,
     success_message = "Метка успешно изменена"
 
 
-class LabelDeleteView(DeleteProtectMixin,
+class LabelDeleteView(SuccessMessageMixin,
+                      DeleteProtectMixin,
                       AuthRequiredMixin,
-                      DeleteView,
-                      SuccessMessageMixin):
+                      DeleteView):
     model = Label
     success_url = reverse_lazy('labels:labels')
     protected_message = ("Невозможно удалить метку, "

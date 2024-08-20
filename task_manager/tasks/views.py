@@ -80,9 +80,9 @@ class TaskEditView(AuthRequiredMixin,
     success_message = "Задача успешно изменена"
 
 
-class TaskDeleteView(AuthRequiredMixin,
+class TaskDeleteView(SuccessMessageMixin,
+                     AuthRequiredMixin,
                      AuthorPermissionMixin,
-                     SuccessMessageMixin,
                      DeleteView):
     model = Task
     success_url = reverse_lazy('tasks:tasks')

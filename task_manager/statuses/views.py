@@ -26,8 +26,8 @@ class StatusCreateView(AuthRequiredMixin,
 
 
 class StatusEditView(AuthRequiredMixin,
-                     UpdateView,
-                     SuccessMessageMixin):
+                     SuccessMessageMixin,
+                     UpdateView):
     model = Status
     form_class = StatusForm
     template_name = 'statuses/update.html'
@@ -35,10 +35,11 @@ class StatusEditView(AuthRequiredMixin,
     success_message = "Статус успешно изменен"
 
 
-class StatusDeleteView(DeleteProtectMixin,
+class StatusDeleteView(SuccessMessageMixin,
+                       DeleteProtectMixin,
                        AuthRequiredMixin,
-                       DeleteView,
-                       SuccessMessageMixin):
+                       DeleteView
+                       ):
     model = Status
     success_url = reverse_lazy('statuses:statuses')
     protected_message = ("Невозможно удалить статус, "
