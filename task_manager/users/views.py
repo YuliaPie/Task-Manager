@@ -9,7 +9,6 @@ from task_manager.tools import (AuthRequiredMixin,
                                 UserPermissionMixin, DeleteProtectMixin)
 from .forms import UserForm
 from .models import CustomUser
-from django.shortcuts import redirect
 import logging
 
 logger = logging.getLogger(__name__)

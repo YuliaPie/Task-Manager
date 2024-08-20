@@ -4,7 +4,6 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from task_manager.forms import LoginForm
-from task_manager.tasks.models import Task
 
 
 def clear_session_username(request):

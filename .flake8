@@ -1,5 +1,6 @@
 [flake8]
 exclude =
     ./task_manager/users/migrations,
+    ./task_manager/tasks/migrations,
     __pycache__,
     .git

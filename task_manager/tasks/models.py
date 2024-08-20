@@ -3,8 +3,6 @@ from django.db import models
 from task_manager.labels.models import Label
 from task_manager.statuses.models import Status
 from task_manager.users.models import CustomUser
-from django.db.models.signals import pre_delete
-from django.dispatch import receiver
 
 
 class TaskManager(models.Manager):
