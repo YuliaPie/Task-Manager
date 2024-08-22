@@ -4,4 +4,4 @@ empty_migrations.py
 .coveragerc
 .coverage
 .idea
-pycache
+__pycache__/

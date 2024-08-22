@@ -18,18 +18,18 @@
 
       <h1 class="my-4">
 
-Метки
+{% trans "Labels" %}
 
       </h1>
 
-<a href="{% url 'labels:labels_create' %}" class="btn btn-primary">Создать метку</a>
+<a href="{% url 'labels:labels_create' %}" class="btn btn-primary">{% trans "Create label" %}</a>
 
 <table class="table table-striped">
 <thead>
   <tr>
     <th class="col-1">ID</th>
-    <th class="col-8 wide-column">Имя</th>
-    <th class="col-2">Дата создания</th>
+    <th class="col-8 wide-column">{% trans "Name" %}</th>
+    <th class="col-2">{% trans "Created at" %}</th>
     <th class="col-1"></th>
   </tr>
 </thead>
@@ -40,9 +40,9 @@
         <td>{{ label.name }}</td>
         <td>{{ label.created_at|date:"d.m.Y H:i" }}</td>
         <td>
-          <a href="{% url 'labels:labels_update' label.pk %}">{% trans "Изменить" %}</a>
+          <a href="{% url 'labels:labels_update' label.pk %}">{% trans "Edit" %}</a>
           <br>
-           <a href="{% url 'labels:labels_delete' label.pk %}">{% trans "Удалить" %}</a>
+           <a href="{% url 'labels:labels_delete' label.pk %}">{% trans "Delete" %}</a>
         </td>
       </tr>
    {% endfor %}

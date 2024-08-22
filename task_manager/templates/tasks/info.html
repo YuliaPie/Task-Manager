@@ -3,11 +3,8 @@
 {% block content %}
  <div class="container wrapper flex-grow-1">
       <h1 class="my-4">
-
-Просмотр задачи
-
+{% trans "Task info" %}
       </h1>
-
 <div class="card">
   <div class="card-header bg-secondary text-white">
     <h2>{{task.name}}</h2>
@@ -17,11 +14,11 @@
     <hr>
     <div class="container">
       <div class="row p-1">
-        <div class="col">Автор</div>
+        <div class="col">{% trans "Author" %}</div>
         <div class="col">{{ task.author.first_name }} {{ task.author.last_name }}</div>
       </div>
       <div class="row p-1">
-        <div class="col">Исполнитель</div>
+        <div class="col">{% trans "Executor" %}</div>
         <div class="col">
           {% if task.executor %}
     {{ task.executor.first_name }} {{ task.executor.last_name }}
@@ -32,16 +29,16 @@
           </div>
       </div>
       <div class="row p-1">
-        <div class="col">Статус</div>
+        <div class="col">{% trans "Status" %}</div>
         <div class="col">{{ task.status }}</div>
       </div>
       <div class="row p-1">
-        <div class="col">Дата создания</div>
+        <div class="col">{% trans "Created at" %}</div>
         <div class="col">{{ task.created_at|date:"d.m.Y H:i" }}</div>
       </div>
       <div class="row p-1">
         <div class="col">
-          <h6>Метки:</h6>
+          <h6>{% trans "Labels" %}:</h6>
 <ul>
 {% for label in task.labels.all %}
     <li>{{ label.name }}</li>
@@ -51,9 +48,9 @@
       </div>
       <div class="row p-1">
         <div class="col">
-          <a href="{% url 'tasks:task_update' task.pk %}">{% trans "Изменить" %}</a>
+          <a href="{% url 'tasks:task_update' task.pk %}">{% trans "Edit" %}</a>
           <br>
-          <a href="{% url 'tasks:task_delete' task.pk %}">{% trans "Удалить" %}</a>
+          <a href="{% url 'tasks:task_delete' task.pk %}">{% trans "Delete" %}</a>
         </div>
       </div>
     </div>

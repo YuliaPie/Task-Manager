@@ -4,28 +4,14 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from task_manager.forms import LoginForm
-
-
-def clear_session_username(request):
-    try:
-        del request.session['username']
-    except KeyError:
-        pass
-
-
-def initialize_login_form_with_session(request):
-    form = LoginForm()
-    if 'username' in request.session:
-        form.fields['username'].initial = request.session.get('username', '')
-    return form
+from django.utils.translation import gettext as _
 
 
 class AuthRequiredMixin:
     def dispatch(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             messages.error(
-                request,
-                "Вы не авторизованы! Пожалуйста, выполните вход.",
+                request, _("You are not logged in! Please sign in."),
                 extra_tags='danger')
             return redirect('login')
         return super().dispatch(request, *args, **kwargs)
@@ -40,7 +26,7 @@ class UserPermissionMixin:
     def handle_no_permission(self):
         messages.error(
             self.request,
-            "У вас нет прав для изменения другого пользователя.",
+            _("You do not have permission to modify another user."),
             extra_tags='danger')
         return HttpResponseRedirect(reverse_lazy('users:users'))
 
@@ -67,6 +53,6 @@ class AuthorPermissionMixin:
     def handle_no_permission(self):
         messages.error(
             self.request,
-            "Задачу может удалить только ее автор",
+            _("A task can only be deleted by its author"),
             extra_tags='danger')
         return redirect('tasks:tasks')

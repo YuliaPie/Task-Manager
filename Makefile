@@ -17,3 +17,5 @@ migrations:
 	python manage.py migrate
 package-install:
 	python -m pip install --user dist/*.whl
+trans:
+	python manage.py compilemessages

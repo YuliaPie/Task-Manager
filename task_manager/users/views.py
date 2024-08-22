@@ -9,6 +9,7 @@ from task_manager.tools import (AuthRequiredMixin,
 from .forms import UserForm
 from .models import CustomUser
 import logging
+from django.utils.translation import gettext as _
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +25,7 @@ class UserCreateView(SuccessMessageMixin, CreateView):
     form_class = UserForm
     template_name = 'users/create.html'
     success_url = reverse_lazy('login')
-    success_message = "Пользователь успешно зарегистрирован."
+    success_message = _("The user has been registered successfully.")
 
 
 class UserUpdateView(SuccessMessageMixin,
@@ -37,7 +38,7 @@ class UserUpdateView(SuccessMessageMixin,
     form_class = UserForm
     template_name = 'users/update.html'
     success_url = reverse_lazy('users:users')
-    success_message = "Пользователь успешно изменен."
+    success_message = _("User successfully changed.")
 
 
 class UserDeleteView(SuccessMessageMixin,
@@ -49,8 +50,7 @@ class UserDeleteView(SuccessMessageMixin,
                      ):
     model = CustomUser
     success_url = reverse_lazy('users:users')
-    protected_message = ("Невозможно удалить пользователя, "
-                         "потому что он используется")
+    protected_message = _("Cannot delete user because it is in use")
     protected_url = reverse_lazy('users:users')
     template_name = 'users/user_confirm_delete.html'
-    success_message = "Пользователь успешно удален"
+    success_message = _("User successfully deleted")

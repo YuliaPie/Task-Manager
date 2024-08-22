@@ -1,0 +1,246 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-10-04 11:29+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Task Manager"
+msgstr "Менеджер задач"
+
+msgid "Users"
+msgstr "Пользователи"
+
+msgid "Login"
+msgstr "Вход"
+
+msgid "Registration"
+msgstr "Регистрация"
+
+msgid "Hi from Hexlet!"
+msgstr "Привет от Хекслета!"
+
+msgid "Practical programming courses"
+msgstr "Практические курсы по программированию"
+
+msgid "Learn more"
+msgstr "Узнать больше"
+
+msgid "User name"
+msgstr "Имя пользователя"
+
+msgid "Full name"
+msgstr "Полное имя"
+
+msgid "Created at"
+msgstr "Дата создания"
+
+msgid "Edit"
+msgstr "Изменить"
+
+msgid "Delete"
+msgstr "Удалить"
+
+msgid "Logout"
+msgstr "Выход"
+
+msgid "Statuses"
+msgstr "Статусы"
+
+msgid "Labels"
+msgstr "Метки"
+
+msgid "Tasks"
+msgstr "Задачи"
+
+msgid "Please enter a valid username and password. Both fields may be case sensitive."
+msgstr "Пожалуйста, введите правильные имя пользователя и пароль. Оба поля могут быть чувствительны к регистру."
+
+msgid "Password"
+msgstr "Пароль"
+
+msgid "Log me in"
+msgstr "Войти"
+
+msgid "Register"
+msgstr "Зарегистрировать"
+
+msgid "Edit user"
+msgstr "Изменение пользователя"
+
+msgid "Are you sure that you want to delete "
+msgstr "Вы уверены, что хотите удалить "
+
+msgid "Delete user"
+msgstr "Удаление пользователя"
+
+msgid "Yes, delete"
+msgstr "Да, удалить"
+
+msgid "User successfully changed."
+msgstr "Пользователь успешно изменен."
+
+msgid "Edit task"
+msgstr "Изменение задачи"
+
+msgid "Create task"
+msgstr "Создать задачу"
+
+msgid "My tasks only"
+msgstr "Только свои задачи"
+
+msgid "Show"
+msgstr "Показать"
+
+msgid "Name"
+msgstr "Имя"
+
+msgid "Status"
+msgstr "Статус"
+
+msgid "Author"
+msgstr "Автор"
+
+msgid "Executor"
+msgstr "Исполнитель"
+
+msgid "Delete task"
+msgstr "Удаление задачи"
+
+msgid "Task info"
+msgstr "Просмотр задачи"
+
+msgid "Create"
+msgstr "Создать"
+
+msgid "Edit status"
+msgstr "Изменение статуса"
+
+msgid "Create status"
+msgstr "Создать статус"
+
+msgid "Delete status"
+msgstr "Удаление статуса"
+
+msgid "Create label"
+msgstr "Создать метку"
+
+msgid "Delete label"
+msgstr "Удаление метки"
+
+msgid "Edit label"
+msgstr "Изменение метки"
+
+msgid "You are not logged in! Please sign in."
+msgstr "Вы не авторизованы! Пожалуйста, выполните вход."
+
+msgid "You do not have permission to modify another user."
+msgstr "У вас нет прав для изменения другого пользователя."
+
+msgid "A task can only be deleted by its author"
+msgstr "Задачу может удалить только ее автор"
+
+msgid "You have been logged in"
+msgstr "Вы залогинены"
+
+msgid "You have been logged out"
+msgstr "Вы разлогинены"
+
+msgid "The user has been registered successfully."
+msgstr "Пользователь успешно зарегистрирован."
+
+msgid "Cannot delete user because it is in use"
+msgstr "Невозможно удалить пользователя, потому что он используется"
+
+msgid "User successfully deleted"
+msgstr "Пользователь успешно удален"
+
+msgid "Surname"
+msgstr "Фамилия"
+
+msgid "Required field. No more than 150 characters. Only letters, numbers and symbols @/./+/-/_."
+msgstr "Обязательное поле. Не более 150 символов. Только буквы, цифры и символы @/./+/-/_."
+
+msgid "Your password must be at least 3 characters long."
+msgstr "Ваш пароль должен содержать как минимум 3 символа."
+
+msgid "Confirm password"
+msgstr "Подтверждение пароля"
+
+msgid "Please enter your password again to confirm."
+msgstr "Для подтверждения введите, пожалуйста, пароль ещё раз."
+
+msgid "A user with that name already exists."
+msgstr "Пользователь с таким именем уже существует."
+
+msgid "The passwords entered do not match."
+msgstr "Введенные пароли не совпадают."
+
+msgid "The password you entered is too short. It must contain at least 3 characters."
+msgstr "Введённый пароль слишком короткий. Он должен содержать как минимум 3 символа."
+
+msgid "Task created successfully"
+msgstr "Задача успешно создана"
+
+msgid "Task modified successfully"
+msgstr "Задача успешно изменена"
+
+msgid "Task successfully deleted"
+msgstr "Задача успешно удалена"
+
+msgid "A task with this name already exists."
+msgstr "Задача с таким именем уже существует."
+
+msgid "Description"
+msgstr "Описание"
+
+msgid "This field is required."
+msgstr "Поле обязательно для заполнения."
+
+msgid "Select an object from the list."
+msgstr "Выберете объект в списке."
+
+msgid "Show only my tasks"
+msgstr "Только свои задачи"
+
+msgid "Status successfully created"
+msgstr "Статус успешно создан"
+
+msgid "Status changed successfully"
+msgstr "Статус успешно изменен"
+
+msgid "Cannot delete status because it is in use"
+msgstr "Невозможно удалить статус, потому что он используется"
+
+msgid "Status successfully deleted"
+msgstr "Статус успешно удален"
+
+msgid "A status with this name already exists."
+msgstr "Метка с таким именем уже существует."
+
+msgid "Label successfully created"
+msgstr "Метка успешно создана"
+
+msgid "Label changed successfully"
+msgstr "Метка успешно изменена"
+
+msgid "Cannot delete label because it is in use"
+msgstr "Невозможно удалить метку, потому что она используется"
+
+msgid "Label successfully deleted"
+msgstr "Метка успешно удален"
+
+msgid "A label with this name already exists."
+msgstr "Метка с таким именем уже существует."

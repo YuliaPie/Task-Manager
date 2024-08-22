@@ -18,16 +18,17 @@
 
       <h1 class="my-4">
 
-Задачи
+{% trans "Tasks" %}
 
       </h1>
 
-<a href="{% url 'tasks:task_create' %}" class="btn btn-primary mb-3">Создать задачу</a>
-    <div class="card mb-3">
+<a href="{% url 'tasks:task_create' %}" class="btn btn-primary mb-3">{% trans "Create task" %}</a>
+
+       <div class="card mb-3">
   <div class="card-body bg-light">
 
 <form class="form-inline center" method="get" action="">
-{% for field in filter_form %}
+{% for field in filter.form %}
     <div class="mb-3">
         {% if field.name == 'self_tasks' %}
         <div class="form-check">
@@ -36,15 +37,15 @@
                 name="{{ field.name }}"
                 {% if field.value %}checked{% endif %}
                 type="checkbox"
-                class="form-check-input mr-3 {% if form_processed %}is-valid{% endif %}"
+                class="form-check-input mr-3"
             >
-            <label for="{{ field.auto_id }}" class="form-check-label">Только свои задачи</label>
+            <label for="{{ field.auto_id }}" class="form-check-label">{% trans "My tasks only" %}</label>
         </div>
         {% else %}
         <label class="form-label" for="{{ field.auto_id }}">{{ field.label }}</label>
         <select
             name="{{ field.name }}"
-            class="form-select ml-2 mr-3 {% if form_processed %}is-valid{% endif %}"
+            class="form-select ml-2 mr-3"
             id="{{ field.auto_id }}"
             >
       {% for choice in field.field.choices %}
@@ -60,7 +61,7 @@
 
     </div>
 {% endfor %}
-<button type="submit" class="btn btn-primary">Показать</button>
+<button type="submit" class="btn btn-primary">{% trans "Show" %}</button>
 </form>
 
   </div>
@@ -69,11 +70,11 @@
 <thead>
   <tr>
     <th class="col-1">ID</th>
-    <th class="col-2 wide-column">Имя</th>
-      <th class="col-2 wide-column">Статус</th>
-      <th class="col-2 wide-column">Автор</th>
-      <th class="col-2 wide-column">Исполнитель</th>
-    <th class="col-2">Дата создания</th>
+    <th class="col-2 wide-column">{% trans "Name" %}</th>
+      <th class="col-2 wide-column">{% trans "Status" %}</th>
+      <th class="col-2 wide-column">{% trans "Author" %}</th>
+      <th class="col-2 wide-column">{% trans "Executor" %}</th>
+    <th class="col-2">{% trans "Created at" %}</th>
     <th class="col-1"></th>
   </tr>
 </thead>
@@ -87,9 +88,9 @@
          <td> {{ task.executor.first_name }} {{ task.executor.last_name }}</td>
         <td>{{ task.created_at|date:"d.m.Y H:i" }}</td>
         <td>
-          <a href="{% url 'tasks:task_update' task.id %}">{% trans "Изменить" %}</a>
+          <a href="{% url 'tasks:task_update' task.id %}">{% trans "Edit" %}</a>
           <br>
-           <a href="{% url 'tasks:task_delete' task.id %}">{% trans "Удалить" %}</a>
+           <a href="{% url 'tasks:task_delete' task.id %}">{% trans "Delete" %}</a>
         </td>
       </tr>
    {% endfor %}

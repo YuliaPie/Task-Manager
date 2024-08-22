@@ -1,14 +1,14 @@
 from django import forms
 from .models import Task, Status, CustomUser
 from django.core.exceptions import ValidationError
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext as _
 import logging
 from task_manager.labels.models import Label
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-NAME_EXISTS_ERROR = _("Задача с таким именем уже существует.")
+NAME_EXISTS_ERROR = _("A task with this name already exists.")
 
 
 class TaskForm(forms.ModelForm):
@@ -52,19 +52,19 @@ class TaskForm(forms.ModelForm):
                 self.fields['executor'].initial = self.instance.executor.id
             else:
                 pass
-        self.fields['name'].label = 'Имя'
-        self.fields['name'].widget.attrs.update({'placeholder': 'Имя'})
-        self.fields['description'].label = 'Описание'
+        self.fields['name'].label = _("Name")
+        self.fields['name'].widget.attrs.update({'placeholder': _("Name")})
+        self.fields['description'].label = _('Description')
         self.fields['description'].widget.attrs.update(
-            {'placeholder': 'Описание', 'required': False})
-        self.fields['status'].label = 'Статус'
-        self.fields['status'].widget.attrs.update({'placeholder': 'Статус'})
-        self.fields['executor'].label = 'Исполнитель'
+            {'placeholder': _('Description'), 'required': False})
+        self.fields['status'].label = _('Status')
+        self.fields['status'].widget.attrs.update({'placeholder': _('Status')})
+        self.fields['executor'].label = _('Executor')
         self.fields['executor'].widget.attrs.update(
-            {'placeholder': 'Исполнитель', 'required': False})
-        self.fields['labels'].label = 'Метки'
+            {'placeholder': _('Executor'), 'required': False})
+        self.fields['labels'].label = _('Labels')
         self.fields['labels'].widget.attrs.update(
-            {'placeholder': 'Метки', 'required': False})
+            {'placeholder': _('Labels'), 'required': False})
 
     def clean(self):
         cleaned_data = super().clean()
@@ -72,7 +72,7 @@ class TaskForm(forms.ModelForm):
         required_fields = ['name', 'status']
         for field in required_fields:
             if cleaned_data.get(field) is None:
-                self.add_error(field, 'Поле обязательно для заполнения.')
+                self.add_error(field, _('This field is required.'))
         return cleaned_data
 
     def clean_status(self):
@@ -81,7 +81,7 @@ class TaskForm(forms.ModelForm):
             status = Status.objects.get(pk=status_pk)
             return status
         else:
-            msg = 'Выберете объект в списке.'
+            msg = _('Select an object from the list.')
             self.add_error('status', msg)
             return None
 
@@ -95,39 +95,3 @@ class TaskForm(forms.ModelForm):
                 pk=self.instance.pk).filter(name=name).exists():
             raise ValidationError(NAME_EXISTS_ERROR)
         return name
-
-
-class TaskFilterForm(forms.Form):
-    status = forms.ChoiceField(
-        required=False,
-        label="Статус"
-    )
-    executor = forms.ChoiceField(
-        required=False,
-        label="Исполнитель"
-    )
-    label = forms.ChoiceField(
-        required=False,
-        label="Метка"
-    )
-    self_tasks = forms.BooleanField(
-        required=False,
-        label="Показать только мои задачи"
-    )
-
-    def __init__(self, *args, **kwargs):
-        super(TaskFilterForm, self).__init__(*args, **kwargs)
-        self.fields['status'].choices \
-            = ([("", "---------")]
-               + [(status.id,
-                   status.name) for status in
-                  Status.objects.all()])
-        self.fields['executor'].choices \
-            = ([("", "---------")]
-               + [(user.id,
-                   f"{user.first_name} {user.last_name}") for user in
-                  CustomUser.objects.all()])
-        self.fields['label'].choices \
-            = ([("", "---------")]
-               + [(label.id, label.name) for label in
-                  Label.objects.all()])

@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+from django.urls import reverse_lazy
 from dotenv import load_dotenv
 from pathlib import Path
 from django.conf import settings
@@ -86,9 +87,11 @@ INSTALLED_APPS = [
     'task_manager.tasks',
     'task_manager.labels',
     'rollbar',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -135,23 +138,26 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
+LANGUAGE_CODE = 'ru'
+
 LANGUAGES = [
-    ('ru', _(settings.LANGUAGE_CODE)),
+    ('en', 'English'),
+    ('ru', 'Russian'),
 ]
 
-LANGUAGE_CODE = 'ru'
+USE_I18N = True
+USE_L10N = True
+USE_TZ = True
 
 TIME_ZONE = 'Europe/Moscow'
 
-USE_I18N = True
-
-USE_TZ = True
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = 'static/'
-
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'locale'),
+)
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
@@ -176,4 +182,8 @@ ROLLBAR = {
     'root': BASE_DIR,
 }
 
-LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = reverse_lazy('main_page')
+
+LOGOUT_REDIRECT_URL = reverse_lazy('main_page')
+
+LOGIN_URL = reverse_lazy('login')

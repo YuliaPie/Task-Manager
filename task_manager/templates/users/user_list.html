@@ -17,7 +17,7 @@
 {% endif %}
 {% if not messages and "/update/" in request.META.HTTP_REFERER %}
     <div class="col-12 alert alert-success alert-dismissible fade show" role="alert">
-        Пользователь успешно изменен.
+        {% trans "User successfully changed." %}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 {% endif %}
@@ -25,7 +25,7 @@
 
       <h1 class="my-4">
 
-{% trans "Пользователи" %}
+{% trans "Users" %}
 
       </h1>
 
@@ -33,9 +33,9 @@
   <thead>
     <tr>
       <th>ID</th>
-      <th>{% trans "Имя пользователя" %}</th>
-      <th>{% trans "Полное имя" %}</th>
-      <th>{% trans "Дата создания" %}</th>
+      <th>{% trans "User name" %}</th>
+      <th>{% trans "Full name" %}</th>
+      <th>{% trans "Created at" %}</th>
       <th></th>
     </tr>
   </thead>
@@ -47,9 +47,9 @@
         <td>{{ user.first_name }} {{ user.last_name}}</td>
         <td>{{ user.created_at|date:"d.m.Y H:i" }}</td>
         <td>
-          <a href="{% url 'users:users_update' user.pk %}">{% trans "Изменить" %}</a>
+          <a href="{% url 'users:users_update' user.pk %}">{% trans "Edit" %}</a>
           <br>
-           <a href="{% url 'users:users_delete' user.pk %}">{% trans "Удалить" %}</a>
+           <a href="{% url 'users:users_delete' user.pk %}">{% trans "Delete" %}</a>
         </td>
       </tr>
    {% endfor %}

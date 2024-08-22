@@ -81,7 +81,7 @@ def task_form_data(user, status, label):
 
 @pytest.fixture
 def task(db, user, status, label):
-    task = Task.objects.create_task(
+    task = Task.objects.create(
         author=user,
         name='Test Task',
         description='Description of the test task',
@@ -94,7 +94,7 @@ def task(db, user, status, label):
 
 @pytest.fixture
 def task1(db, another_user, status, label):
-    task1 = Task.objects.create_task(
+    task1 = Task.objects.create(
         author=another_user,
         name='Test Task1',
         description='Description of the test task1',
@@ -106,7 +106,7 @@ def task1(db, another_user, status, label):
 
 @pytest.fixture
 def task2(db, user, another_status, another_label):
-    task2 = Task.objects.create_task(
+    task2 = Task.objects.create(
         author=user,
         name='Test Task1',
         description='Description of the test task2',

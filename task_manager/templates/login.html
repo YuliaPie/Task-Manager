@@ -15,11 +15,11 @@
 </div>
 {% endif %}
 
-    <h1 class="my-4">Вход</h1>
+    <h1 class="my-4">{% trans "Login" %}</h1>
 {% if form_error %}
 <ul class="list-unstyled text-danger mt-3 fs-6">
 <li class="font-weight-normal">
-    Пожалуйста, введите правильные имя пользователя и пароль. Оба поля могут быть чувствительны к регистру.
+    {% trans "Please enter a valid username and password. Both fields may be case sensitive." %}
 </li>
 </ul>
 {% endif %}
@@ -28,17 +28,17 @@
 <form method="post" action="{% url 'login' %}">
     {% csrf_token %}
     <div class="mb-3">
-        <label class="form-label" for="id_username">Имя пользователя</label>
+        <label class="form-label" for="id_username"> {% trans "User name" %}</label>
         <input type="text" name="username" autofocus autocapitalize="none"
                autocomplete="username" maxlength="150" class="form-control"
                placeholder="Имя пользователя" required id="id_username"
                value="{{ request.session.username | default_if_none:'' }}">
     </div>
     <div class="mb-3">
-        <label class="form-label" for="id_password">Пароль</label>
-        <input type="password" name="password" autocomplete="current-password" class="form-control" placeholder="Пароль" required id="id_password">
+        <label class="form-label" for="id_password">{% trans "Password" %}</label>
+        <input type="password" name="password" autocomplete="current-password" class="form-control" placeholder={% trans "Password" %} required id="id_password">
     </div>
-    <input class="btn btn-primary" type="submit" value="Войти">
+    <input class="btn btn-primary" type="submit" value={% trans "Log me in" %}>
 </form>
 </div>
 {% endblock %}

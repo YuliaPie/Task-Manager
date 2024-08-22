@@ -5,15 +5,6 @@ from task_manager.statuses.models import Status
 from task_manager.users.models import CustomUser
 
 
-class TaskManager(models.Manager):
-    def create_task(self, **kwargs):
-        task = self.model(**kwargs)
-        if 'labels' in kwargs:
-            task.labels.set(kwargs['labels'])
-        task.save()
-        return task
-
-
 class Task(models.Model):
     author = models.ForeignKey(CustomUser,
                                on_delete=models.PROTECT,
@@ -33,7 +24,6 @@ class Task(models.Model):
                                     through='TaskLabel', related_name='tasks')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    objects = TaskManager()
 
     def save(self, *args, **kwargs):
         if not self.pk:
@@ -46,7 +36,6 @@ class Task(models.Model):
 
 
 class TaskLabel(models.Model):
-
     task = models.ForeignKey(Task, on_delete=models.CASCADE,
                              related_name='task_labels')
     label = models.ForeignKey(Label,
