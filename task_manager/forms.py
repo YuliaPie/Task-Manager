@@ -12,4 +12,11 @@ class LoginForm(forms.Form):
         username = cleaned_data.get('username')
         password = cleaned_data.get('password')
         user = CustomUser.objects.filter(username=username).first()
+
+        if not user:
+            raise forms.ValidationError(_("User not found"))
+
+        if not user.check_password(password):
+            raise forms.ValidationError(_("Wrong password"))
+
         return cleaned_data

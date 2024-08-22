@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from django.urls import reverse_lazy
 from dotenv import load_dotenv
 from pathlib import Path
-from django.conf import settings
-from django.utils.translation import gettext_lazy as _
 import os
 import dj_database_url
 import logging

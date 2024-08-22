@@ -244,3 +244,9 @@ msgstr "Метка успешно удалена"
 
 msgid "A label with this name already exists."
 msgstr "Метка с таким именем уже существует."
+
+msgid "User not found"
+msgstr "Пользователь не найден"
+
+msgid "Wrong password"
+msgstr "Неверный пароль"

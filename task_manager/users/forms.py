@@ -33,8 +33,8 @@ class UserForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super(UserForm, self).__init__(*args, **kwargs)
         self.fields['first_name'].label = _('Name')
-        self.fields['first_name'].widget.attrs.update({'placeholder': _('Name')},
-                                                      required=True)
+        self.fields['first_name'].widget.attrs.update(
+            {'placeholder': _('Name')}, required=True)
 
         self.fields['last_name'].label = _('Surname')
         self.fields['last_name'].widget.attrs.update(
@@ -43,17 +43,20 @@ class UserForm(UserCreationForm):
 
         self.fields['username'].label = _('User name')
         self.fields['username'].help_text = _(
-            'Required field. No more than 150 characters. Only letters, numbers and symbols @/./+/-/_.'
+            'Required field. No more than 150 characters. '
+            'Only letters, numbers and symbols @/./+/-/_.'
         )
         self.fields['username'].widget.attrs.update(
             {'placeholder': _('User name')})
 
         self.fields['password1'].label = _('Password')
-        self.fields['password1'].help_text = _('Your password must be at least 3 characters long.')
-        self.fields['password1'].widget.attrs.update({'placeholder': _('Password')})
-
+        self.fields['password1'].help_text = _(
+            'Your password must be at least 3 characters long.')
+        self.fields['password1'].widget.attrs.update(
+            {'placeholder': _('Password')})
         self.fields['password2'].label = _('Confirm password')
-        self.fields['password2'].help_text = _('Please enter your password again to confirm.')
+        self.fields['password2'].help_text = _(
+            'Please enter your password again to confirm.')
         self.fields['password2'].widget.attrs.update(
             {'placeholder': _('Confirm password')})
 

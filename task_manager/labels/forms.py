@@ -21,5 +21,6 @@ class LabelForm(BaseLabelForm, forms.ModelForm):
     def clean_name(self):
         name = self.cleaned_data.get('name')
         if Label.objects.filter(name=name).exists():
-            raise forms.ValidationError(_("A label with this name already exists."))
+            raise forms.ValidationError(_(
+                "A label with this name already exists."))
         return name

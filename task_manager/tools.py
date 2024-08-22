@@ -3,7 +3,6 @@ from django.shortcuts import redirect
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
-from task_manager.forms import LoginForm
 from django.utils.translation import gettext as _
 
 
