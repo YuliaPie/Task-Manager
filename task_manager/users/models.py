@@ -27,4 +27,4 @@ class CustomUser(AbstractUser, PermissionsMixin):
     REQUIRED_FIELDS = ['first_name', 'last_name', 'password']
 
     def __str__(self):
-        return self.username
+        return self.get_full_name()
