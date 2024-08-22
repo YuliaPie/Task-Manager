@@ -62,6 +62,9 @@ msgstr "Статусы"
 msgid "Labels"
 msgstr "Метки"
 
+msgid "Label"
+msgstr "Метка"
+
 msgid "Tasks"
 msgstr "Задачи"
 
