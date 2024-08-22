@@ -14,7 +14,7 @@
 <p>{% trans "Are you sure that you want to delete " %} {{ user.first_name }} {{ user.last_name }}?</p>
 <form method="post" action="{% url 'users:users_delete' user.id %}">
   {% csrf_token %}
-  <input class="btn btn-danger" type="submit" value={% trans "Yes, delete" %}>
+  <input class="btn btn-danger" type="submit" value='{% trans "Yes, delete" %}'>
 </form>
 
     </div>

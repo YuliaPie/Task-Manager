@@ -8,7 +8,7 @@
 <p>{% trans "Are you sure that you want to delete " %}{{ label.name }}?</p>
 <form method="post" action="{% url 'labels:labels_delete' label.pk %}">
   {% csrf_token %}
-  <input class="btn btn-danger" type="submit" value={% trans "Yes, delete" %}>
+  <input class="btn btn-danger" type="submit" value='{% trans "Yes, delete" %}'>
 </form>
     </div>
 {% endblock %}
