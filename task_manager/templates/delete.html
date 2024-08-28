@@ -1,0 +1,22 @@
+{% extends "main.html" %}
+{% load i18n %}
+{% block content %}
+<div class="container wrapper flex-grow-1">
+
+
+
+      <h1 class="my-4">
+
+{{ title }}
+
+      </h1>
+
+<p>{% trans "Are you sure that you want to delete " %} {{ object }}?</p>
+<form method="post" action="{{ action_url }}" >
+  {% csrf_token %}
+  <input class="btn btn-danger" type="submit" value='{% trans submit_button_text %}'>
+</form>
+
+    </div>
+
+{% endblock %}

@@ -92,8 +92,8 @@ msgstr "Удаление пользователя"
 msgid "Yes, delete"
 msgstr "Да, удалить"
 
-msgid "User successfully changed."
-msgstr "Пользователь успешно изменен."
+msgid "User successfully changed"
+msgstr "Пользователь успешно изменен"
 
 msgid "Edit task"
 msgstr "Изменение задачи"

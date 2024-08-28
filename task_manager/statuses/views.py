@@ -21,9 +21,13 @@ class StatusCreateView(AuthRequiredMixin,
                        CreateView):
     model = Status
     form_class = StatusForm
-    template_name = 'statuses/create.html'
+    template_name = 'form.html'
     success_url = reverse_lazy('statuses:statuses')
     success_message = _("Status successfully created")
+    extra_context = {
+        'title': _("Create status"),
+        'submit_button_text': _("Create"),
+    }
 
 
 class StatusEditView(AuthRequiredMixin,
@@ -31,9 +35,13 @@ class StatusEditView(AuthRequiredMixin,
                      UpdateView):
     model = Status
     form_class = StatusForm
-    template_name = 'statuses/update.html'
+    template_name = 'form.html'
     success_url = reverse_lazy('statuses:statuses')
     success_message = _("Status changed successfully")
+    extra_context = {
+        'title': _("Edit status"),
+        'submit_button_text': _("Edit"),
+    }
 
 
 class StatusDeleteView(SuccessMessageMixin,
@@ -45,5 +53,9 @@ class StatusDeleteView(SuccessMessageMixin,
     success_url = reverse_lazy('statuses:statuses')
     protected_message = _("Cannot delete status because it is in use")
     protected_url = reverse_lazy('statuses:statuses')
-    template_name = 'statuses/status_confirm_delete.html'
+    template_name = 'delete.html'
     success_message = _("Status successfully deleted")
+    extra_context = {
+        'title': _("Delete status"),
+        'submit_button_text': _("Yes, delete"),
+    }

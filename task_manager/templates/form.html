@@ -1,0 +1,16 @@
+{% extends "main.html" %}
+{% load i18n %}
+{% load bootstrap4 %}
+{% block content %}
+
+<div class="container wrapper flex-grow-1">
+      <h1 class="my-4">
+{{ title }}
+      </h1>
+<form action="{{ action_url }}" method="post" autocomplete="off">
+    {% csrf_token %}
+{% bootstrap_form form form_group_class="mb-3" %}
+     <button type="submit" class="btn btn-primary">{% trans submit_button_text %}</button>
+</form>
+</div>
+{% endblock %}

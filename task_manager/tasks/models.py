@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils.translation import gettext as _
 from task_manager.labels.models import Label
 from task_manager.statuses.models import Status
 from task_manager.users.models import CustomUser
@@ -8,31 +8,32 @@ from task_manager.users.models import CustomUser
 class Task(models.Model):
     author = models.ForeignKey(CustomUser,
                                on_delete=models.PROTECT,
-                               related_name='created_tasks'
+                               related_name='created_tasks',
+                               verbose_name=_('Author'),
                                )
     executor = models.ForeignKey(CustomUser,
                                  null=True,
                                  blank=True,
                                  on_delete=models.PROTECT,
-                                 related_name='executed_tasks'
+                                 related_name='executed_tasks',
+                                 verbose_name=_('Executor'),
                                  )
-    name = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
+    name = models.CharField(max_length=255,
+                            verbose_name=_('Name'), )
+    description = models.TextField(blank=True,
+                                   verbose_name=_('Description'), )
     status = models.ForeignKey(Status, on_delete=models.PROTECT,
-                               related_name='tasks', default=1)
+                               related_name='tasks',
+                               verbose_name=_('Status'), )
     labels = models.ManyToManyField(Label,
-                                    through='TaskLabel', related_name='tasks')
+                                    through='TaskLabel',
+                                    related_name='tasks',
+                                    blank=True,
+                                    verbose_name=_('Labels'), )
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            self.author = kwargs.get('author') or self.author
-        super().save(*args, **kwargs)
-        self.labels.set(kwargs.get('labels', []))
-
-    class Meta:
-        ordering = ['-created_at']
+    def __str__(self):
+        return self.name
 
 
 class TaskLabel(models.Model):

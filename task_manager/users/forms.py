@@ -11,6 +11,7 @@ MINIMUM_PASSWORD_LENGTH_ERROR = _("The password you entered is too short. "
 
 
 class UserForm(UserCreationForm):
+    usable_password = None
     password1 = forms.CharField(
         widget=forms.PasswordInput(
             render_value=True
@@ -29,6 +30,7 @@ class UserForm(UserCreationForm):
             'password1',
             'password2'
         ]
+        exclude = ('id_usable_password',)
 
     def __init__(self, *args, **kwargs):
         super(UserForm, self).__init__(*args, **kwargs)
@@ -59,6 +61,7 @@ class UserForm(UserCreationForm):
             'Please enter your password again to confirm.')
         self.fields['password2'].widget.attrs.update(
             {'placeholder': _('Confirm password')})
+        self.fields.pop('id_usable_password', None)
 
     def clean_username(self):
         username = self.cleaned_data.get('username')

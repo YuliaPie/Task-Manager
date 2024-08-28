@@ -18,9 +18,13 @@ class LabelCreateView(AuthRequiredMixin,
                       CreateView):
     model = Label
     form_class = LabelForm
-    template_name = 'labels/create.html'
+    template_name = 'form.html'
     success_url = reverse_lazy('labels:labels')
     success_message = _("Label successfully created")
+    extra_context = {
+        'title': _("Create labels"),
+        'submit_button_text': _("Create"),
+    }
 
 
 class LabelEditView(SuccessMessageMixin,
@@ -28,9 +32,13 @@ class LabelEditView(SuccessMessageMixin,
                     UpdateView):
     model = Label
     form_class = LabelForm
-    template_name = 'labels/update.html'
+    template_name = 'form.html'
     success_url = reverse_lazy('labels:labels')
     success_message = _("Label changed successfully")
+    extra_context = {
+        'title': _("Edit label"),
+        'submit_button_text': _("Edit"),
+    }
 
 
 class LabelDeleteView(SuccessMessageMixin,
@@ -41,5 +49,9 @@ class LabelDeleteView(SuccessMessageMixin,
     success_url = reverse_lazy('labels:labels')
     protected_message = _("Cannot delete label because it is in use")
     protected_url = reverse_lazy('labels:labels')
-    template_name = 'labels/label_confirm_delete.html'
+    template_name = 'delete.html'
     success_message = _("Label successfully deleted")
+    extra_context = {
+        'title': _("Delete label"),
+        'submit_button_text': _("Yes, delete"),
+    }
