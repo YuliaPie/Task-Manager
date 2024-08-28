@@ -86,7 +86,7 @@ INSTALLED_APPS = [
     'task_manager.labels',
     'rollbar',
     'django_filters',
-    'bootstrap4',
+    'django_bootstrap5',
 ]
 
 MIDDLEWARE = [
