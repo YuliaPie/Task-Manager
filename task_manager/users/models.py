@@ -12,4 +12,3 @@ class CustomUser(AbstractUser, PermissionsMixin):
         return self.get_full_name()
 
     created_at = models.DateTimeField(auto_now_add=True)
-
