@@ -13,5 +13,3 @@ class CustomUser(AbstractUser, PermissionsMixin):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
-    class Meta:
-        abstract = False
