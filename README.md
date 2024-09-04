@@ -6,6 +6,34 @@
 https://python-project-52-41ik.onrender.com
 
 Task Manager – a task management system. It allows setting tasks, assigning performers, and changing their statuses. Registration and authentication are required to work with the system.
+The project should be deployed on PaaS. In this case, it is already deployed on render.com. Also, a database is connected to the project. The build command is make install && make migrations, the run command is make start.
+SQLite is used locally, and postgres is used in production.
+
+To run locally:
+
+Clone the repository locally.
+
+In the command line from the root directory, run the following commands:
+
+- poetry build
+- poetry publish --dry-run (you may need to enter your username and password)
+- python3 -m pip install --user dist/*.whl
+- make start
+- follow the link that appears
 
 Task Manager – система управления задачами. Она позволяет ставить задачи, назначать исполнителей и менять их статусы. Для работы с системой требуется регистрация и аутентификация.
 
+Для работы нужно развернуть проект на PaaS. В данном случае он уже развернут на render.com. Также к проекту подсоединена база данных. Команда сборки - make install && make migrations, команда запуска - make start.
+Локально используется sqlite, а в продакшене — postgres. 
+
+Для локального запуска:
+
+Склонируйте репозиторий локально.
+
+В командной строке из корневой директории выполните следующие команды:
+
+- poetry build
+- poetry publish --dry-run (возможно придется ввести имя пользователя и пароль)
+- python3 -m pip install --user dist/*.whl
+- make start
+- перейти по появившейся ссылке 
